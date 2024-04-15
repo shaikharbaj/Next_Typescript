@@ -1,0 +1,35 @@
+.navbar {
+    background-color: rgb(70, 70, 141);
+}
+
+.navbar .nav-link {
+    color: white !important;
+    /* font-weight: bold; */
+}
+
+.navbar-brand {
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.nav_img{
+       width: 40px;
+       height: 40px;
+       object-fit: contain;
+       border-radius: 100%;
+}
+.welcome{
+       color: red;
+       text-decoration: dashed;
+}
+.collapse{
+    visibility: visible !important;
+}
