@@ -78,7 +78,7 @@ function Login() {
                     onChange={InputchangeHandler} />
                 {error?.password && <span className="error">{error.password}</span>}
 
-                <button disabled={loading}>Log In</button>
+                <button className={styles.sbt_btn} disabled={loading}>Log In</button>
                 <div className={styles.alreadyhave}>
                     <p>Not have an  account? <Link href={"/register"}>Register</Link></p>
                 </div>

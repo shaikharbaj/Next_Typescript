@@ -6,32 +6,24 @@ export function middleware(request: NextRequest) {
   const publicRoutes = path === "/login" || path === "/register";
   const homeRoute = path === "/";
   const protectedRoute = path === "/dashboard/home";
-  if(homeRoute && token){
-    return NextResponse.redirect(
-        new URL("/dashboard/home", request.nextUrl.origin)
-      );
-  }
   if (publicRoutes && token !== undefined) {
-    return NextResponse.redirect(
-      new URL("/dashboard/home", request.nextUrl.origin)
-    );
+    return NextResponse.redirect(new URL("/dashboard/home", request.nextUrl.origin));
   }
-  if (!token && protectedRoute) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+  if(path==="/profile" && !token){
+      return NextResponse.redirect(new URL("/login",request.nextUrl.origin));
   }
-  if (homeRoute && token) {
-    return NextResponse.redirect(
-      new URL("/dashboard/home", request.nextUrl.origin)
-    );
-  }
-  if (homeRoute && !token) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+  // if (!token && protectedRoute) {
+  //   return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+  // }
+  if (homeRoute) {
+    return NextResponse.redirect(new URL("/dashboard/home", request.nextUrl.origin));
   }
 
   if (path === "/about" && !token) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+
+    return NextResponse.redirect(new URL("/login", request.nextUrl.origin))
   }
 }
 export const config = {
-  matcher: ["/dashboard/home", "/login", "/register", "/", "/about"],
+  matcher: ["/dashboard/home", "/login", "/register", "/", "/about","/profile"],
 };

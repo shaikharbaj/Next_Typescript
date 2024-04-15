@@ -1,0 +1,88 @@
+.pagination {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.message {
+    margin-bottom: 0;
+    margin-right: .4rem;
+}
+
+.btn_wraper {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    padding: 0rem 1rem;
+    border-radius: 5px;
+    margin-right: 1rem;
+}
+
+.btn_wraper span:first-child {
+    padding-right: .5rem;
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+
+}
+
+.btn_wraper span:last-child {
+    padding-left: .5rem;
+}
+
+.activeButton {
+    background-color: #4CAF50; /* Change to your desired color */
+    color: white; /* Change text color if needed */
+    border: 2px solid #4CAF50; /* Change border color if needed */
+    font-weight: bold; /* Add bold font style */
+}
+
+.navButton {
+    background-color: #f0f0f0; /* Light gray background color */
+    color: #333; /* Dark text color for contrast */
+    border: 1px solid #ccc; /* Light border color */
+    padding: 8px 16px; /* Padding for clickable area */
+    margin: 0 4px; /* Margin for spacing */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+    border-radius: 4px; /* Rounded corners */
+}
+
+/* Hover effects for navigation buttons */
+.navButton:hover {
+    background-color: #e0e0e0; /* Slightly darker background color */
+    color: #000; /* Darker text color */
+}
+
+/* Style for disabled navigation buttons */
+.navButton:disabled {
+    background-color: #e0e0e0; /* Light gray background color */
+    color: #aaa; /* Lighter text color */
+    cursor: not-allowed; /* Disable pointer cursor */
+    opacity: 0.6; /* Reduced opacity to indicate disabled state */
+}
+
+.pageButton {
+    background-color: #f5f5f5; /* Light background color */
+    color: #333; /* Dark text color */
+    border: 1px solid #ddd; /* Light border */
+    padding: 8px 12px; /* Padding for clickable area */
+    margin: 0 2px; /* Margin for spacing */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition effects */
+    border-radius: 4px; /* Rounded corners */
+}
+
+/* Hover effects for page buttons */
+.pageButton:hover {
+    background-color: #e6e6e6; /* Slightly darker background color */
+    color: #000; /* Darker text color */
+}
+
+/* Style for the active page button */
+.activeButton {
+    background-color: #4CAF50; /* Highlighted background color for active page */
+    color: white; /* White text color */
+    border: 1px solid #4CAF50; /* Border color matching background */
+    font-weight: bold; /* Bold font style */
+}

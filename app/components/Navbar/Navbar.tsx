@@ -72,6 +72,11 @@ const Navbar = () => {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
+                                    <Link className="nav-link" href="/profile">
+                                        Profile
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
                                     <Link className="nav-link" href={"#"} onClick={logoutHandler}>
                                         Logout
                                     </Link>

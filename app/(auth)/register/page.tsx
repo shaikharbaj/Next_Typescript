@@ -111,7 +111,7 @@ export default function Register() {
                 <label htmlFor="avatar" className={styles.image_label}>choose image</label>
                 <input type="file" accept="image/*" className={styles.avatar} id="avatar" onChange={imageChangeHandler} />
                 {avatar && <img src={URL.createObjectURL(avatar)} alt="" className={styles.preview} />}
-                <button disabled={loading}>{loading ? 'wait' : "Register"}</button>
+                <button disabled={loading} className={styles.sbt_btn}>{loading ? 'wait' : "Register"}</button>
                 <div className={styles.alreadyhave}>
                     <p>already have account? <Link href={"/login"}>Login</Link></p>
                 </div>

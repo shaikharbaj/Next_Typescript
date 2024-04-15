@@ -151,6 +151,7 @@
     margin-top: 4px;
     font-size: 14px;
     font-weight: 300;
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .regiform input ::placeholder {
@@ -182,4 +183,8 @@
 .required{
        color: red;
        font-size: 15px;
+}
+
+.sbt_btn{
+       border: 1px solid rgba(0, 0, 0, 0.2);
 }
