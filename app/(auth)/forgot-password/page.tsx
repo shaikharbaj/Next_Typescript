@@ -18,7 +18,7 @@ type FormValues = {
     password: string
 }
 
-function Login() {
+function ForgotPassword() {
     const { loading, success, error } = useSelector((state: { auth: Authstate }) => state.auth);
     const dispatch = useAppDispatch();
     const {push} = useRouter();
@@ -65,28 +65,22 @@ function Login() {
                 <div className={styles.shape}></div>
             </div>
             <form className={styles.form} onSubmit={SubmitHandler}>
-                <h3>Login Here</h3>
+                <h3>Forgot Password</h3>
                 <label htmlFor="email">Email<span className={styles.required}>*</span></label>
                 <input type="email" placeholder="Email" id="email" name="email"
                     value={value.email}
                     onChange={InputchangeHandler} />
                 {error?.email && <span className="error">{error.email}</span>}
 
-                <label htmlFor="password">Password<span className={styles.required}>*</span></label>
-                <input type="password" placeholder="Password" id="password" name="password"
-                    value={value.password}
-                    onChange={InputchangeHandler} />
-                {error?.password && <span className="error">{error.password}</span>}
-
-                <button className={styles.sbt_btn} disabled={loading}>Log In</button>
-                <div className={styles.alreadyhave}>
+                <button className={styles.sbt_btn} disabled={loading}>Send OTP</button>
+                {/* <div className={styles.alreadyhave}>
                     <p>Not have an  account? <Link href={"/register"}>Register</Link></p>
                     <p><Link href={"/forgot-password"}>forgot password?</Link></p>
-                </div>
+                </div> */}
             </form>
         </>
 
     )
 }
 
-export default Login
+export default ForgotPassword

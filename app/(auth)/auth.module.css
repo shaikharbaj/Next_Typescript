@@ -174,7 +174,12 @@
 .alreadyhave {
     padding-top: .5rem;
 }
-
+.alreadyhave p:first-child{
+       margin-bottom: .3rem;
+}
+.alreadyhave p:nth-child(2){
+    color: red  ;
+}
 .alreadyhave p a {
     color: red;
     text-decoration: none;
