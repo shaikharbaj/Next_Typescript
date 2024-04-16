@@ -22,7 +22,6 @@ type ProductType = {
   category: string
 }
 const HomePage = () => {
-  const { userinfo } = useAppSelector((state) => state.auth);
   const { products, loading } = useAppSelector((state) => state.products);
   const [searchText, setSerchText] = useState('');
   const debauncedValue = useDebounce(searchText, 600);
@@ -45,7 +44,7 @@ const HomePage = () => {
 
   return (
     <>
-      {loading && <Loading/>}
+      {loading && <Loading />}
       <div className={styles.wrapper}>
         <div className={`mt-3 mb-3 ${styles.inputbox}`}>
           <input type="text" onChange={handlesearch} value={searchText} placeholder='search something here.....' />
@@ -68,7 +67,7 @@ const HomePage = () => {
                 {
                   products.products.map((p: ProductType, i: number) => {
                     return <tr key={p.id}>
-                      <td>{perPage*(currentpage-1) + (i+1)}</td>
+                      <td>{perPage * (currentpage - 1) + (i + 1)}</td>
                       <td>{p.title}</td>
                       <td>{p.description}</td>
                       <td>{p.price}</td>
