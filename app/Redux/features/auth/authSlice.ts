@@ -10,6 +10,8 @@ let initialState: any = {
   error: null,
   success: null,
   loading: null,
+  email: null,
+  otp: null,
 };
 //login response....
 interface LoginResponse {
@@ -31,6 +33,20 @@ interface RegisterResponse {
   email: string;
   password: string;
   avatar?: string;
+}
+
+interface ForgotPassword {
+  email: string;
+}
+interface VerifyOtp {
+  email: string;
+  otp: number;
+}
+interface ResetPassword {
+  email: string;
+  otp: number;
+  password: string;
+  confirmpassword: string;
 }
 interface RegisterPayload {
   name: string;
@@ -114,26 +130,110 @@ export const registerUserAsync = createAsyncThunk(
   }
 );
 
-export const updateuserProfileAsync = createAsyncThunk("auth/updateuserprofile", async (payload:FormData, thunkAPI) => {
+export const updateuserProfileAsync = createAsyncThunk(
+  "auth/updateuserprofile",
+  async (payload: FormData, thunkAPI) => {
     try {
-      const response = await privateRequest.patch("http://localhost:8000/user/updateprofile", payload);
+      const response = await privateRequest.patch(
+        "http://localhost:8000/user/updateprofile",
+        payload
+      );
       const data = await response.data;
       return data;
     } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            const errorData = error.response.data;
-            if (errorData.validationerror) {
-              // Handle validation errors
-              return thunkAPI.rejectWithValue(errorData.validationerror);
-            } else {
-              // Handle other error messages
-              return thunkAPI.rejectWithValue(errorData.message);
-            }
-          }
-          // Handle other errors not related to Axios
-          return thunkAPI.rejectWithValue("An unknown error occurred");
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (errorData.validationerror) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(errorData.validationerror);
+        } else {
+          // Handle other error messages
+          return thunkAPI.rejectWithValue(errorData.message);
         }
-  })
+      }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const forgotpasswordAsync = createAsyncThunk(
+  "auth/forgotpassword",
+  async (payload: ForgotPassword, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/user/forgot-password",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (errorData.validationerror) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(errorData.validationerror);
+        } else {
+          // Handle other error messages
+          return thunkAPI.rejectWithValue(errorData.message);
+        }
+      }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const verifyOtpAsync = createAsyncThunk(
+  "auth/verifyOtpAsync",
+  async (payload: VerifyOtp, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/user/verify-otp",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (errorData.validationerror) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(errorData.validationerror);
+        } else {
+          // Handle other error messages
+          return thunkAPI.rejectWithValue(errorData.message);
+        }
+      }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const resetpasswordAsync = createAsyncThunk(
+  "auth/resetpassword",
+  async (payload: ResetPassword, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/user/reset-password",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (errorData.validationerror) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(errorData.validationerror);
+        } else {
+          // Handle other error messages
+          return thunkAPI.rejectWithValue(errorData.message);
+        }
+      }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
+    }
+  }
+);
 
 const authSlice = createSlice({
   initialState,
@@ -150,8 +250,19 @@ const authSlice = createSlice({
       Helper.removeToken();
     },
     setuserprofiledata: (state, action) => {
-        state.userinfo = action.payload;
-      },
+      state.userinfo = action.payload;
+    },
+    setEmail: (state, action) => {
+      state.email = action.payload.email;
+    },
+    setOtp: (state, action) => {
+      console.log(action.payload);
+      state.otp = action.payload;
+    },
+    clearemail_otp: (state) => {
+      state.otp = null;
+      state.email = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -200,9 +311,41 @@ const authSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.userinfo = action.payload;
-
       })
       .addCase(updateuserProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(forgotpasswordAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(forgotpasswordAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+      })
+      .addCase(forgotpasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(verifyOtpAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(verifyOtpAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+      })
+      .addCase(verifyOtpAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(resetpasswordAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(resetpasswordAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+      })
+      .addCase(resetpasswordAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
@@ -210,4 +353,11 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { clearState, logout,setuserprofiledata } = authSlice.actions;
+export const {
+  clearState,
+  logout,
+  setuserprofiledata,
+  setEmail,
+  setOtp,
+  clearemail_otp,
+} = authSlice.actions;

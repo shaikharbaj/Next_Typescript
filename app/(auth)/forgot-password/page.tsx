@@ -3,27 +3,27 @@ import React, { useEffect, useState } from 'react'
 import styles from '../auth.module.css'
 import { useSelector, useDispatch } from 'react-redux'
 import Link from 'next/link'
-import { clearState, loginUserAsync } from '@/app/Redux/features/auth/authSlice'
+import { clearState, forgotpasswordAsync, loginUserAsync, setEmail } from '@/app/Redux/features/auth/authSlice'
 import { useAppDispatch } from '@/app/Hook/hooks'
 import { useRouter } from 'next/navigation'
 import { errortoast, successtoast } from '@/app/utils/alerts/alerts'
 interface Authstate {
     loading: boolean,
     error: any,
-    success: boolean
+    success: any,
+    email:string|null
 
 }
 type FormValues = {
-    email: string,
-    password: string
+    email: string
 }
 
 function ForgotPassword() {
-    const { loading, success, error } = useSelector((state: { auth: Authstate }) => state.auth);
+    const { loading, success, error,email } = useSelector((state: { auth: Authstate }) => state.auth);
     const dispatch = useAppDispatch();
-    const {push} = useRouter();
+    const { push } = useRouter();
     // const dispatch = useDispatch();
-    const [value, setValue] = useState<FormValues>({ email: "", password: "" });
+    const [value, setValue] = useState<FormValues>({ email: "" });
     const InputchangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue((prev) => {
             return { ...prev, [e.target.name]: e.target.value }
@@ -32,17 +32,11 @@ function ForgotPassword() {
     const SubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const payload: FormValues = {
-            email: value.email,
-            password: value.password
+            email: value.email
         }
-        dispatch(loginUserAsync(payload))
+        dispatch(setEmail(payload))
+        dispatch(forgotpasswordAsync(payload))
     }
-
-    useEffect(() => {
-        return () => {
-            dispatch(clearState());
-        }
-    }, [])
 
     useEffect(() => {
         if (error) {
@@ -52,13 +46,12 @@ function ForgotPassword() {
             }
         }
         if (success) {
-            successtoast('user logged in successfully')
-            push("/dashboard/home");
+            successtoast(success)
+            push("/verify-otp");
             dispatch(clearState());
         }
     }, [error, success]);
     return (
-
         <>
             <div className={styles.background}>
                 <div className={styles.shape}></div>
