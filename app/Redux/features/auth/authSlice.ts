@@ -54,6 +54,9 @@ interface RegisterPayload {
   password: string;
   file?: File;
 }
+interface forgotpasswordwithlinkPayload {
+  email: string
+}
 
 export const loadUserAsync = createAsyncThunk(
   "auth/loadUser",
@@ -235,6 +238,45 @@ export const resetpasswordAsync = createAsyncThunk(
   }
 );
 
+export const forgotpasswordwithlink = createAsyncThunk("auth/forgot-passwordwithlink", async (payload: forgotpasswordwithlinkPayload, thunkAPI) => {
+  try {
+    const response = await axios.post("http://localhost:8000/user/forgot-passwordlink", payload);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorData = error.response.data;
+      if (errorData.validationerror) {
+        // Handle validation errors
+        return thunkAPI.rejectWithValue(errorData.validationerror);
+      } else {
+        // Handle other error messages
+        return thunkAPI.rejectWithValue(errorData.message);
+      }
+    }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
+})
+export const resetpasswordwithlinkAsync = createAsyncThunk("auth/resetpasswordwithlink", async (payload: any, thunkAPI) => {
+  try {
+    const response = await axios.post(`http://localhost:8000/user/reset-passwordlink/${payload.id}/${payload.token}`, { password: payload.password, confirmpassword: payload.confirmpassword });
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorData = error.response.data;
+      if (errorData.validationerror) {
+        // Handle validation errors
+        return thunkAPI.rejectWithValue(errorData.validationerror);
+      } else {
+        // Handle other error messages
+        return thunkAPI.rejectWithValue(errorData.message);
+      }
+    }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
+})
+
 const authSlice = createSlice({
   initialState,
   name: "auth",
@@ -346,6 +388,29 @@ const authSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(resetpasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(forgotpasswordwithlink.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(forgotpasswordwithlink.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.loading = false;
+        state.success = action.payload.message;
+      })
+      .addCase(forgotpasswordwithlink.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(resetpasswordwithlinkAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(resetpasswordwithlinkAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+      })
+      .addCase(resetpasswordwithlinkAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

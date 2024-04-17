@@ -1,12 +1,13 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import styles from '../auth.module.css'
+import styles from '../../../auth.module.css'
 
 import Link from 'next/link'
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks'
-import { useRouter } from 'next/navigation'
-import { clearState, clearemail_otp, resetpasswordAsync } from '@/app/Redux/features/auth/authSlice'
+import { clearState, resetpasswordwithlinkAsync } from '@/app/Redux/features/auth/authSlice'
+import { useSelector } from 'react-redux'
 import { errortoast, successtoast } from '@/app/utils/alerts/alerts'
+import { useRouter } from 'next/navigation'
 
 interface Authstate {
     loading: boolean,
@@ -18,25 +19,42 @@ type FormValues = {
     confirmpassword: string,
     password: string
 }
+type payloadValue = {
+    password: string,
+    confirmpassword: string,
+    token: string, id: number
+}
 
-function ResetPassword() {
-    const router = useRouter();
+function ResetPassword({ params }: { params: { id: string, token: string } }) {
     const dispatch = useAppDispatch();
-    const { loading, error, success, email, otp } = useAppSelector(state => state.auth);
+    const { push, replace } = useRouter();
+    const { loading, error, success } = useAppSelector((state) => state.auth);
     const [value, setValue] = useState<FormValues>({ confirmpassword: "", password: "" });
+    const { id, token } = params;
+
     const InputchangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue((prev) => {
             return { ...prev, [e.target.name]: e.target.value }
         })
     }
+
     const SubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const payload: FormValues = {
+        const payload: payloadValue = {
             confirmpassword: value.confirmpassword,
-            password: value.password
+            password: value.password,
+            token: token,
+            id: Number(id)
         }
 
+        dispatch(resetpasswordwithlinkAsync(payload))
     }
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearState());
+        }
+    }, [])
 
     useEffect(() => {
         if (error) {
@@ -44,55 +62,38 @@ function ResetPassword() {
                 errortoast(error);
                 dispatch(clearState())
             }
-        } else if (success) {
+        }
+        if (success) {
             successtoast(success)
-            router.push("/login");
+            replace("/login");
             dispatch(clearState());
-            setTimeout(() => {
-                dispatch(clearemail_otp());
-            }, 200)
         }
     }, [error, success]);
-    useEffect(() => {
-        if (!email || !otp) {
-            router.push("/forgot-password");
-        }
-    }, [email])
-    if (!email) {
-        return null;
-    }
-    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const OTP = Number(otp);
-        const payload = { email: email, otp: OTP, password: value.password, confirmpassword: value.confirmpassword };
-        dispatch(resetpasswordAsync(payload))
-
-    }
     return (
         <>
             <div className={styles.background}>
                 <div className={styles.shape}></div>
                 <div className={styles.shape}></div>
             </div>
-            <form className={styles.form} onSubmit={submitHandler}>
+            <form className={styles.form} onSubmit={SubmitHandler}>
                 <h3>Reset Password</h3>
                 <label htmlFor="password"> Password <span className={styles.required}>*</span></label>
                 <input type="password" placeholder="password" id="password" name="password"
                     value={value.password}
                     onChange={InputchangeHandler} />
-                {/* {error?.email && <span className="error">{error.email}</span>} */}
+                {error?.password && <span className="error">{error.password}</span>}
 
                 <label htmlFor="cpassword">Confirm Password<span className={styles.required}>*</span></label>
                 <input type="password" placeholder="confirmed Password" id="cpassword" name="confirmpassword"
                     value={value.confirmpassword}
                     onChange={InputchangeHandler} />
-                {/* {error?.password && <span className="error">{error.password}</span>} */}
+                {error?.confirmpassword && <span className="error">{error.confirmpassword}</span>}
 
-                <button type='submit' className={styles.sbt_btn} disabled={loading}>Reset</button>
+                <button className={styles.sbt_btn} disabled={loading}>Reset</button>
             </form>
         </>
 
     )
 }
 
-export default ResetPassword
+export default ResetPassword;

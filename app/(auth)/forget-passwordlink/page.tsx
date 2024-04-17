@@ -2,24 +2,23 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../auth.module.css'
 import { useSelector, useDispatch } from 'react-redux'
-import Link from 'next/link'
-import { clearState, forgotpasswordAsync, loginUserAsync, setEmail } from '@/app/Redux/features/auth/authSlice'
-import { useAppDispatch } from '@/app/Hook/hooks'
+import { clearState, forgotpasswordwithlink, loginUserAsync } from '@/app/Redux/features/auth/authSlice'
 import { useRouter } from 'next/navigation'
 import { errortoast, successtoast } from '@/app/utils/alerts/alerts'
+import { useAppDispatch } from '@/app/Hook/hooks'
 interface Authstate {
     loading: boolean,
     error: any,
-    success: any,
-    email:string|null
+    success: string | null
 
 }
 type FormValues = {
     email: string
 }
 
-function ForgotPassword() {
-    const { loading, success, error,email } = useSelector((state: { auth: Authstate }) => state.auth);
+function ForgotPasswordLink() {
+    const { loading, success, error } = useSelector((state: { auth: Authstate }) => state.auth);
+    console.log(loading, success, error)
     const dispatch = useAppDispatch();
     const { push } = useRouter();
     // const dispatch = useDispatch();
@@ -34,9 +33,15 @@ function ForgotPassword() {
         const payload: FormValues = {
             email: value.email
         }
-        dispatch(setEmail(payload))
-        dispatch(forgotpasswordAsync(payload))
+
+        dispatch(forgotpasswordwithlink(payload))
     }
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearState());
+        }
+    }, [])
 
     useEffect(() => {
         if (error) {
@@ -47,11 +52,12 @@ function ForgotPassword() {
         }
         if (success) {
             successtoast(success)
-            push("/verify-otp");
+            push("/login");
             dispatch(clearState());
         }
     }, [error, success]);
     return (
+
         <>
             <div className={styles.background}>
                 <div className={styles.shape}></div>
@@ -64,8 +70,7 @@ function ForgotPassword() {
                     value={value.email}
                     onChange={InputchangeHandler} />
                 {error?.email && <span className="error">{error.email}</span>}
-
-                <button className={styles.sbt_btn} disabled={loading}>Send OTP</button>
+                <button className={styles.sbt_btn} disabled={loading}>{loading?"send link to email":"Send Forgot Password Link"}</button>
                 {/* <div className={styles.alreadyhave}>
                     <p>Not have an  account? <Link href={"/register"}>Register</Link></p>
                     <p><Link href={"/forgot-password"}>forgot password?</Link></p>
@@ -76,4 +81,4 @@ function ForgotPassword() {
     )
 }
 
-export default ForgotPassword
+export default ForgotPasswordLink

@@ -81,7 +81,8 @@ function Login() {
                 <button className={styles.sbt_btn} disabled={loading}>Log In</button>
                 <div className={styles.alreadyhave}>
                     <p>Not have an  account? <Link href={"/register"}>Register</Link></p>
-                    <p><Link href={"/forgot-password"}>forgot password?</Link></p>
+                    <p><Link href={"/forgot-password"}>forgot password with OTP?</Link></p>
+                    <p><Link href={"/forget-passwordlink"}>forgot password with Link?</Link></p>
                 </div>
             </form>
         </>

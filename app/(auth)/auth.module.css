@@ -117,8 +117,8 @@
 .form button {
     margin-top: 30px;
     width: 100%;
-    background-color: #ffffff;
-    color: #080710;
+    background-color:black;
+    color: white;
     padding: 8px 0;
     font-size: 18px;
     font-weight: 600;
@@ -161,8 +161,8 @@
 .regiform button {
     margin-top: 15px;
     width: 100%;
-    background-color: #ffffff;
-    color: #080710;
+    background-color: black;
+    color:white;
     padding: 5px 0;
     font-size: 18px;
     font-weight: 600;
