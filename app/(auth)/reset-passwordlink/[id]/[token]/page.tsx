@@ -89,10 +89,9 @@ function ResetPassword({ params }: { params: { id: string, token: string } }) {
                     onChange={InputchangeHandler} />
                 {error?.confirmpassword && <span className="error">{error.confirmpassword}</span>}
 
-                <button className={styles.sbt_btn} disabled={loading}>Reset</button>
+                <button className={styles.sbt_btn} disabled={loading}>{loading?"loading...":"Reset Password"}</button>
             </form>
         </>
-
     )
 }
 

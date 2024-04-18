@@ -1,11 +1,11 @@
 "use client"
 import styles from './user.module.css'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../Hook/hooks';
-import useDebounce from '../Hook/useDebounce';
-import Pagination from '../components/Pagination/Pagination';
-import Loading from '../components/Loading/Loading';
-import { loadAllUserAsync } from '../Redux/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks'
+import useDebounce from '@/app/Hook/useDebounce'
+import Pagination from '@/app/components/Pagination/Pagination'
+import Loading from '@/app/components/Loading/Loading'
+import { loadAllUserAsync } from '@/app/Redux/features/user/userSlice'
 
 type userType = {
     id: number,
@@ -36,7 +36,7 @@ const UsersPage = () => {
 
     useEffect(() => {
         dispatch(loadAllUserAsync({ currentpage, searchTerm }))
-    }, [debauncedValue,currentpage]);
+    }, [debauncedValue, currentpage]);
     return (
         <>
             {loading && <Loading />}

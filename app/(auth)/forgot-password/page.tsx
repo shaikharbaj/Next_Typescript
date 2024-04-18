@@ -65,8 +65,8 @@ function ForgotPassword() {
                     onChange={InputchangeHandler} />
                 {error?.email && <span className="error">{error.email}</span>}
 
-                <button className={styles.sbt_btn} disabled={loading}>Send OTP</button>
-                {/* <div className={styles.alreadyhave}>
+                <button className={styles.sbt_btn} disabled={loading}>{loading?"loading":"Send OTP"}</button>
+                {/* <div className={styles.alreadyhave}>:
                     <p>Not have an  account? <Link href={"/register"}>Register</Link></p>
                     <p><Link href={"/forgot-password"}>forgot password?</Link></p>
                 </div> */}

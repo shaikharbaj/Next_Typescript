@@ -91,7 +91,7 @@ const VerifyOtp = () => {
                                 </div>
                             </div>
 
-                            <button type="submit" className="btn btn-primary submit_btn my-4">Submit</button>
+                            <button type="submit" className="btn btn-primary submit_btn my-4" disabled={loading}>{loading?"loading...":"verify"}</button>
 
                             {/* <div className="fw-normal text-muted mb-2">
                                 Didn’t get the code ? <a href="#" className="text-primary fw-bold text-decoration-none">Resend</a>

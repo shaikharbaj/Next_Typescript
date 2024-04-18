@@ -50,7 +50,7 @@ function ResetPassword() {
             dispatch(clearState());
             setTimeout(() => {
                 dispatch(clearemail_otp());
-            }, 200)
+            }, 1000)
         }
     }, [error, success]);
     useEffect(() => {
@@ -80,15 +80,16 @@ function ResetPassword() {
                 <input type="password" placeholder="password" id="password" name="password"
                     value={value.password}
                     onChange={InputchangeHandler} />
-                {/* {error?.email && <span className="error">{error.email}</span>} */}
+                {error?.password && <span className="error">{error.password}</span>}
 
                 <label htmlFor="cpassword">Confirm Password<span className={styles.required}>*</span></label>
                 <input type="password" placeholder="confirmed Password" id="cpassword" name="confirmpassword"
                     value={value.confirmpassword}
                     onChange={InputchangeHandler} />
-                {/* {error?.password && <span className="error">{error.password}</span>} */}
+                {error?.confirmpassword && <span className="error">{error.confirmpassword}</span>}
+                {/* {error?.Password && <span className="error">{error.Password}</span>} */}
 
-                <button type='submit' className={styles.sbt_btn} disabled={loading}>Reset</button>
+                <button type='submit' className={styles.sbt_btn} disabled={loading}>{loading?"loading...":"Reset Password"}</button>
             </form>
         </>
 
