@@ -5,7 +5,9 @@ import { useAppDispatch, useAppSelector } from '../Hook/hooks';
 import useDebounce from '../Hook/useDebounce';
 import Pagination from '../components/Pagination/Pagination';
 import Loading from '../components/Loading/Loading';
-import { loadAllUserAsync } from '../Redux/features/user/userSlice';
+import { clearstate, loadAllUserAsync } from '../Redux/features/user/userSlice';
+import { errortoast, successtoast } from '../utils/alerts/alerts';
+
 
 type userType = {
     id: number,
@@ -22,7 +24,7 @@ type userType = {
     }
 }
 const UsersPage = () => {
-    const { users, meta, loading } = useAppSelector(state => state.users);
+    const { users, meta, loading, error, success } = useAppSelector(state => state.users);
     const [searchTerm, setSerchText] = useState('');
     const debauncedValue = useDebounce(searchTerm, 600);
     const [currentpage, setCurrentPage] = useState(1);
@@ -36,7 +38,22 @@ const UsersPage = () => {
 
     useEffect(() => {
         dispatch(loadAllUserAsync({ currentpage, searchTerm }))
-    }, [debauncedValue,currentpage]);
+    }, [debauncedValue, currentpage]);
+
+    useEffect(() => {
+        if (error) {
+
+            if (typeof (error) === "string") {
+                errortoast(error);
+                dispatch(clearstate())
+            }
+        }
+        if (success) {
+            successtoast('data fetch successfully..');
+            dispatch(clearstate());
+        }
+    }, [error, success])
+
     return (
         <>
             {loading && <Loading />}

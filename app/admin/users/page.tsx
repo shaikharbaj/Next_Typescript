@@ -36,7 +36,7 @@ const UsersPage = () => {
 
     useEffect(() => {
         dispatch(loadAllUserAsync({ currentpage, searchTerm }))
-    }, [debauncedValue, currentpage]);
+    }, [debauncedValue,currentpage]);
     return (
         <>
             {loading && <Loading />}
