@@ -36,7 +36,7 @@ type Payload = {
 };
 //get product........
 export const loadAllUserAsync = createAsyncThunk(
-  "products/loadproducts",
+  "user/loaduser",
   async (payload: Payload, thunkAPI) => {
     try {
       const { currentpage, searchTerm } = payload;
@@ -44,10 +44,8 @@ export const loadAllUserAsync = createAsyncThunk(
         `http://localhost:8000/user?page=${currentpage}&searchTerm=${searchTerm}`
       );
       const data = await response.data;
-      // console.log(data)
       return data;
     } catch (error) {
-      console.log(error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
         if (error.response && error.response.data.message) {

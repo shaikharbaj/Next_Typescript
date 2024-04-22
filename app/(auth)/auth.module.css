@@ -117,7 +117,7 @@
 .form button {
     margin-top: 30px;
     width: 100%;
-    background-color:black;
+    background-color: black;
     color: white;
     padding: 8px 0;
     font-size: 18px;
@@ -162,7 +162,7 @@
     margin-top: 15px;
     width: 100%;
     background-color: black;
-    color:white;
+    color: white;
     padding: 5px 0;
     font-size: 18px;
     font-weight: 600;
@@ -174,22 +174,26 @@
 .alreadyhave {
     padding-top: .5rem;
 }
-.alreadyhave p:first-child{
-       margin-bottom: .3rem;
+
+.alreadyhave p:first-child {
+    margin-bottom: .3rem;
 }
-.alreadyhave p:nth-child(2){
-    color: red  ;
+
+.alreadyhave p:nth-child(2) {
+    color: red;
 }
+
 .alreadyhave p a {
     color: red;
     text-decoration: none;
     font-weight: bold;
 }
-.required{
-       color: red;
-       font-size: 15px;
+
+.required {
+    color: red;
+    font-size: 15px;
 }
 
-.sbt_btn{
-       border: 1px solid rgba(0, 0, 0, 0.2);
+.sbt_btn {
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }

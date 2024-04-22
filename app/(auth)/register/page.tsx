@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import styles from '../auth.module.css'
 import { clearState, registerUserAsync } from "@/app/Redux/features/auth/authSlice";
-import { useAppDispatch } from "@/app/Hook/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import Link from "next/link";
 import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
+import { RootState } from "@/app/Redux/store";
 
 type Authstate = {
     loading: boolean,
@@ -30,6 +31,8 @@ export default function Register() {
     const { push } = useRouter();
     const [avatar, setAvatar] = useState<File | null>(null);
     const { loading, error, success } = useSelector((state: { auth: Authstate }) => state.auth);
+    const { roles } = useAppSelector((state: RootState) => state.role);
+    const [selectedRole, setSelectedRole] = useState({});
     const [value, setValue] = useState<StateValues>({
         name: "",
         email: "",
@@ -42,6 +45,11 @@ export default function Register() {
             return { ...prev, [e.target.name]: e.target.value };
         });
     };
+    const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setSelectedRole((prev) => {
+            return {}
+        })
+    }
 
     useEffect(() => {
         return () => {

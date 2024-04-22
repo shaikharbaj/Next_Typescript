@@ -10,10 +10,9 @@ export default function ProfileLayout({
     return (
         <>
             {/* <Protected> */}
-                <Navbar />
-                {children}
+            <Navbar />                                          
+            {children}
             {/* </Protected> */}
         </>
-        //   </section>
     )
 }

@@ -37,23 +37,16 @@ const UsersPage = () => {
     }
 
     useEffect(() => {
-        dispatch(loadAllUserAsync({ currentpage, searchTerm }))
-    }, [debauncedValue, currentpage]);
-
-    useEffect(() => {
-        if (error) {
-
-            if (typeof (error) === "string") {
-                errortoast(error);
+        dispatch(loadAllUserAsync({ currentpage, searchTerm })).unwrap().then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            if (typeof (err) === "string") {
+                errortoast(err);
                 dispatch(clearstate())
             }
-        }
-        if (success) {
-            successtoast('data fetch successfully..');
-            dispatch(clearstate());
-        }
-    }, [error, success])
-
+        })
+    }, [debauncedValue, currentpage]);
+    
     return (
         <>
             {loading && <Loading />}

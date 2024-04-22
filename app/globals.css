@@ -26,13 +26,30 @@ body {
   }
 }
 
-.error{
+.error {
   color: red;
   font-size: 13px;
 }
-.camera_icon{
- font-size: 18px;
+
+.camera_icon {
+  font-size: 18px;
 }
-.main_wrapper{
-    margin-top: 70px;
+
+.main_wrapper {
+  margin-top: 70px;
+}
+
+.left-72 {
+  left: -18rem;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.toggle {
+  top: -2.5rem;
+  right: -5rem;
+  padding: 0.75rem;
+
 }
