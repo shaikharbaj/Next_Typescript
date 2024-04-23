@@ -33,12 +33,15 @@ export function middleware(request: NextRequest) {
   // const isUser = userRole?.some((role) => role.role.name === "USER");
   const path = request.nextUrl.pathname;
   const isAdmin = userRole?.name === "ADMIN";
-  const isModerator = userRole?.name === "SUBADMIN"
-  const isUser = userRole?.name === "USER"
-  console.log(isAdmin, isModerator, isUser);
+  const isModerator = userRole?.name === "SUBADMIN";
+  const isUser = userRole?.name === "USER";
   if (path.startsWith("/admin")) {
+    if (token && path === "/admin/login") {
+      return NextResponse.redirect(
+        new URL("/admin/dashboard", request.nextUrl.origin)
+      );
+    }
     if (!token) {
-      return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
     }
     if (token && !(isAdmin || isModerator)) {
       return NextResponse.redirect(
@@ -62,7 +65,6 @@ export function middleware(request: NextRequest) {
       new URL("/admin/dashboard", request.nextUrl.origin)
     );
   }
-
   if ((path === "/login" || path === "/register") && token) {
     if (isAdmin || isModerator) {
       return NextResponse.redirect(
@@ -82,9 +84,7 @@ export function middleware(request: NextRequest) {
   }
 
   if ((path === "/about" || path === "/profile") && !token) {
-    return NextResponse.redirect(
-      new URL("/login", request.nextUrl.origin)
-    );
+    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
   }
 
   // if (!token && path.startsWith("/admin")) {
@@ -170,5 +170,6 @@ export const config = {
     "/admin",
     "/admin/dashboard",
     "/users",
+    "/admin/login",
   ],
 };

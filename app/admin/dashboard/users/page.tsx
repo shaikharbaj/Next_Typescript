@@ -21,8 +21,9 @@ type userType = {
         city: string,
         state: string,
         zipcode: string,
-        data_of_birth: Date
+        data_of_birth: Date,
     }
+    status: boolean
 }
 const UsersPage = () => {
     const { users, meta, loading } = useAppSelector((state: RootState) => state.users);
@@ -78,7 +79,38 @@ const UsersPage = () => {
                                             <td>{u.user_information?.city}</td>
                                             <td>{u.user_information?.state}</td>
                                             <td>{u.user_information?.zipcode}</td>
-                                            <td>true</td>
+                                            <td>{u.status ? (
+                                                <div className="form-check form-switch">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        role="switch"
+                                                        defaultChecked
+                                                        id="flexSwitchCheckDefault"
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor="flexSwitchCheckDefault"
+                                                    >
+                                                        Active
+                                                    </label>
+                                                </div>
+                                            ) : (
+                                                <div className="form-check form-switch">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        role="switch"
+                                                        id="flexSwitchCheckDefault"
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor="flexSwitchCheckDefault"
+                                                    >
+                                                        Inactive
+                                                    </label>
+                                                </div>
+                                            )}</td>
                                             <td><Link href="/admin" className='me-4'>View</Link><Link href={`/admin/dashboard/users/edit/${u.id}`}>Edit</Link></td>
                                         </tr>
                                     })

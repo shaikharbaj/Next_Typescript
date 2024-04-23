@@ -4,6 +4,7 @@ import productReducer from "./features/Product/productSlice";
 import userReducer from "./features/user/userSlice";
 import roleReducer from "./features/role/roleSlice";
 import profileReducer from "./features/profile/profileSlice";
+import adminReducer from "./features/admin/adminSlice";
 const store = configureStore({
     reducer: {
         auth: authReducer,

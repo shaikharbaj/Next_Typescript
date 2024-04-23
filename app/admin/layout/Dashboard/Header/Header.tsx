@@ -28,21 +28,21 @@ const Header: React.FunctionComponent<IHeaderProps> = ({ }) => {
     const handelLogout = () => {
         dispatch(logout());
         successtoast("logged out successfully...!")
-        router.replace("/login");
+        router.replace("/admin/login");
     };
     return (
         <div className={styles.wrapper}>
             <ul className={styles.list}>
                 <li className={styles.li}>
-                    <Link href="/dashboard/profile">
+                    {/* <Link href="/dashboard/profile"> */}
                         <div className={styles.profile_wrapper}>
                             <div className="flex items-center">
                                 <div className="flex flex-col pr-3 text-right">
-                                    <p className="mb-0">{`Welcome ${userinfo?.name ? (userinfo.name.length > 7 ? (userinfo.name.split("").slice(0, 8).join("") + "...") : (userinfo.name)) : "Guest"}`}</p>
+                                    <p className={`${styles.welcome}`}>{`Welcome ${userinfo?.name ? (userinfo.name.length > 7 ? (userinfo.name.split("").slice(0, 8).join("") + "...") : (userinfo.name)) : "Guest"}`}</p>
                                 </div>
                             </div>
                         </div>
-                    </Link>
+                    {/* </Link> */}
                 </li>
                 <li>
                     <div className="flex items-center" onClick={toggleMenu}>
