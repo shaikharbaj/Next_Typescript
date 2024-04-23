@@ -2,12 +2,16 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const loadRolesAsyncThunk = createAsyncThunk("role/loadrole", async (payload, thunkAPI) => {
-    const response = await axios.get('http://localhost:8000/role/allroles');
-    return response.data.roles;
-    try {
 
+    try {
+        const response = await axios.get('http://localhost:8000/role/allroles');
+        return response.data.roles;
     } catch (error) {
-        console.log(error)
+        if (axios.isAxiosError(error) && error.response) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+        // Handle other errors not related to Axios
+        return thunkAPI.rejectWithValue("An unknown error occurred");
     }
 
 })

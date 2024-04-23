@@ -7,11 +7,17 @@ interface Role {
   createdAt: string;
   updatedAt: string;
 }
+// interface DecodedToken extends JwtPayload {
+//   userId: number;
+//   email: string;
+//   name: string;
+//   role?: Role[];
+// }
 interface DecodedToken extends JwtPayload {
   userId: number;
   email: string;
   name: string;
-  role?: Role[];
+  role?: any;
 }
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
@@ -21,11 +27,15 @@ export function middleware(request: NextRequest) {
     userRole = decodedToken.role;
   }
 
+  // const path = request.nextUrl.pathname;
+  // const isAdmin = userRole?.some((role) => role.role.name === "ADMIN");
+  // const isModerator = userRole?.some((role) => role.role.name === "MODERATOR");
+  // const isUser = userRole?.some((role) => role.role.name === "USER");
   const path = request.nextUrl.pathname;
-  const isAdmin = userRole?.some((role) => role.role.name === "ADMIN");
-  const isModerator = userRole?.some((role) => role.role.name === "MODERATOR");
-  const isUser = userRole?.some((role) => role.role.name === "USER");
-
+  const isAdmin = userRole?.name === "ADMIN";
+  const isModerator = userRole?.name === "SUBADMIN"
+  const isUser = userRole?.name === "USER"
+  console.log(isAdmin, isModerator, isUser);
   if (path.startsWith("/admin")) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
@@ -52,7 +62,7 @@ export function middleware(request: NextRequest) {
       new URL("/admin/dashboard", request.nextUrl.origin)
     );
   }
-  
+
   if ((path === "/login" || path === "/register") && token) {
     if (isAdmin || isModerator) {
       return NextResponse.redirect(
@@ -65,19 +75,17 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  if((path==="/about"||path==="/profile")&&!isUser && token){
+  if ((path === "/about" || path === "/profile") && !isUser && token) {
     return NextResponse.redirect(
       new URL("/admin/dashboard", request.nextUrl.origin)
     );
   }
-  if((path==="/about"||path==="/profile") && !token){
+
+  if ((path === "/about" || path === "/profile") && !token) {
     return NextResponse.redirect(
       new URL("/login", request.nextUrl.origin)
     );
   }
-  // if(path === "/dashboard"){
-
-  // }
 
   // if (!token && path.startsWith("/admin")) {
   //   return NextResponse.redirect(new URL("/login", request.nextUrl.origin));

@@ -1,16 +1,21 @@
 "use client"
-import Select from "react-select";
-import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
-import { loadProfileAsyncThunk } from '@/app/Redux/features/profile/profileSlice';
+import { changeRoleAsync, loadProfileAsyncThunk } from '@/app/Redux/features/profile/profileSlice';
 import { RootState } from '@/app/Redux/store';
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import styles from './style.module.css'
+import { loadRolesAsyncThunk } from "@/app/Redux/features/role/roleSlice";
+import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
+import Loading from "@/app/components/Loading/Loading";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 interface IEditUserProp {
     params: any
 }
 const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
     const id = params.id;
+    const router = useRouter();
     const dispatch = useAppDispatch();
+    const { roles } = useAppSelector((state: RootState) => state.role);
     const { loading, profile } = useAppSelector((state: RootState) => state.profile);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -20,14 +25,21 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [zipcode, setZipcode] = useState('');
+    const [selectedrole, setSelectedRole] = useState<string | undefined>(undefined);
     const [options, setOptions] = useState([]);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState<{
+        value: string;
+        label: string;
+    } | null>(null);
+
+
     useEffect(() => {
+        dispatch(loadRolesAsyncThunk());
         dispatch(loadProfileAsyncThunk({ id: Number(id) }))
     }, [])
 
     useEffect(() => {
-        if (profile) {
+        if (profile && Object.values(profile).length > 0 && roles) {
             // Update state variables when userinfo changes
             setName(profile?.name || '');
             setEmail(profile?.email || '');
@@ -41,18 +53,38 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
             setCity(profile?.user_information?.city || '');
             setState(profile?.user_information?.state || '');
             setZipcode(profile?.user_information?.zipcode || '');
-            let roleoptions = profile.roles.map((option: any) =>{
-                   return {value:option.roleId,label:option.role.name}
-            })
-            setOptions(roleoptions);
+            setSelectedRole(profile?.role.id)
+            // let roleOptions: any = roles.map((option: any) => {
+            //     return { value: option.id.toString(), label: option.name }
+            // });
+            // setOptions(roleOptions);
+
+            // // Set selectedOptions with the default role value
+            // const defaultRole = profile.role ? { value: profile.role.id.toString(), label: profile.role.name } : null;
+            // setSelectedOptions(defaultRole);
         }
-    }, [profile])
-    if (loading) {
-        return <h1>Loading...</h1>
+    }, [profile, roles])
+
+    const rolechangeHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedRole(e.target.value);
+        console.log(e.target.value);
     }
-
+    const handleBackNavigation = () => {
+        router.replace("/admin/dashboard/users")
+    }
     const submitHandler = () => {
-
+        const payload = {
+            user_id: Number(id),
+            role_id: Number(selectedrole)
+        }
+        dispatch(changeRoleAsync(payload)).unwrap().then((res) => {
+            successtoast("user role updated successfully")
+        }).catch((err) => {
+            errortoast(err);
+        })
+    }
+    if (loading) {
+        return <Loading />
     }
     return (
         <>
@@ -74,10 +106,6 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                         <h5 className="user-name mb-2">{profile?.name}</h5>
                                         <h6 className="user-email mb-1">{profile?.email}</h6>
                                     </div>
-                                    {/* <div className="about">
-                            <h5>About</h5>
-                            <p>I'm Yuki. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
-                        </div> */}
                                 </div>
                             </div>
                         </div>
@@ -93,8 +121,6 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                         <div className="form-group">
                                             <label htmlFor="fullName">Full Name</label>
                                             <input type="text" className="form-control" id="fullName" placeholder="Enter full name" value={name} disabled={true} />
-                                            {/* {error?.name && <span className="error">{error.name}</span>} */}
-
                                         </div>
                                     </div>
                                     <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -102,8 +128,13 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                             <label htmlFor="eMail">Email</label>
                                             <input type="email" className="form-control" id="eMail" placeholder="Enter email ID" value={email}
                                                 disabled={true} />
-                                            {/* {error?.email && <span className="error">{error.email}</span>} */}
-
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div className="form-group">
+                                            <label htmlFor="eMail">Role</label>
+                                            <input type="email" className="form-control" id="eMail" placeholder="Enter email ID" value={profile?.role?.name}
+                                                disabled={true} />
                                         </div>
                                     </div>
                                     <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -111,7 +142,6 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                             <label htmlFor="phone">Phone</label>
                                             <input type="number" className="form-control" id="phone" placeholder="Enter phone number" value={phone_number}
                                                 disabled={true} />
-                                            {/* {error?.phone_number && <span className="error">{error.phone_number}</span>} */}
 
                                         </div>
                                     </div>
@@ -119,7 +149,6 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                         <div className="form-group">
                                             <label htmlFor="website">DOB</label>
                                             <input type="date" className="form-control" id="website" placeholder="date of birth" disabled={true} />
-                                            {/* {error?.date && <span className="error">{error.date}</span>} */}
                                         </div>
                                     </div>
                                 </div>
@@ -158,18 +187,34 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                     </div>
                                     <div className="col-12">
                                         <div className="form-group">
-                                            <label htmlFor="Street">Street</label>
-                                            <Select
-                                            defaultValue={selectedOption}
-                                            onChange={setSelectedOption}
-                                            options={options}
-                                            />
+                                            <select id="" className="form-select" value={selectedrole} onChange={rolechangeHandler}>
+                                                {
+                                                    roles?.length > 0 && roles.map((role: any) => {
+                                                        return (
+                                                            <option value={`${role.id}`} key={role.id}>{role.name}</option>
+                                                        )
+                                                    })
+                                                }
+                                            </select>
                                         </div>
                                     </div>
 
 
                                 </div>
-
+                                <div className="row gutters mt-3">
+                                    <div className="col-12">
+                                        <div className="text-right">
+                                            <button type="button" id="submit" name="submit" className="btn btn-primary w-100" onClick={submitHandler}>UPDATE ROLE</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row gutters mt-3">
+                                    <div className="col-12">
+                                        <div className="text-right">
+                                            <button type="button" id="submit" name="submit" className="btn btn-danger w-100" onClick={handleBackNavigation}>Back</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
