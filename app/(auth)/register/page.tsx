@@ -53,7 +53,9 @@ export default function Register() {
 
     useEffect(() => {
         return () => {
-            dispatch(clearState());
+            if (error) {
+                dispatch(clearState());
+            }
         }
     }, []);
 
@@ -68,6 +70,7 @@ export default function Register() {
         if (success) {
             successtoast('user register in successfully');
             push("/login");
+            dispatch(clearState());
         }
 
     }, [error, success])

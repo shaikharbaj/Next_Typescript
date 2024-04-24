@@ -4,16 +4,21 @@ import styles from './style.module.css'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { RootState } from '@/app/Redux/store'
 import useDebounce from '@/app/Hook/useDebounce'
-import { loadAllUserAsync } from '@/app/Redux/features/user/userSlice'
+import { loadAllUserAsync, togglestatus } from '@/app/Redux/features/user/userSlice'
 import Loading from '@/app/components/Loading/Loading'
 import Pagination from '@/app/components/Pagination/Pagination'
 import Link from 'next/link'
+import { errortoast, successtoast } from '@/app/utils/alerts/alerts'
 
-
+type Role = {
+    id: number,
+    name: string
+}
 type userType = {
     id: number,
     name: string,
     email: string,
+    role: Role,
     user_information: {
         date_of_birth: Date
         phone_number: number,
@@ -21,12 +26,12 @@ type userType = {
         city: string,
         state: string,
         zipcode: string,
-        data_of_birth: Date,
-    }
-    status: boolean
+        data_of_birth: Date
+    }, status: boolean
 }
 const UsersPage = () => {
     const { users, meta, loading } = useAppSelector((state: RootState) => state.users);
+    const { userinfo } = useAppSelector((state: RootState) => state.auth);
     const [searchTerm, setSerchText] = useState('');
     const debauncedValue = useDebounce(searchTerm, 600);
     const [currentpage, setCurrentPage] = useState(1);
@@ -41,89 +46,84 @@ const UsersPage = () => {
     useEffect(() => {
         dispatch(loadAllUserAsync({ currentpage, searchTerm }))
     }, [debauncedValue, currentpage]);
+
+    const changeStatusToggle = (id: number) => {
+        if (confirm('are you sure?')) {
+            dispatch(togglestatus(id)).unwrap().then((res) => {
+                successtoast('status updated successfully')
+            }).catch((err) => {
+                errortoast(err);
+            })
+        }
+    }
+    console.log(users)
     return (
         <>
             {loading && <Loading />}
             <div className={styles.wrapper}>
-                <div className={`mt-3 mb-3 ${styles.inputbox}`}>
+                <div className={`${styles.inputbox}`}>
                     <input type="text" onChange={handlesearch} value={searchTerm} placeholder='search something here.....' />
                 </div>
-                <table className={`table ${styles.custome_table} table-bordered`}>
-                    <thead>
-                        <tr>
-                            <th>SR.NO</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Date of Birth</th>
-                            <th>phone number</th>
-                            <th>street</th>
-                            <th>city</th>
-                            <th>state</th>
-                            <th>zipcode</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            users?.length > 0 ? <>
-                                {
-                                    users.map((u: userType, i: number) => {
-                                        return <tr key={u.id}>
-                                            <td>{perPage * (currentpage - 1) + (i + 1)}</td>
-                                            <td>{u.name}</td>
-                                            <td>{u.email}</td>
-                                            <td> {u.user_information?.data_of_birth ? new Date(u?.user_information?.data_of_birth).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }) : null}</td>
-                                            <td>{u?.user_information?.phone_number}</td>
-                                            <td>{u?.user_information?.street}</td>
-                                            <td>{u.user_information?.city}</td>
-                                            <td>{u.user_information?.state}</td>
-                                            <td>{u.user_information?.zipcode}</td>
-                                            <td>{u.status ? (
-                                                <div className="form-check form-switch">
-                                                    <input
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        role="switch"
-                                                        defaultChecked
-                                                        id="flexSwitchCheckDefault"
-                                                    />
-                                                    <label
-                                                        className="form-check-label"
-                                                        htmlFor="flexSwitchCheckDefault"
-                                                    >
-                                                        Active
-                                                    </label>
-                                                </div>
-                                            ) : (
-                                                <div className="form-check form-switch">
-                                                    <input
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        role="switch"
-                                                        id="flexSwitchCheckDefault"
-                                                    />
-                                                    <label
-                                                        className="form-check-label"
-                                                        htmlFor="flexSwitchCheckDefault"
-                                                    >
-                                                        Inactive
-                                                    </label>
-                                                </div>
-                                            )}</td>
-                                            <td><Link href="/admin" className='me-4'>View</Link><Link href={`/admin/dashboard/users/edit/${u.id}`}>Edit</Link></td>
-                                        </tr>
-                                    })
-                                }
-                            </> : <>
-                                <tr>
-                                    <td colSpan={6}>No Data found</td>
-                                </tr>
-                            </>
-                        }
-                    </tbody>
-                </table>
+                <div className={styles.table_wrapper}>
+                    <table className={`table table-bordered`}>
+                        <thead>
+                            <tr>
+                                <th>SR.NO</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                {/* <th>Date of Birth</th>
+                                <th>phone number</th>
+                                <th>street</th>
+                                <th>city</th>
+                                <th>state</th>
+                                <th>zipcode</th> */}
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                users?.length > 0 ? <>
+                                    {
+                                        users.map((u: userType, i: number) => {
+                                            return <tr key={u.id}>
+                                                <td>{perPage * (currentpage - 1) + (i + 1)}</td>
+                                                <td>{u.name}</td>
+                                                <td>{u.email}</td>
+                                                <td>{u?.role?.name}</td>
+                                                {/* <td> {u.user_information?.data_of_birth ? new Date(u?.user_information?.data_of_birth).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }) : null}</td>
+                                                <td>{u?.user_information?.phone_number}</td>
+                                                <td>{u?.user_information?.street}</td>
+                                                <td>{u.user_information?.city}</td>
+                                                <td>{u.user_information?.state}</td>
+                                                <td>{u.user_information?.zipcode}</td> */}
+                                                <td>{u.status ? (
+                                                    <div className="form-check form-switch">
+                                                        <input className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" onChange={() => changeStatusToggle(u?.id)} checked />
+                                                        <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Active</label>
+                                                    </div>
+                                                ) : (
 
+                                                    <div className="form-check form-switch">
+                                                        <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={() => changeStatusToggle(u?.id)} checked={false} />
+                                                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">InActive</label>
+                                                    </div>
+
+                                                )}</td>
+                                                <td><Link href="/admin" className=''><i className='bx bxs-show show'></i></Link>{userinfo?.role?.name === "ADMIN" ? <Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
+                                            </tr>
+                                        })
+                                    }
+                                </> : <>
+                                    <tr>
+                                        <td colSpan={6}>No Data found</td>
+                                    </tr>
+                                </>
+                            }
+                        </tbody>
+                    </table>
+                </div>
                 <Pagination currentpage={currentpage} setCurrentPage={setCurrentPage} total={meta?.total} perpage={perPage} />
             </div>
         </>

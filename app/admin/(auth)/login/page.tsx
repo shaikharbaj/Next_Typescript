@@ -2,7 +2,7 @@
 import React, { ChangeEvent, ChangeEventHandler, FormEvent, useState } from 'react'
 import './admin.css'
 import { useAppDispatch } from '@/app/Hook/hooks'
-import { loginAdminAsync } from '@/app/Redux/features/auth/authSlice'
+import { clearState, loginAdminAsync } from '@/app/Redux/features/auth/authSlice'
 import { errortoast, successtoast } from '@/app/utils/alerts/alerts'
 import { useRouter } from 'next/navigation'
 const Adminlogin = () => {
@@ -28,6 +28,7 @@ const Adminlogin = () => {
         }
         dispatch(loginAdminAsync(payload)).unwrap().then((res) => {
             successtoast("admin loggedin successfully");
+            dispatch(clearState());
             setTimeout(() => {
                 router.replace("/admin/dashboard");
             }, 300)

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -30,18 +30,33 @@ const Header: React.FunctionComponent<IHeaderProps> = ({ }) => {
         successtoast("logged out successfully...!")
         router.replace("/admin/login");
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            console.log()
+            if (event.target instanceof HTMLElement && !event.target.closest("#user-menu-button")) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
     return (
         <div className={styles.wrapper}>
             <ul className={styles.list}>
                 <li className={styles.li}>
                     {/* <Link href="/dashboard/profile"> */}
-                        <div className={styles.profile_wrapper}>
-                            <div className="flex items-center">
-                                <div className="flex flex-col pr-3 text-right">
-                                    <p className={`${styles.welcome}`}>{`Welcome ${userinfo?.name ? (userinfo.name.length > 7 ? (userinfo.name.split("").slice(0, 8).join("") + "...") : (userinfo.name)) : "Guest"}`}</p>
-                                </div>
+                    <div className={styles.profile_wrapper}>
+                        <div className="flex items-center">
+                            <div className="flex flex-col pr-3 text-right">
+                                <p className={`${styles.welcome}`}>{`Welcome ${userinfo?.name ? (userinfo.name.length > 7 ? (userinfo.name.split("").slice(0, 8).join("") + "...") : (userinfo.name)) : "Guest"}`}</p>
                             </div>
                         </div>
+                    </div>
                     {/* </Link> */}
                 </li>
                 <li>
@@ -52,7 +67,7 @@ const Header: React.FunctionComponent<IHeaderProps> = ({ }) => {
                                     <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="true" aria-haspopup="true">
                                         <span className="absolute -inset-1.5"></span>
                                         <span className="sr-only">Open user menu</span>
-                                        <img className="h-8 w-8 rounded-full" src={userinfo?.avatar?`${userinfo.avatar}`:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" onClick={toggleMenu} />
+                                        <img className="h-8 w-8 rounded-full" src={userinfo?.avatar ? `${userinfo.avatar}` : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" onClick={toggleMenu} />
                                     </button>
                                 </div>
 

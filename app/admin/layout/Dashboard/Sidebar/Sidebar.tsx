@@ -7,6 +7,7 @@ import styles from './style.module.css'
 import 'simplebar-react/dist/simplebar.min.css';
 
 import { IoMdHome } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
 import SimpleBar from "simplebar-react";
 interface ISidebarProps {
     toggleSidebar: boolean;
@@ -25,18 +26,18 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                 }`}
         >
             <div className="h-auto">
-                <div className="px-6 pt-5">
+                <div className="px-6 pt-4">
                     <div className="flex items-center justify-between">
-                        <Link
-                            className="flex items-center justify-center"
-                            href="http://autoxdev.katdev.com:4000"
-                            target="_blank"
-                        >
-                            <h1>ADMIN</h1>
-                            {/* <img className="w-10" src="/img/fav-icon.png" alt="Logo" /> */}
-                        </Link>
+                        <div className="flex items-center justify-center">
+                            <Link
+                                href="/admin/dashboard" className={styles.sidebar_header}
+                            >
+                                DASHBOARD
+                            </Link>
+                        </div>
+
                         <button
-                            className={`${styles.togglebtn} ${toggleSidebar ? "toggle" : ""
+                            className={`${styles.togglebtn} ${toggleSidebar ? "toggle" : "not_toggle"
                                 } `}
                             onClick={() => setToggleSidebar(!toggleSidebar)}
                         >
@@ -48,7 +49,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
             {/* Main Menu */}
             <SimpleBar forceVisible="y" autoHide={false} className="h-5/6" >
                 <div className="overflow-hidden">
-                    <div className="px-6 pt-4">
+                    <div className="px-6">
                         <hr className="border-gray-700" />
                     </div>
                     <div className="">
@@ -56,7 +57,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                             <li className="mb-1">
                                 <Link
                                     href="/admin/dashboard"
-                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all"
+                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
                                 >
                                     <IoMdHome
                                         xmlns="http://www.w3.org/2000/svg"
@@ -69,12 +70,12 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                             <li className="">
                                 <Link
                                     href="/admin/dashboard/users"
-                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all"
+                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
                                 >
-                                    <IoMdHome
+                                    <FaUser
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="currentColor"
-                                        className="w-4 h-4 bi bi-braces-asterisk mr-3"
+                                        className="w-4 h-4 bi bi-person mr-3"
                                     />
                                     Users
                                 </Link>

@@ -7,10 +7,15 @@ import Pagination from '@/app/components/Pagination/Pagination'
 import Loading from '@/app/components/Loading/Loading'
 import { loadAllUserAsync } from '@/app/Redux/features/user/userSlice'
 
+type Role = {
+    id: number,
+    name: string
+}
 type userType = {
     id: number,
     name: string,
     email: string,
+    role: Role,
     user_information: {
         date_of_birth: Date
         phone_number: number,
@@ -36,7 +41,7 @@ const UsersPage = () => {
 
     useEffect(() => {
         dispatch(loadAllUserAsync({ currentpage, searchTerm }))
-    }, [debauncedValue,currentpage]);
+    }, [debauncedValue, currentpage]);
     return (
         <>
             {loading && <Loading />}
@@ -51,6 +56,7 @@ const UsersPage = () => {
                             <th>SR.NO</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Role</th>
                             <th>Date of Birth</th>
                             <th>phone number</th>
                             <th>street</th>
@@ -66,20 +72,21 @@ const UsersPage = () => {
                                     users.map((u: userType, i: number) => {
                                         return <tr key={u.id}>
                                             <td>{perPage * (currentpage - 1) + (i + 1)}</td>
-                                            <td>{u.name}</td>
-                                            <td>{u.email}</td>
+                                            <td>{u?.name}</td>
+                                            <td>{u?.email}</td>
+                                            <td>{u?.role?.name}</td>
                                             <td> {u.user_information?.data_of_birth ? new Date(users[1]?.user_information?.data_of_birth).toLocaleDateString() : null}</td>
                                             <td>{u?.user_information?.phone_number}</td>
                                             <td>{u?.user_information?.street}</td>
-                                            <td>{u.user_information?.city}</td>
-                                            <td>{u.user_information?.state}</td>
-                                            <td>{u.user_information?.zipcode}</td>
+                                            <td>{u?.user_information?.city}</td>
+                                            <td>{u?.user_information?.state}</td>
+                                            <td>{u?.user_information?.zipcode}</td>
                                         </tr>
                                     })
                                 }
                             </> : <>
                                 <tr>
-                                    <td colSpan={6}>No Data found</td>
+                                    <td colSpan={10}>No Data found</td>
                                 </tr>
                             </>
                         }

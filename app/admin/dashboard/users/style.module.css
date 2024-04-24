@@ -1,21 +1,20 @@
-.wrapper{
+/* .wrapper{
     display: flex;
     flex-direction: column;
-    width: 100%;
     align-items: center;
-    overflow-y: scroll;
-    padding-left: .2rem;
-    padding-right: .2rem;
-}
-.custome_table{
-    width: 100% !important;
-    overflow-x: scroll !important;
-
+} */
+.table_wrapper{
+      padding-left: .3rem;
+      padding-right: .3rem;
+      overflow-x: auto;
 }
 .inputbox{
      border: 1px solid rgba(0, 0, 0, 0.3);
      width: 60%;
      padding: .3rem .4rem;
+     margin: auto;
+     margin-top: 2.5rem;
+     margin-bottom: 1.5rem;
 }
 .inputbox input{
      width: 100%;

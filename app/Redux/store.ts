@@ -11,7 +11,8 @@ const store = configureStore({
         products: productReducer,
         users: userReducer,
         role: roleReducer,
-        profile:profileReducer
+        profile: profileReducer,
+        admin: adminReducer
     }
 })
 

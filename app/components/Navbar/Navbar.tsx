@@ -2,7 +2,7 @@
 // import { logout } from "@/app/Redux/features/auth/authSlice";
 import './navbar.css'
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { successtoast } from "@/app/utils/alerts/alerts";
@@ -18,14 +18,15 @@ type Authstate = {
     userinfo: any
 }
 const Navbar = () => {
-    const { push } = useRouter();
+    const router = useRouter();
     const dispatch = useAppDispatch();
+    const path = usePathname();
     const [token, setToken] = useState<string | undefined | null>();
     const { userinfo } = useSelector((state: { auth: Authstate }) => state.auth);
     const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         dispatch(logout());
-        push("/login");
+        router.replace("/login");
         successtoast('user logged out succesfully')
     };
     useEffect(() => {
@@ -61,11 +62,11 @@ const Navbar = () => {
 
 
                                 </li>
-                                <li className="nav-item">
+                                {/* <li className="nav-item">
                                     <Link className="nav-link active" aria-current="page" href="/admin/dashboard">
                                         Admin Dashboard
                                     </Link>
-                                </li>
+                                </li> */}
                                 <li className="nav-item">
                                     <Link className="nav-link active" aria-current="page" href="/">
                                         Dashboard
