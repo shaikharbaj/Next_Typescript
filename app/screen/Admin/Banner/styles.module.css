@@ -1,0 +1,20 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.custome_table{
+    width: 70% !important;
+
+}
+.inputbox{
+     border: 1px solid rgba(0, 0, 0, 0.3);
+     width: 60%;
+     padding: .3rem .4rem;
+}
+.inputbox input{
+     width: 100%;
+     border: none;
+     outline: none;
+}

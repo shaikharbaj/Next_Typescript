@@ -51,6 +51,7 @@ function Login() {
                 if(error!=="your accound is currently suspended please contact to admin"){
                     errortoast(error);
                 }
+                errortoast(error);
                 dispatch(clearState())
             }
         }

@@ -65,7 +65,7 @@ const UsersPage = () => {
                     <input type="text" onChange={handlesearch} value={searchTerm} placeholder='search something here.....' />
                 </div>
                 <div className={styles.table_wrapper}>
-                    <table className={`table table-bordered`}>
+                    <table className={`table table-bordered text-center`}>
                         <thead>
                             <tr>
                                 <th>SR.NO</th>
@@ -91,7 +91,7 @@ const UsersPage = () => {
                                                 <td>{perPage * (currentpage - 1) + (i + 1)}</td>
                                                 <td>{u.name}</td>
                                                 <td>{u.email}</td>
-                                                <td>{u?.role?.name}</td>
+                                                <td><span className={styles.role_wrappere}>{u?.role?.name}</span></td>
                                                 {/* <td> {u.user_information?.data_of_birth ? new Date(u?.user_information?.data_of_birth).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }) : null}</td>
                                                 <td>{u?.user_information?.phone_number}</td>
                                                 <td>{u?.user_information?.street}</td>
@@ -111,7 +111,7 @@ const UsersPage = () => {
                                                     </div>
 
                                                 )}</td>
-                                                <td><Link href="/admin" className=''><i className='bx bxs-show show'></i></Link>{userinfo?.role?.name === "ADMIN" ? <Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
+                                                <td><Link href={`/admin/dashboard/users/profile/${u?.id}`} className='me-3'><i className='bx bxs-show show'></i></Link>{userinfo?.role?.name === "ADMIN" ? <Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
                                             </tr>
                                         })
                                     }
