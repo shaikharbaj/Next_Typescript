@@ -5,7 +5,7 @@
     align-items: center;
 }
 .custome_table{
-    width: 70% !important;
+    width: 90% !important;
 
 }
 .inputbox{
@@ -17,4 +17,17 @@
      width: 100%;
      border: none;
      outline: none;
+}
+.add_btn_wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 4.2rem;
+    margin-bottom: .5rem;
+}
+.add_btn_wrapper button{
+       border: 1px solid black;
+       padding: .2rem .8rem;
+       background-color: black;
+       color: white;
 }
