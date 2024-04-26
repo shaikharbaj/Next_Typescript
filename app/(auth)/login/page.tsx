@@ -21,7 +21,7 @@ type FormValues = {
 function Login() {
     const { loading, success, error } = useSelector((state: { auth: Authstate }) => state.auth);
     const dispatch = useAppDispatch();
-    const { push } = useRouter();
+    const router = useRouter();
     // const dispatch = useDispatch();
     const [value, setValue] = useState<FormValues>({ email: "", password: "" });
     const InputchangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,16 +48,18 @@ function Login() {
     useEffect(() => {
         if (error) {
             if (typeof (error) === 'string') {
-                if(error!=="your accound is currently suspended please contact to admin"){
+                if (error == "your accound is currently suspended please contact to admin") {
+                    errortoast(error);
+                    router.push("/suspended")
+                } else {
                     errortoast(error);
                 }
-                errortoast(error);
                 dispatch(clearState())
             }
         }
         if (success) {
             successtoast('user logged in successfully')
-            push("/dashboard/home");
+            router.replace("/dashboard/home");
             dispatch(clearState());
         }
     }, [error, success]);

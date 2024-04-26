@@ -12,12 +12,13 @@ const AddBanner = () => {
   const router = useRouter();
   const { loading } = useAppSelector((state: RootState) => state.banner)
   const [banner, setBanner] = useState<File | null>(null);
+  const [error, setError] = useState<any>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [start_date, setStartDate] = useState("");
   const [end_date, setEndDate] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
+  const currentDate = new Date().toISOString().split('T')[0];
   const HandleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const imageFile = event.target.files[0];
@@ -30,9 +31,9 @@ const AddBanner = () => {
       };
       reader.readAsDataURL(imageFile);
     }
-
   }
   const submitHandler = () => {
+    setError(null);
     const formdata = new FormData();
     formdata.append("title", title);
     formdata.append("description", description);
@@ -47,8 +48,22 @@ const AddBanner = () => {
       }, 100);
       successtoast(res.message)
     }).catch((error) => {
-      errortoast(error)
+      if (typeof (error) === "string") {
+        errortoast(error);
+      } else {
+        setError(error)
+      }
     })
+  }
+  const datechangehandler = (e: any) => {
+    const start_d = new Date(e.target.value);
+    if (end_date) {
+      const end_d = new Date(end_date);
+      if (start_d > end_d) {
+        setEndDate("");
+      }
+    }
+    setStartDate(e.target.value);
   }
   return (
     <>
@@ -67,6 +82,7 @@ const AddBanner = () => {
                       <input type="text" className="form-control" id="fullName" placeholder="Enter full name"
                         value={title} onChange={(e) => setTitle(e.target.value)}
                       />
+                      {error?.title && <span className="error">{error.title}</span>}
                     </div>
                   </div>
                   <div className="col-12 mb-2">
@@ -76,15 +92,16 @@ const AddBanner = () => {
                         value={description} onChange={(e) => setDescription(e.target.value)}
                       >
                       </textarea>
+                      {error?.description && <span className="error">{error.description}</span>}
                     </div>
                   </div>
                   <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                     <div className="form-group">
                       <label htmlFor="phone" className='mb-1'>start date</label>
                       <input type="date" className="form-control" id="phone" placeholder="Enter phone number"
-                        value={start_date} onChange={(e) => setStartDate(e.target.value)}
+                        value={start_date} onChange={(e) => datechangehandler(e)} min={currentDate}
                       />
-                      {/* {error?.phone_number && <span className="error">{error.phone_number}</span>} */}
+                      {error?.start_date && <span className="error">{error.start_date}</span>}
 
                     </div>
                   </div>
@@ -92,9 +109,9 @@ const AddBanner = () => {
                     <div className="form-group">
                       <label htmlFor="website" className='mb-1'>end date</label>
                       <input type="date" className="form-control" id="website" placeholder="end date"
-                        value={end_date} onChange={(e) => setEndDate(e.target.value)}
+                        value={end_date} onChange={(e) => setEndDate(e.target.value)} min={start_date}
                       />
-
+                      {error?.end_date && <span className="error">{error.end_date}</span>}
                     </div>
                   </div>
                 </div>

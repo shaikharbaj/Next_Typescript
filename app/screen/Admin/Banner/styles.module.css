@@ -6,6 +6,8 @@
 }
 .custome_table{
     width: 90% !important;
+    text-align: center;
+    overflow-x: auto;
 
 }
 .inputbox{
@@ -30,4 +32,9 @@
        padding: .2rem .8rem;
        background-color: black;
        color: white;
+}
+.image img{
+      width: 80%;
+      margin: auto;
+      max-height: 100px;
 }

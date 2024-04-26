@@ -1,40 +1,5 @@
-[
-  {
-  roleId: 1,
-  role: {
-  id: 1,
-  name: 'ADMIN',
-  createdAt: '2024-04-20T05:29:07.969Z',
-  updatedAt: '2024-04-20T05:29:07.969Z'
-}
-},
-  {
-  roleId: 2,
-  role: {
-  id: 2,
-  name: 'MODERATOR',
-  createdAt: '2024-04-20T05:29:07.969Z',
-  updatedAt: '2024-04-20T05:29:07.969Z'
-}
-}
-]
-[
-  {
-  roleId: 1,
-  role: {
-  id: 1,
-  name: 'ADMIN',
-  createdAt: '2024-04-20T05:29:07.969Z',
-  updatedAt: '2024-04-20T05:29:07.969Z'
-}
-},
-  {
-  roleId: 2,
-  role: {
-  id: 2,
-  name: 'MODERATOR',
-  createdAt: '2024-04-20T05:29:07.969Z',
-  updatedAt: '2024-04-20T05:29:07.969Z'
-}
-}
-]
+admin@gmail.com
+Admin@123
+
+user@gmail.com
+User@123

@@ -7,12 +7,14 @@ import { errortoast, successtoast } from '@/app/utils/alerts/alerts'
 import { RootState } from '@/app/Redux/store'
 import Loading from '@/app/components/Loading/Loading'
 import { useRouter } from 'next/navigation'
+import { start } from 'repl'
 
 const EditBanner = ({ editid }: { editid: number }) => {
   const id = editid;
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { loading } = useAppSelector((state: RootState) => state.banner)
+  const [error, setError] = useState<any|null>("");
   const [banner, setBanner] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -54,7 +56,11 @@ const EditBanner = ({ editid }: { editid: number }) => {
       setImagePreview(res?.data?.imageUrl);
       successtoast("banner updated successfully..!")
     }).catch((error) => {
-      console.log(error);
+      if (typeof (error) === "string") {
+        errortoast(error);
+      } else {
+        setError(error)
+      }
     })
   }
   const loadBannerById = async (id: number) => {
@@ -74,6 +80,17 @@ const EditBanner = ({ editid }: { editid: number }) => {
   useEffect(() => {
     loadBannerById(id);
   }, []);
+
+  const datechangehandler = (e: any) => {
+    const start_d = new Date(e.target.value);
+    if (end_date) {
+      const end_d = new Date(end_date);
+      if (start_d > end_d) {
+        setEndDate("");
+      }
+    }
+    setStartDate(e.target.value);
+  }
   return (
     <>
       <div className="container mt-3 mb-2">
@@ -91,6 +108,7 @@ const EditBanner = ({ editid }: { editid: number }) => {
                       <input type="text" className="form-control" id="fullName" placeholder="Enter full name"
                         value={title} onChange={(e) => setTitle(e.target.value)}
                       />
+                     {error?.title && <span className="error">{error.title}</span>}
                     </div>
                   </div>
                   <div className="col-12 mb-2">
@@ -100,16 +118,16 @@ const EditBanner = ({ editid }: { editid: number }) => {
                         value={description} onChange={(e) => setDescription(e.target.value)}
                       >
                       </textarea>
+                      {error?.description && <span className="error">{error.description}</span>}
                     </div>
                   </div>
                   <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                     <div className="form-group">
                       <label htmlFor="phone" className='mb-1'>start date</label>
                       <input type="date" className="form-control" id="phone" placeholder="Enter phone number"
-                        value={start_date} onChange={(e) => setStartDate(e.target.value)}
+                        value={start_date} onChange={(e) => datechangehandler(e)} min={currentDate}
                       />
-                      {/* {error?.phone_number && <span className="error">{error.phone_number}</span>} */}
-
+                      {error?.start_date && <span className="error">{error.start_date}</span>}
                     </div>
                   </div>
                   <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -117,8 +135,9 @@ const EditBanner = ({ editid }: { editid: number }) => {
                       <label htmlFor="website" className='mb-1'>end date</label>
                       <input type="date" className="form-control" id="website" placeholder="end date"
                         value={end_date} onChange={(e) => setEndDate(e.target.value)}
+                        min={start_date}
                       />
-
+                       {error?.end_date && <span className="error">{error.end_date}</span>}
                     </div>
                   </div>
                 </div>
@@ -136,6 +155,7 @@ const EditBanner = ({ editid }: { editid: number }) => {
                   <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div className="text-right">
                       <button type="button" id="submit" name="submit" className="btn btn-primary w-100" onClick={submitHandler} disabled={loading}>{loading ? "loading" : "Edit Banner"}</button>
+                      <button type="button" id="submit" name="submit" className="btn btn-success w-100 mt-2" onClick={() => router.replace("/admin/dashboard/banner")} disabled={loading}>{"Back"}</button>
                     </div>
                   </div>
                 </div>
