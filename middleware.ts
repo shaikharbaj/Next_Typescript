@@ -155,21 +155,21 @@ export function middleware(request: NextRequest) {
   //   return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
   // }
 }
-export const config = {
-  matcher: [
-    "/dashboard",
-    "/dashboard/home",
-    "/login",
-    "/register",
-    "/",
-    "/about",
-    "/profile",
-    "/forgot-password",
-    "/verify-otp",
-    "/reset-password",
-    "/admin",
-    "/admin/dashboard",
-    "/users",
-    "/admin/login",
-  ],
-};
+// export const config = {
+//   matcher: [
+//     "/dashboard",
+//     "/dashboard/home",
+//     "/login",
+//     "/register",
+//     "/",
+//     "/about",
+//     "/profile",
+//     "/forgot-password",
+//     "/verify-otp",
+//     "/reset-password",
+//     "/admin",
+//     "/admin/dashboard",
+//     "/users",
+//     "/admin/login",
+//   ],
+// };

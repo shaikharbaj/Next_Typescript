@@ -6,6 +6,7 @@ import roleReducer from "./features/role/roleSlice";
 import profileReducer from "./features/profile/profileSlice";
 import adminReducer from "./features/admin/adminSlice";
 import bannerReducer from "./features/Banner/bannerSlice";
+import categoryReducer from "./features/category/categorySlice";
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -14,7 +15,8 @@ const store = configureStore({
         role: roleReducer,
         profile: profileReducer,
         admin: adminReducer,
-        banner: bannerReducer
+        banner: bannerReducer,
+        category: categoryReducer,
     }
 })
 

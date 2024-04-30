@@ -224,7 +224,7 @@ const page = () => {
                                 <div className="row gutters mt-2">
                                     <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                         <div className="text-right">
-                                            <button type="button" id="submit" name="submit" className="btn btn-primary w-50" onClick={submitHandler} disabled={loading || imgcompressloading}>{loading ? "Data is Updating" : (imgcompressloading ? "Image is Compressing" : "Update")}</button>
+                                            <button type="button" id="submit" name="submit" className="btn btn-primary w-100" onClick={submitHandler} disabled={loading || imgcompressloading}>{loading ? "Data is Updating" : (imgcompressloading ? "Image is Compressing" : "Update")}</button>
                                         </div>
                                     </div>
                                 </div>

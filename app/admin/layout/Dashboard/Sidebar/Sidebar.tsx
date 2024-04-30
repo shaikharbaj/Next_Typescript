@@ -5,7 +5,7 @@ import React from "react";
 import Link from "next/link";
 import styles from './style.module.css'
 import 'simplebar-react/dist/simplebar.min.css';
-
+import { IoImageSharp } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 import SimpleBar from "simplebar-react";
@@ -90,7 +90,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                                     href="/admin/dashboard/banner"
                                     className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
                                 >
-                                    <FaUser
+                                    <IoImageSharp
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="currentColor"
                                         className="w-4 h-4 bi bi-person mr-3"

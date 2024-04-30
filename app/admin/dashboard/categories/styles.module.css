@@ -1,0 +1,40 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.custome_table{
+    width: 90% !important;
+    text-align: center;
+    overflow-x: auto;
+
+}
+.inputbox{
+     border: 1px solid rgba(0, 0, 0, 0.3);
+     width: 60%;
+     padding: .3rem .4rem;
+}
+.inputbox input{
+     width: 100%;
+     border: none;
+     outline: none;
+}
+.add_btn_wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 4.2rem;
+    margin-bottom: .5rem;
+}
+.add_btn_wrapper button{
+       border: 1px solid black;
+       padding: .2rem .8rem;
+       background-color: black;
+       color: white;
+}
+.image img{
+      width: 80%;
+      margin: auto;
+      max-height: 100px;
+}
