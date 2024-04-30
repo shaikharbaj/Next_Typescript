@@ -11,6 +11,10 @@ const Category = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { loading, categories } = useAppSelector((state: RootState) => state.category);
+
+    const navigateToEdit=(id:number)=>{
+        router.push(`/admin/dashboard/categories/edit/${id}`)
+    }
     useEffect(() => {
         dispatch(loadCategoriesAsync()).unwrap().then((res) => {
 
@@ -53,7 +57,7 @@ const Category = () => {
                                         <td>{index + 1}</td>
                                         <td>{c.name}</td>
                                         {/* <td>{c?.parent_id}</td> */}
-                                        <td><button className='btn btn-warning me-2'>EDIT</button><button className='btn btn-danger'>DELETE</button></td>
+                                        <td><button className='btn btn-warning me-2' onClick={()=>navigateToEdit(c.id)}>EDIT</button><button className='btn btn-danger'>DELETE</button></td>
                                     </tr>
                                 )
                             })

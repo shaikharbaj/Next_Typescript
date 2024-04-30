@@ -65,6 +65,45 @@ export const addsubCategoryAsync = createAsyncThunk("categories/subadd", async (
         }
     }
 })
+
+export const getcategoryById = createAsyncThunk("category/getcategorybyId", async (id: number, thunkAPI) => {
+    try {
+        const response = await privateRequest.get(`http://localhost:8000/category/${id}`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            const errorData = error.response.data;
+            if (errorData.validationerror) {
+                // Handle validation errors
+                return thunkAPI.rejectWithValue(errorData.validationerror);
+            } else {
+                // Handle other error messages
+                return thunkAPI.rejectWithValue(errorData.message);
+            }
+        }
+    }
+})
+interface IUpdateCategoryPayload {
+    id: number,
+    name: string
+}
+export const editcategoryAsync = createAsyncThunk("category/editcataegory", async (payload: IUpdateCategoryPayload, thunkAPI) => {
+    try {
+        const response = await privateRequest.patch(`http://localhost:8000/category/edit/${payload.id}`, { name: payload.name });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            const errorData = error.response.data;
+            if (errorData.validationerror) {
+                // Handle validation errors
+                return thunkAPI.rejectWithValue(errorData.validationerror);
+            } else {
+                // Handle other error messages
+                return thunkAPI.rejectWithValue(errorData.message);
+            }
+        }
+    }
+})
 const categorySlice = createSlice({
     name: "category",
     initialState,
@@ -87,9 +126,27 @@ const categorySlice = createSlice({
                 state.loading = true;
             })
             .addCase(addCategoryAsync.fulfilled, (state, action) => {
-
+                state.loading = false;
             })
             .addCase(addCategoryAsync.rejected, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(getcategoryById.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(getcategoryById.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(getcategoryById.rejected, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(editcategoryAsync.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(editcategoryAsync.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(editcategoryAsync.rejected, (state, action) => {
                 state.loading = false;
             })
     }
