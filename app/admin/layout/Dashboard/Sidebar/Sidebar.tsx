@@ -8,6 +8,8 @@ import 'simplebar-react/dist/simplebar.min.css';
 import { IoImageSharp } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
+import { TbCategoryPlus } from "react-icons/tb";
+import { TbCategory2 } from "react-icons/tb";
 import SimpleBar from "simplebar-react";
 interface ISidebarProps {
     toggleSidebar: boolean;
@@ -96,6 +98,32 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                                         className="w-4 h-4 bi bi-person mr-3"
                                     />
                                     Banner
+                                </Link>
+                            </li>
+                            <li className="">
+                                <Link
+                                    href="/admin/dashboard/categories"
+                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
+                                >
+                                    <TbCategoryPlus 
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        className="w-4 h-4 bi bi-person mr-3"
+                                    />
+                                    Categories
+                                </Link>
+                            </li>
+                            <li className="">
+                                <Link
+                                    href="/admin/dashboard/categories/subcategories"
+                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
+                                >
+                                    <TbCategory2
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        className="w-4 h-4 bi bi-person mr-3"
+                                    />
+                                    Subcategories
                                 </Link>
                             </li>
                         </ul>

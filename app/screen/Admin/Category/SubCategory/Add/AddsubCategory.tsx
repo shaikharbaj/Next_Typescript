@@ -20,7 +20,7 @@ const AddSubCategory = () => {
             name
         }
         dispatch(addsubCategoryAsync(payload)).unwrap().then((res) => {
-            router.replace("/admin/dashboard/categories");
+            router.replace("/admin/dashboard/categories/subcategories");
             successtoast(res.message)
         }).catch((error) => {
             if (typeof (error) === "string") {

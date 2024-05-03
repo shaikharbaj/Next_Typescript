@@ -33,7 +33,6 @@ const Header: React.FunctionComponent<IHeaderProps> = ({ }) => {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            console.log()
             if (event.target instanceof HTMLElement && !event.target.closest("#user-menu-button")) {
                 setIsOpen(false);
             }
