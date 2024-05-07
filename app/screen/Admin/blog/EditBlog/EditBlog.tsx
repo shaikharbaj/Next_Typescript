@@ -1,24 +1,28 @@
 "use client"
 import { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import './addblog.css';
+import '../AddBlog/addblog.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import imageCompression from 'browser-image-compression'
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 import { RootState } from '@/app/Redux/store';
 import { getsubcategoryById, loadCategoriesAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice';
-import { addblogAsync } from '@/app/Redux/features/blog/blogSlice';
+import { addblogAsync, editblogAsync, loadblogbyID } from '@/app/Redux/features/blog/blogSlice';
 import { successtoast } from '@/app/utils/alerts/alerts';
 import { useRouter } from 'next/navigation';
 
-interface IAddFormPayload {
+interface IEditFormPayload {
     title: string,
     description: string,
     category_id: number,
     subcategory_id: number,
     image: File
 }
-const AddBlog = () => {
+interface IEditBlogPayload {
+    id: number,
+    formdata: FormData
+}
+const EditBlog = ({ id }: { id: number }) => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { loading: blogloading, blogs } = useAppSelector((state: RootState) => state.blog);
@@ -29,7 +33,7 @@ const AddBlog = () => {
     const [subcategory, setsubCategory] = useState("");
     const [imgcompressloading, setimgcompressloading] = useState(false);
     const [image, setImage] = useState<File | any>("");
-
+    const [imagepreview, setImagePreview] = useState("");
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, 3, 4, 5, false] }],
@@ -55,6 +59,13 @@ const AddBlog = () => {
                     const compressedFile = await imageCompression(imageFile, {
                         maxSizeMB: 1
                     });
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        if (typeof reader.result === 'string') {
+                            setImagePreview(reader.result);
+                        }
+                    };
+                    reader.readAsDataURL(compressedFile);
                     setImage(compressedFile);
                     return;
                 } catch (error) {
@@ -65,39 +76,62 @@ const AddBlog = () => {
             }
             setImage(imageFile);
         }
-
     }
     useEffect(() => {
-        dispatch(loadCategoriesAsync()).unwrap().then((res) => {
-            //    setCategory(res.data);
-        }).catch((error) => {
-            console.log(error);
-        });
+        dispatch(loadblogbyID(id)).unwrap().then((res) => {
+            setsubCategory(res.data.category_id)
+            setCategory(res.data.category.parent_id)
+            setTitle(res.data.title);
+            setDescription(res.data.description);
+            setImagePreview(res.data.image);
+            setTitle(res.data.title);
+        }).catch((err) => {
+            console.log(err);
+        })
     }, []);
+    useEffect(() => {
+        if (category) {
+            dispatch(loadCategoriesAsync()).unwrap().then((res) => {
+                dispatch(loadsubcategoriesofsingleCategory(Number(category))).unwrap().then((res) => {
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+    }, [category]);
     useEffect(() => {
         if (category) {
             dispatch(loadsubcategoriesofsingleCategory(Number(category)))
         }
     }, [category])
 
+    const inputchangeHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+        if (e.target.name === "category") {
+            setsubCategory("");
+            setCategory(e.target.value);
+        } else {
+            setsubCategory(e.target.value);
+        }
+    }
+
     const submitHandler = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const payload: IAddFormPayload = {
-            title: title,
-            description: description,
-            category_id: Number(category),
-            subcategory_id: Number(subcategory),
-            image: image
-        }
         const formdata = new FormData();
         formdata.append('title', title);
         formdata.append('description', description);
         formdata.append('category_id', category);
         formdata.append('subcategory_id', subcategory);
-        formdata.append('image', image);
-
-        dispatch(addblogAsync(formdata)).unwrap().then((res) => {
+        if (image) {
+            formdata.append('image', image);
+        }
+        const payload: IEditBlogPayload = {
+            id: id,
+            formdata: formdata
+        }
+        dispatch(editblogAsync(payload)).unwrap().then((res) => {
             successtoast(res.message);
             router.replace("/admin/dashboard/blog");
         }).catch((err) => {
@@ -108,7 +142,7 @@ const AddBlog = () => {
         <>
             <section className='section create-post'>
                 <div className='containerr'>
-                    <h2 className='h2 heading'>Create Blog</h2>
+                    <h2 className='h2 heading'>UPDATE BLOG</h2>
                     <form className="form create-post__form" onSubmit={submitHandler}>
                         <div className='mb-2'>
                             <label htmlFor="" className='mb-1'>Title</label>
@@ -116,7 +150,7 @@ const AddBlog = () => {
                         </div>
                         <div className='mb-2'>
                             <label htmlFor="" className='mb-1'>Category</label>
-                            <select value={category} name='category' onChange={(e) => setCategory(e.target.value)} className='input'>
+                            <select value={category} name='category' onChange={inputchangeHandler} className='input'>
                                 <option value="" hidden>select category</option>
                                 {
                                     categories.length > 0 && categories.map((c: any) => {
@@ -150,11 +184,11 @@ const AddBlog = () => {
                         </div>
                         <div className="preview mt-2">
                             {
-                                image && <img src={URL.createObjectURL(image)} alt="" />
+                                imagepreview && <img src={imagepreview} alt="" />
                             }
                         </div>
                         <div className='mt-2'>
-                            <input type="submit" className='submit_btn' value={blogloading ? "Blog is Publishing" : (imgcompressloading ? "Image is Compressing" : "Publish")} />
+                            <input type="submit" className='submit_btn' value={blogloading ? "Blog is Updating" : (imgcompressloading ? "Image is Compressing" : "Update")} />
                         </div>
                     </form>
                 </div>
@@ -162,4 +196,4 @@ const AddBlog = () => {
         </>
     )
 }
-export default AddBlog;
+export default EditBlog;

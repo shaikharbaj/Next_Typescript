@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import Link from "next/link";
@@ -105,7 +103,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                                     href="/admin/dashboard/categories"
                                     className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
                                 >
-                                    <TbCategoryPlus 
+                                    <TbCategoryPlus
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="currentColor"
                                         className="w-4 h-4 bi bi-person mr-3"
