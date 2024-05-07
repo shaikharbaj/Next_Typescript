@@ -126,6 +126,19 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                                     Subcategories
                                 </Link>
                             </li>
+                            <li className="">
+                                <Link
+                                    href="/admin/dashboard/blog"
+                                    className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
+                                >
+                                    <TbCategory2
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        className="w-4 h-4 bi bi-person mr-3"
+                                    />
+                                    Blog
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>
