@@ -86,6 +86,18 @@ export const loadblogbyID = createAsyncThunk('blog/loadblogbyID', async (id: num
         return thunkAPI.rejectWithValue(error);
     }
 })
+interface IgetblogwithfilterPayload{
+    selectedCategoryString:[],
+    selectedsubcategoryString:[]
+}
+export const getblogwithfilterAsync = createAsyncThunk("blog/blogwithfilter",async(payload:IgetblogwithfilterPayload,thunkAPI)=>{
+       try {
+        const response = await privateRequest.get(`http://localhost:8000/blog/filter?selectedcategory=${payload.selectedCategoryString}&selectedsubcategory=${payload.selectedsubcategoryString}`);
+        return response.data;
+       } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+       }
+})
 const blogSlice = createSlice({
     name: "blog",
     initialState,
@@ -132,6 +144,16 @@ const blogSlice = createSlice({
                 state.loading = false;
             })
             .addCase(editblogAsync.rejected, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(getblogwithfilterAsync.pending, (state, action) => {
+                state.loading = true
+            })
+            .addCase(getblogwithfilterAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.blogs=action.payload.data;
+            })
+            .addCase(getblogwithfilterAsync.rejected, (state, action) => {
                 state.loading = false;
             })
     }

@@ -5,27 +5,38 @@ import Navbar from '../components/Navbar/Navbar'
 import { useAppDispatch, useAppSelector } from '../Hook/hooks'
 import { RootState } from '../Redux/store'
 import Loading from '../components/Loading/Loading'
-import { getAllblogAsync } from '../Redux/features/blog/blogSlice'
+import { getAllblogAsync, getblogwithfilterAsync } from '../Redux/features/blog/blogSlice'
 import parser from 'html-react-parser'
 import Link from 'next/link'
 import { loadcategoryforFilter } from '../Redux/features/category/categorySlice';
+
+interface IgetblogwithfilterPayload{
+    selectedCategoryString:[],
+    selectedsubcategoryString:[]
+}
 const page = () => {
     const [toggle_sidebar, setToggleSidebar] = useState(false);
     const { loading, blogs } = useAppSelector((state: RootState) => state.blog);
     const { loading: categoryLoading, } = useAppSelector((state: RootState) => state.category);
     const [categoryData, setCategoryData] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState<any>([]);
+    const [selectedSubcategories, setSelectedSubcategories] = useState<any>([]);
     const dispatch = useAppDispatch();
 
     const handleCategoryToggle = (categoryId: string) => {
         if (selectedCategories.includes(categoryId)) {
             const updatedCategories = selectedCategories.filter((id: any) => id !== categoryId);
-
             deselectChildCategories(categoryId, updatedCategories);
             setSelectedCategories(updatedCategories);
-
         } else {
             setSelectedCategories([...selectedCategories, categoryId]);
+        }
+    };
+    const handleSubcategoryToggle = (subcategoryId: string) => {
+        if (selectedSubcategories.includes(subcategoryId)) {
+            setSelectedSubcategories(selectedSubcategories.filter((id: any) => id !== subcategoryId));
+        } else {
+            setSelectedSubcategories([...selectedSubcategories, subcategoryId]);
         }
     };
 
@@ -41,17 +52,24 @@ const page = () => {
             });
         }
     };
-    console.log(selectedCategories)
-    useEffect(() => {
 
+    useEffect(() => {
         dispatch(loadcategoryforFilter()).unwrap().then((res) => {
             setCategoryData(res.data);
         })
-    }, [])
+    }, []);
     useEffect(() => {
-        dispatch(getAllblogAsync()).unwrap().then((res) => {
+        const selectedCategoryString=selectedCategories.join(",");
+        const selectedsubcategoryString=selectedSubcategories.join(",");
+        console.log(selectedCategoryString)
+        console.log(selectedsubcategoryString)
+        const payload:IgetblogwithfilterPayload={
+              selectedCategoryString,
+              selectedsubcategoryString
+        }
+        dispatch(getblogwithfilterAsync(payload)).unwrap().then((res) => {
         });
-    }, [])
+    }, [selectedCategories,selectedSubcategories]);
     if (loading || categoryLoading) {
         return <Loading />
     }
@@ -104,8 +122,8 @@ const page = () => {
                                                                             type="checkbox"
                                                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                                                             id=""
-                                                                            checked={selectedCategories.includes(sub.id)}
-                                                                            onChange={() => handleCategoryToggle((sub.id))}
+                                                                            checked={selectedSubcategories.includes(sub.id)}
+                                                                            onChange={() => handleSubcategoryToggle(sub.id)}
                                                                         />
                                                                         <label htmlFor="" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-600">{sub?.name}</label>
                                                                     </li>
