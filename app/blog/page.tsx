@@ -1,88 +1,225 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import './blog.css';
 import Navbar from '../components/Navbar/Navbar'
-
+import { useAppDispatch, useAppSelector } from '../Hook/hooks'
+import { RootState } from '../Redux/store'
+import Loading from '../components/Loading/Loading'
+import { getAllblogAsync } from '../Redux/features/blog/blogSlice'
+import parser from 'html-react-parser'
+import Link from 'next/link'
+import { loadcategoryforFilter } from '../Redux/features/category/categorySlice';
 const page = () => {
+    const { loading, blogs } = useAppSelector((state: RootState) => state.blog);
+    const { loading: categoryLoading, } = useAppSelector((state: RootState) => state.category);
+    const [categoryData, setCategoryData] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState("");
+    const dispatch = useAppDispatch();
+
+    const handleCategoryToggle = (categoryId: number) => {
+        if (selectedCategories.includes(categoryId)) {
+            setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
+        } else {
+            setSelectedCategories([...selectedCategories, categoryId]);
+        }
+    };
+    useEffect(() => {
+        dispatch(getAllblogAsync()).unwrap().then((res) => {
+        });
+        dispatch(loadcategoryforFilter()).unwrap().then((res) => {
+            setCategoryData(res.data);
+        })
+    }, [])
+    if (loading || categoryLoading) {
+        return <Loading />
+    }
+    function formatDate(date: Date) {
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
+        const yyyy = date.getFullYear();
+
+        return `${dd}/${mm}/${yyyy}`;
+    }
     return (
+
+        // <>
+        //     <Navbar />
+        //     <>
+        //         <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
+
+        //             <div className="border-b mb-5 flex justify-between text-sm">
+        //                 <div className="text-indigo-600 flex items-center pb-2 pr-2 border-b-2 border-indigo-600 uppercase">
+
+        //                     <p className="font-semibold inline-block mb-0">BLogs</p>
+        //                 </div>
+
+        //             </div>
+
+        //             {
+        //                 blogs && blogs.length > 0 ? (
+        //                     blogs.map((b: any) => {
+        //                         return (
+        //                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10" key={b.id}>  
+        //                                 <div className="rounded overflow-hidden shadow-lg flex flex-col">
+        //                                     <div className="relative">
+        //                                         <img className="w-full" src={b.image} />
+        //                                         <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25"></div>
+        //                                         <div className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-white hover:text-indigo-600 transition duration-500 ease-in-out">
+        //                                             {b.category.name}
+        //                                         </div>
+        //                                     </div>
+        //                                     <div className="px-6 py-4 mb-auto">
+        //                                         <a href="#" className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">Simplest Salad Recipe ever</a>
+        //                                         <p className="text-gray-500 text-sm">
+        //                                             {parser((b?.description?.replace(/<[^>]*>/g, '') || '').slice(0, 60) +
+        //                                                 (b?.description?.length > 60 ? "..." : ""))}
+        //                                         </p>
+        //                                         <Link className='btn w-100 read_more_btn' href={`/blog/${b.id}`}>Read More</Link>
+        //                                     </div>
+        //                                     <div className="px-6 py-3 flex flex-row items-center justify-between bg-gray-100">
+        //                                         <span className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
+        //                                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15px" height="15px" viewBox="0 0 30 30">
+        //                                                 <path d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M16,16H7.995 C7.445,16,7,15.555,7,15.005v-0.011C7,14.445,7.445,14,7.995,14H14V5.995C14,5.445,14.445,5,14.995,5h0.011 C15.555,5,16,5.445,16,5.995V16z"></path>
+        //                                             </svg>
+        //                                             <span className="ml-1">{b?.createdAt && formatDate(new Date(b?.createdAt))}</span></span>
+
+        //                                         <span className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
+        //                                             <svg className="h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        //                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+        //                                             </svg>
+        //                                             <span className="ml-1">Author: {b?.user?.name}</span></span>
+        //                                     </div>
+        //                                 </div>
+        //                             </div>
+        //                         )
+        //                     })
+
+        //                 ) : <p>No Blog Available....!</p>
+        //             }
+
+        //         </div>
+        //     </>
+        // </>
+
         <>
-            <Navbar />
-            <>
-                {/* style="enable-background:new 0 0 455.005 455.005;" */}
-                <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
+            <div className="overlay" style={{ display: "none" }}></div>
+            <div className="search-section">
+                <div className="container-fluid container-xl">
+                    <div className="row main-content ml-md-0">
+                        <div className="sidebar col-md-3 px-0">
+                            <h1 className="border-bottom filter-header d-flex d-md-none p-3 mb-0 align-items-center">
+                                <span className="mr-2 filter-close-btn">
+                                    X
+                                </span>
+                                Filters
+                                <span className="ml-auto text-uppercase">Reset Filters</span>
+                            </h1>
+                            <div className="sidebar__inner ">
+                                <div className="filter-body">
+                                    {
+                                        categoryData && categoryData.map((c: any) => {
+                                            return (
+                                                <div key={c.id}>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="custom-control-input"
+                                                        id=""
+                                                        checked={selectedCategories.includes(c.id)}
+                                                        onChange={() => handleCategoryToggle(Number(c.id))}
+                                                    />
+                                                    <label htmlFor="">{c?.name}</label>
+                                                    <div className="children" style={{ display: selectedCategories.includes(c.id) ? "block" : "none" }}>
+                                                        <ul>
+                                                            {
+                                                                c.Category && c.Category.map((sub: any) => {
+                                                                    return (
+                                                                        <li key={sub.id}>{sub.name}</li>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
 
-                    <div className="border-b mb-5 flex justify-between text-sm">
-                        <div className="text-indigo-600 flex items-center pb-2 pr-2 border-b-2 border-indigo-600 uppercase">
-                            {/* <svg className="h-6 mr-3" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 455.005 455.005" xml:space="preserve">
-                                <g>
-                                    <path d="M446.158,267.615c-5.622-3.103-12.756-2.421-19.574,1.871l-125.947,79.309c-3.505,2.208-4.557,6.838-2.35,10.343
-          c2.208,3.505,6.838,4.557,10.343,2.35l125.947-79.309c2.66-1.675,4.116-1.552,4.331-1.432c0.218,0.12,1.096,1.285,1.096,4.428
-          c0,8.449-6.271,19.809-13.42,24.311l-122.099,76.885c-6.492,4.088-12.427,5.212-16.284,3.084c-3.856-2.129-6.067-7.75-6.067-15.423
-          c0-19.438,13.896-44.61,30.345-54.967l139.023-87.542c2.181-1.373,3.503-3.77,3.503-6.347s-1.323-4.974-3.503-6.347L184.368,50.615
-          c-2.442-1.538-5.551-1.538-7.993,0L35.66,139.223C15.664,151.815,0,180.188,0,203.818v4c0,23.63,15.664,52.004,35.66,64.595
-          l209.292,131.791c3.505,2.207,8.136,1.154,10.343-2.35c2.207-3.505,1.155-8.136-2.35-10.343L43.653,259.72
-          C28.121,249.941,15,226.172,15,207.818v-4c0-18.354,13.121-42.122,28.653-51.902l136.718-86.091l253.059,159.35l-128.944,81.196
-          c-20.945,13.189-37.352,42.909-37.352,67.661c0,13.495,4.907,23.636,13.818,28.555c3.579,1.976,7.526,2.956,11.709,2.956
-          c6.231,0,12.985-2.176,19.817-6.479l122.099-76.885c11.455-7.213,20.427-23.467,20.427-37.004
-          C455.004,277.119,451.78,270.719,446.158,267.615z"/>
-                                    <path d="M353.664,232.676c2.492,0,4.928-1.241,6.354-3.504c2.207-3.505,1.155-8.136-2.35-10.343l-173.3-109.126
-          c-3.506-2.207-8.136-1.154-10.343,2.35c-2.207,3.505-1.155,8.136,2.35,10.343l173.3,109.126
-          C350.916,232.303,352.298,232.676,353.664,232.676z"/>
-                                    <path d="M323.68,252.58c2.497,0,4.938-1.246,6.361-3.517c2.201-3.509,1.14-8.138-2.37-10.338L254.46,192.82
-          c-3.511-2.202-8.139-1.139-10.338,2.37c-2.201,3.51-1.14,8.138,2.37,10.338l73.211,45.905
-          C320.941,252.21,322.318,252.58,323.68,252.58z"/>
-                                    <path d="M223.903,212.559c-3.513-2.194-8.14-1.124-10.334,2.39c-2.194,3.514-1.124,8.14,2.39,10.334l73.773,46.062
-          c1.236,0.771,2.608,1.139,3.965,1.139c2.501,0,4.947-1.251,6.369-3.529c2.194-3.514,1.124-8.14-2.39-10.334L223.903,212.559z"/>
-                                    <path d="M145.209,129.33l-62.33,39.254c-2.187,1.377-3.511,3.783-3.503,6.368s1.345,4.983,3.54,6.348l74.335,46.219
-          c1.213,0.754,2.586,1.131,3.96,1.131c1.417,0,2.833-0.401,4.071-1.201l16.556-10.7c3.479-2.249,4.476-6.891,2.228-10.37
-          c-2.248-3.479-6.891-4.475-10.37-2.228l-12.562,8.119l-60.119-37.38l48.2-30.355l59.244,37.147l-6.907,4.464
-          c-3.479,2.249-4.476,6.891-2.228,10.37c2.249,3.479,6.894,4.476,10.37,2.228l16.8-10.859c2.153-1.392,3.446-3.787,3.429-6.351
-          c-0.018-2.563-1.344-4.94-3.516-6.302l-73.218-45.909C150.749,127.792,147.647,127.795,145.209,129.33z"/>
-                                    <path d="M270.089,288.846c2.187-3.518,1.109-8.142-2.409-10.329l-74.337-46.221c-3.518-2.188-8.143-1.109-10.329,2.409
-          c-2.187,3.518-1.109,8.142,2.409,10.329l74.337,46.221c1.232,0.767,2.601,1.132,3.953,1.132
-          C266.219,292.387,268.669,291.131,270.089,288.846z"/>
-                                    <path d="M53.527,192.864c-2.187,3.518-1.109,8.142,2.409,10.329l183.478,114.081c1.232,0.767,2.601,1.132,3.953,1.132
-          c2.506,0,4.956-1.256,6.376-3.541c2.187-3.518,1.109-8.142-2.409-10.329L63.856,190.455
-          C60.338,188.266,55.714,189.346,53.527,192.864z"/>
-                                </g>
-                            </svg> */}
-                            <a href="#" className="font-semibold inline-block">Cooking BLog</a>
-                        </div>
-                        <a href="#">See All</a>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-
-                        <div className="rounded overflow-hidden shadow-lg flex flex-col">
-                            <div className="relative">
-                                <img className="w-full" src="https://images.pexels.com/photos/61180/pexels-photo-61180.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="Sunset in the mountains" />
-                                <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25"></div>
-                                <div className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-white hover:text-indigo-600 transition duration-500 ease-in-out">
-                                    Cooking
                                 </div>
                             </div>
-                            <div className="px-6 py-4 mb-auto">
-                                <a href="#" className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">Simplest Salad Recipe ever</a>
-                                <p className="text-gray-500 text-sm">
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                </p>
-                            </div>
-                            <div className="px-6 py-3 flex flex-row items-center justify-between bg-gray-100">
-                                <span className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15px" height="15px" viewBox="0 0 30 30">
-                                        <path d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M16,16H7.995 C7.445,16,7,15.555,7,15.005v-0.011C7,14.445,7.445,14,7.995,14H14V5.995C14,5.445,14.445,5,14.995,5h0.011 C15.555,5,16,5.445,16,5.995V16z"></path>
-                                    </svg>
-                                    <span className="ml-1">6 mins ago</span></span>
-
-                                <span className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
-                                    <svg className="h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                                    </svg>
-                                    <span className="ml-1">39 Comments</span></span>
-                            </div>
                         </div>
+                        {/* <div className="content col-md-9">
+        <div className="d-flex justify-content-between border-bottom align-items-center">
+          <h2 className="title">Products</h2>
+          <div className="filters-actions">
+            <div>
+              <button className="btn filter-btn d-md-none"><svg xmlns="http://www.w3.org/2000/svg" className="mr-2" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
+     Filter</button>
+            </div>
+            <div className="d-flex align-items-center">
+
+              <div className="dropdown position-relative sort-drop">
+                <button type="button" className="btn btn-transparent dropdown-toggle body-clr p-0 py-1 sm-font fw-400 sort-toggle" data-toggle="dropdown">
+      <span className="mr-2 d-md-none">
+<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><path d="M0,0h24 M24,24H0" fill="none"/><path d="M7,6h10l-5.01,6.3L7,6z M4.25,5.61C6.27,8.2,10,13,10,13v6c0,0.55,0.45,1,1,1h2c0.55,0,1-0.45,1-1v-6 c0,0,3.72-4.8,5.74-7.39C20.25,4.95,19.78,4,18.95,4H5.04C4.21,4,3.74,4.95,4.25,5.61z"/><path d="M0,0h24v24H0V0z" fill="none"/></g></svg>
+</span>   
+                  <span className="d-md-inline-block ml-md-2 font-semibold">Newest First</span>
+                </button>
+                <div className="dropdown-menu dropdown-menu-right p-0 no-caret">
+                  <a className="dropdown-item selected" href="javascript:void(0)">Newest First</a>
+                  <a className="dropdown-item" href="javascript:void(0)">Lowest First</a>
+                  <a className="dropdown-item" href="javascript:void(0)">Highest First</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div className="row row-grid">
+          <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+ <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+
+
+   <div className="col-md-6 col-lg-4 col-xl-4">
+            <img src="https://dummyimage.com/300X400/000/fff" />
+          </div>
+  </div>
+      </div> */}
                     </div>
                 </div>
-            </>
+            </div>
         </>
     )
 }

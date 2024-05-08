@@ -217,6 +217,15 @@ export const loadsubcategoriesofsingleCategory = createAsyncThunk("categories/su
         }
     }
 })
+
+export const loadcategoryforFilter = createAsyncThunk("category/loadcategoryforFilter",async(payload,thunkAPI)=>{
+      try {
+        const response = await privateRequest.get("http://localhost:8000/category/category-for-filter");
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }  
+})
 const categorySlice = createSlice({
     name: "category",
     initialState,
@@ -304,6 +313,16 @@ const categorySlice = createSlice({
             .addCase(deletesubcategoryAsync.rejected, (state, action) => {
                 state.loading = false;
             })
+            .addCase(loadcategoryforFilter.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(loadcategoryforFilter.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(loadcategoryforFilter.rejected, (state, action) => {
+                state.loading = false;
+            })
+            
     }
 })
 
