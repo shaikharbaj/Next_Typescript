@@ -144,3 +144,6 @@
      .filter-header{height: 58px;}
      .filter-body{padding-right: 0;}
   } */
+  .blog_img{
+       height: 300px !important;
+  }

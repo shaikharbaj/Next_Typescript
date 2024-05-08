@@ -79,8 +79,8 @@ const EditBlog = ({ id }: { id: number }) => {
     }
     useEffect(() => {
         dispatch(loadblogbyID(id)).unwrap().then((res) => {
-            setsubCategory(res.data.category_id)
-            setCategory(res.data.category.parent_id)
+            setsubCategory(res.data.subcategory_id)
+            setCategory(res.data.category_id)
             setTitle(res.data.title);
             setDescription(res.data.description);
             setImagePreview(res.data.image);
