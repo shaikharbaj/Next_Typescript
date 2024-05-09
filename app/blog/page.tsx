@@ -10,9 +10,9 @@ import parser from 'html-react-parser'
 import Link from 'next/link'
 import { loadcategoryforFilter } from '../Redux/features/category/categorySlice';
 
-interface IgetblogwithfilterPayload{
-    selectedCategoryString:[],
-    selectedsubcategoryString:[]
+interface IgetblogwithfilterPayload {
+    selectedCategoryString: [],
+    selectedsubcategoryString: []
 }
 const page = () => {
     const [toggle_sidebar, setToggleSidebar] = useState(false);
@@ -24,21 +24,69 @@ const page = () => {
     const dispatch = useAppDispatch();
 
     const handleCategoryToggle = (categoryId: string) => {
-        if (selectedCategories.includes(categoryId)) {
-            const updatedCategories = selectedCategories.filter((id: any) => id !== categoryId);
-            deselectChildCategories(categoryId, updatedCategories);
-            setSelectedCategories(updatedCategories);
+        const categoryIndex = selectedCategories.indexOf(categoryId);
+        let updatedCategories: string[] = [...selectedCategories];
+        let updatedSubcategories: string[] = [...selectedSubcategories];
+
+        if (categoryIndex === -1) {
+            // Category is not selected, so select it and all its subcategories
+            updatedCategories.push(categoryId);
+            const category: any = categoryData.find((category: any) => category.id === categoryId);
+            if (category && category.Category) {
+                const subcategoryIds = category.Category.map((subCategory: any) => subCategory.id);
+                updatedSubcategories = [...updatedSubcategories, ...subcategoryIds];
+            }
         } else {
-            setSelectedCategories([...selectedCategories, categoryId]);
+            // Category is selected, so deselect it and its subcategories
+            updatedCategories.splice(categoryIndex, 1);
+            updatedSubcategories = updatedSubcategories.filter((subcategoryId: string) =>
+                !categoryData.some((category: any) => category.id === categoryId && category.Category && category.Category.some((sub: any) => sub.id === subcategoryId))
+            );
         }
+
+        // If no subcategory is checked, then deselect the parent category as well
+        const hasCheckedSubcategories = updatedSubcategories.some(subcategoryId =>
+            categoryData.some((category: any) => category.id === categoryId && category.Category && category.Category.some((sub: any) => sub.id === subcategoryId))
+        );
+
+        if (!hasCheckedSubcategories) {
+            updatedCategories = updatedCategories.filter(id => id !== categoryId);
+        }
+
+        setSelectedCategories(updatedCategories);
+        setSelectedSubcategories(updatedSubcategories);
     };
+
+
     const handleSubcategoryToggle = (subcategoryId: string) => {
+        let updatedSelectedSubcategories: string[];
+
         if (selectedSubcategories.includes(subcategoryId)) {
-            setSelectedSubcategories(selectedSubcategories.filter((id: any) => id !== subcategoryId));
+            updatedSelectedSubcategories = selectedSubcategories.filter((id: any) => id !== subcategoryId);
         } else {
-            setSelectedSubcategories([...selectedSubcategories, subcategoryId]);
+            updatedSelectedSubcategories = [...selectedSubcategories, subcategoryId];
+        }
+
+        setSelectedSubcategories(updatedSelectedSubcategories);
+
+        // Check if all subcategories of the main category are deselected
+        const mainCategory: any = categoryData.find((category: any) =>
+            category.Category && category.Category.some((sub: any) => sub.id === subcategoryId)
+        );
+
+        if (mainCategory) {
+            const allSubcategoriesDeselected = mainCategory.Category.every((sub: any) =>
+                !updatedSelectedSubcategories.includes(sub.id)
+            );
+
+            if (allSubcategoriesDeselected) {
+                const updatedSelectedCategories = selectedCategories.filter((id: string) => id !== mainCategory.id);
+                setSelectedCategories(updatedSelectedCategories);
+            }
         }
     };
+
+
 
     const deselectChildCategories = (parentId: any, updatedCategories: any) => {
         const parentCategory: any = categoryData.find((category: any) => category.id === parentId);
@@ -59,17 +107,15 @@ const page = () => {
         })
     }, []);
     useEffect(() => {
-        const selectedCategoryString=selectedCategories.join(",");
-        const selectedsubcategoryString=selectedSubcategories.join(",");
-        console.log(selectedCategoryString)
-        console.log(selectedsubcategoryString)
-        const payload:IgetblogwithfilterPayload={
-              selectedCategoryString,
-              selectedsubcategoryString
+        const selectedCategoryString = selectedCategories.join(",");
+        const selectedsubcategoryString = selectedSubcategories.join(",");
+        const payload: IgetblogwithfilterPayload = {
+            selectedCategoryString,
+            selectedsubcategoryString
         }
         dispatch(getblogwithfilterAsync(payload)).unwrap().then((res) => {
         });
-    }, [selectedCategories,selectedSubcategories]);
+    }, [selectedCategories, selectedSubcategories]);
     if (loading || categoryLoading) {
         return <Loading />
     }
@@ -90,15 +136,18 @@ const page = () => {
             </button>
             {
                 toggle_sidebar && (
-                    <aside id="separator-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-                        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50">
-                            <button data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" onClick={() => setToggleSidebar(!toggle_sidebar)}>
-                                <span className="sr-only">Open sidebar</span>
-                                <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
-                                </svg>
-                            </button>
-                            <ul className="space-y-2 font-medium">
+                    <aside id="separator-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 text-white" aria-label="Sidebar">
+                        <div className="h-full px-3 py-4 overflow-y-auto bg-indigo-800">
+                            <div className='d-flex justify-between mb-3 pb-2 border-b border-gray-300'>
+                                <h3 className='mb-0'>Navbar</h3>
+                                <button data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" className="inline-flex items-center  text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" onClick={() => setToggleSidebar(!toggle_sidebar)}>
+                                    <span className="sr-only">Open sidebar</span>
+                                    <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <ul className="space-y-2 font-medium mt-4">
                                 {
                                     categoryData && categoryData.map((c: any) => {
                                         return (
@@ -106,9 +155,9 @@ const page = () => {
                                                 <div className="flex items-center mb-1" key={c.id}>
                                                     <input id="default-checkbox" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                                         checked={selectedCategories.includes(c.id)}
-                                                        onChange={() => handleCategoryToggle((c.id))}
+                                                        onChange={() => handleCategoryToggle(c.id)}
                                                     />
-                                                    <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-600">{c?.name}</label>
+                                                    <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-white">{c?.name}</label>
 
 
                                                 </div>
@@ -125,7 +174,7 @@ const page = () => {
                                                                             checked={selectedSubcategories.includes(sub.id)}
                                                                             onChange={() => handleSubcategoryToggle(sub.id)}
                                                                         />
-                                                                        <label htmlFor="" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-600">{sub?.name}</label>
+                                                                        <label htmlFor="" className="ms-2 text-sm font-medium text-white">{sub?.name}</label>
                                                                     </li>
 
                                                                 )
@@ -139,7 +188,6 @@ const page = () => {
                                     })
                                 }
                             </ul>
-
                         </div>
                     </aside>
                 )
@@ -168,7 +216,7 @@ const page = () => {
                                                     <img className="w-full blog_img" src={b.image} />
                                                     <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25"></div>
                                                     <div className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-white hover:text-indigo-600 transition duration-500 ease-in-out">
-                                                        {b.category.name}
+                                                        {b.subcategory.name}
                                                     </div>
                                                 </div>
                                                 <div className="px-6 py-4 mb-auto">
@@ -204,7 +252,16 @@ const page = () => {
                 </div>
             </>
 
-
+            {/* <div className="cd-popup" role="alert">
+                <div className="cd-popup-container">
+                    <p>Are you sure you want to delete this element?</p>
+                    <ul className="cd-buttons">
+                        <li><a href="#0">Yes</a></li>
+                        <li><a href="#0">No</a></li>
+                    </ul>
+                    <a href="#0" className="cd-popup-close img-replace">Close</a>
+                </div>
+            </div> */}
         </>
     )
 }
