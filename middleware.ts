@@ -17,14 +17,15 @@ interface DecodedToken extends JwtPayload {
   userId: number;
   email: string;
   name: string;
-  role?: any;
+  roles?: string[];
+  permissions?:string[]
 }
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
-  let userRole: DecodedToken["role"] | undefined;
+  let userRole: DecodedToken["roles"] | undefined;
   if (token) {
     const decodedToken = jwtDecode<DecodedToken>(token);
-    userRole = decodedToken.role;
+    userRole = decodedToken.roles;
   }
 
   // const path = request.nextUrl.pathname;
@@ -32,9 +33,9 @@ export function middleware(request: NextRequest) {
   // const isModerator = userRole?.some((role) => role.role.name === "MODERATOR");
   // const isUser = userRole?.some((role) => role.role.name === "USER");
   const path = request.nextUrl.pathname;
-  const isAdmin = userRole?.name === "ADMIN";
-  const isModerator = userRole?.name === "SUBADMIN";
-  const isUser = userRole?.name === "USER";
+  const isAdmin = userRole?.includes("ADMIN");
+  const isModerator = userRole?.includes("SUBADMIN");
+  const isUser = userRole?.includes("USER");
   if (path.startsWith("/admin")) {
     if (token && path === "/admin/login") {
       return NextResponse.redirect(

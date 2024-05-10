@@ -111,7 +111,7 @@ const UsersPage = () => {
                                                     </div>
 
                                                 )}</td>
-                                                <td><Link href={`/admin/dashboard/users/profile/${u?.id}`} className='me-3'><i className='bx bxs-show show'></i></Link>{userinfo?.role?.name === "ADMIN" ? <Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
+                                                <td><Link href={`/admin/dashboard/users/profile/${u?.id}`} className='me-3'><i className='bx bxs-show show'></i></Link>{(userinfo?.roles?.includes("ADMIN") || userinfo?.roles?.includes("SUBADMIN")) ?<Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
                                             </tr>
                                         })
                                     }
