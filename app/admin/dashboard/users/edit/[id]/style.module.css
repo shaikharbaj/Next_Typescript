@@ -25,3 +25,7 @@
        height: 50px;
        border-radius:9999px ;
 }
+.editcontainer{
+         height: 100px !important;
+         overflow-y: auto;
+}

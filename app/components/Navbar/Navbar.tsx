@@ -23,16 +23,19 @@ const Navbar = () => {
     const path = usePathname();
     const [token, setToken] = useState<string | undefined | null>();
     const { userinfo } = useSelector((state: { auth: Authstate }) => state.auth);
+
     const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         dispatch(logout());
         router.replace("/login");
         successtoast('user logged out succesfully')
     };
+
     useEffect(() => {
         const token = Helper.getLocalToken();
         setToken(token)
     }, [userinfo])
+
     return (
         <nav className="navbar navbar-expand-sm navbar-light">
             <div className="container-fluid">
@@ -54,7 +57,7 @@ const Navbar = () => {
                     <ul className="navbar-nav ms-auto">
 
                         {
-                            token ? <>
+                            token && userinfo?.roles?.includes("USER") ? <>
                                 <li className="nav-item">
                                     <Link className="nav-link active" aria-current="page" href="/">
                                         <span className="welcome">{`Welcome ${userinfo?.name?.length > 7 ? (userinfo?.name?.split("").slice(0, 8).join("") + "...") : (userinfo?.name)}`}</span>
@@ -88,6 +91,11 @@ const Navbar = () => {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
+                                    <Link className="nav-link" href="/blog">
+                                        Blogs
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
                                     <Link className="nav-link" href={"#"} onClick={logoutHandler}>
                                         Logout
                                     </Link>
@@ -102,6 +110,11 @@ const Navbar = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" href="/register">
                                         Register
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" href="/blog">
+                                        Blogs
                                     </Link>
                                 </li>
                             </>

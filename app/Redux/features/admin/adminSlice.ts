@@ -12,7 +12,7 @@ export const loadAllDashboardCount = createAsyncThunk(
   "auth/getalldashboardcount",
   async (payload, thunkAPI) => {
     try {
-      const response = await privateRequest.get("http://localhost:8000/user/getalldashboardcount");
+      const response = await privateRequest.get(`http://localhost:8000/user/getalldashboardcount`);
       return response.data.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -25,6 +25,21 @@ export const loadAllDashboardCount = createAsyncThunk(
     }
   }
 );
+
+export const loadAllPemissionofRolesAsync = createAsyncThunk("admin/getpermissionofrole", async (payload:number, thunkAPI) => {
+  try {
+    const response = await privateRequest.get(`http://localhost:8000/role/get_role_permission/${payload}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response && error.response.data.message) {
+        return thunkAPI.rejectWithValue(error.response.data.message);
+      }
+    }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
+})
 
 const adminSlice = createSlice({
   initialState,
@@ -48,7 +63,17 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-     
+      .addCase(loadAllPemissionofRolesAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loadAllPemissionofRolesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(loadAllPemissionofRolesAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
   },
 });
 

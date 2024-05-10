@@ -8,6 +8,7 @@ import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
 import Loading from "@/app/components/Loading/Loading";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
+import { loadAllPemissionofRolesAsync } from '@/app/Redux/features/admin/adminSlice';
 interface IEditUserProp {
     params: any
 }
@@ -27,6 +28,9 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
     const [zipcode, setZipcode] = useState('');
     const [selectedrole, setSelectedRole] = useState<string | undefined>(undefined);
     const [options, setOptions] = useState([]);
+
+    //
+    const [assignedPermissions, setAssignedPermissions] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState<{
         value: string;
         label: string;
@@ -83,9 +87,19 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
             errortoast(err);
         })
     }
+
+    useEffect(() => {
+        if (selectedrole) {
+            dispatch(loadAllPemissionofRolesAsync(Number(selectedrole))).unwrap().then((res) => {
+                setAssignedPermissions(res?.data);
+            });
+        }
+    }, [selectedrole])
     if (loading) {
         return <Loading />
     }
+
+
     return (
         <>
             <div className="container mt-3">
@@ -198,8 +212,24 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                             </select>
                                         </div>
                                     </div>
+                                </div>
+                                <div className="row gutters mt-3">
+                                    <div className="form-group">
+                                        <label htmlFor="permissions text-primary">Permissons</label>
+                                        <ul className={styles.editcontainer}>
+                                            {
+                                                assignedPermissions.length>0? (
+                                                       assignedPermissions.map((p,index)=>{
+                                                           return <li key={index}>{p}</li>
+                                                       })
+                                                ): <li>No permission found</li>
+                                            }
+                                        </ul>
+                                        {/* <input type="number" className="form-control" id="zIp" placeholder="Zip Code" value={zipcode} readOnly /> */}
+                                        <ul>
 
-
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div className="row gutters mt-3">
                                     <div className="col-12">
@@ -208,13 +238,7 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row gutters mt-3">
-                                    <div className="col-12">
-                                        <div className="text-right">
-                                            <button type="button" id="submit" name="submit" className="btn btn-danger w-100" onClick={handleBackNavigation}>Back</button>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
