@@ -220,7 +220,7 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                             {
                                                 assignedPermissions.length>0? (
                                                        assignedPermissions.map((p,index)=>{
-                                                           return <li key={index}>{p}</li>
+                                                           return <li key={index} className='mb-1'><span className={styles.role_slug}> {p} </span></li>
                                                        })
                                                 ): <li>No permission found</li>
                                             }

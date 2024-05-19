@@ -1,0 +1,40 @@
+.sidebar_wrapper {
+    position: fixed;
+    top: 0;
+    z-index: 50;
+    width: 18rem;
+    height: 100%;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    background: #405264;
+}
+
+.togglebtn {
+    display: flex;
+    position: relative;
+    padding: 0.375rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.25rem;
+    color: black;
+    font-weight: bold;
+}
+
+.togglebtn .bx-menu {
+    font-size: 2em;
+}
+
+.sidebar_header {
+    text-decoration: none !important;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: .1rem;
+}
+
+.sidebar_header:hover {
+    color: white;
+}
