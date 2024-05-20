@@ -1,3 +1,4 @@
+import privateRequest from "@/app/Interceptor/interceptor";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 type InitialState = {
@@ -6,10 +7,10 @@ type InitialState = {
   error: any;
   success: boolean | null;
 };
-type Payload={
-        currentpage:number,
-        perPage:number,
-        searchText:string
+type Payload = {
+  currentpage: number,
+  perPage: number,
+  searchText: string
 }
 const initialState: InitialState = {
   loading: null,
@@ -19,24 +20,42 @@ const initialState: InitialState = {
 };
 
 //get product........
-export const loadproductAsync = createAsyncThunk("products/loadproducts", async (payload:Payload, thunkAPI) => {
-    try {
-        const { currentpage, perPage, searchText } = payload;
-        const response = await axios.get(`https://dummyjson.com/products/search?q=${searchText}&limit=${perPage}&skip=${(currentpage - 1) * perPage}`);
-        const data = await response.data;
-        return data;
-    } catch (error) {
-         
-        if (axios.isAxiosError(error) && error.response) {
-            const errorData = error.response.data;
-            if (error.response && error.response.data.message) {
-              // Handle validation errors
-              return thunkAPI.rejectWithValue(error.message);
-            } 
-          }
-          // Handle other errors not related to Axios
-          return thunkAPI.rejectWithValue("An unknown error occurred");
+export const loadallproductAsync = createAsyncThunk("products/loadproducts", async (payload, thunkAPI) => {
+  try {
+    const response = await axios.get(`http://localhost:8000/product/all`);
+    const data = await response.data;
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorData = error.response.data;
+      if (error.response && error.response.data.message) {
+        // Handle validation errors
+        return thunkAPI.rejectWithValue(error.message);
+      }
     }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
+})
+
+//add product........
+export const addproductAsync = createAsyncThunk("products/addproducts", async (payload: FormData, thunkAPI) => {
+  try {
+    const response = await privateRequest.post(`http://localhost:8000/product/add`, payload);
+    const data = await response.data;
+    return data;
+  } catch (error) {
+
+    if (axios.isAxiosError(error) && error.response) {
+      const errorData = error.response.data;
+      if (error.response && error.response.data.message) {
+        // Handle validation errors
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
 })
 
 
@@ -46,18 +65,26 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loadproductAsync.pending, (state, action) => {
+      .addCase(loadallproductAsync.pending, (state, action) => {
         state.loading = true;
       })
-      .addCase(loadproductAsync.fulfilled, (state, action) => {
+      .addCase(loadallproductAsync.fulfilled, (state, action) => {
         state.success = true;
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.data;
       })
-      .addCase(loadproductAsync.rejected, (state, action) => {
-        state.error = action.payload;
+      .addCase(loadallproductAsync.rejected, (state, action) => {
         state.loading = false;
-      });
+      })
+      .addCase(addproductAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(addproductAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(addproductAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
   },
 });
 

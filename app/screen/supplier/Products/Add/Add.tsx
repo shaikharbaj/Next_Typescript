@@ -6,14 +6,20 @@ import { RootState } from '@/app/Redux/store'
 import imageCompression from 'browser-image-compression'
 import { loadCategoriesAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice'
 import Loading from '@/app/components/Loading/Loading'
+import { addproductAsync } from '@/app/Redux/features/Product/productSlice'
+import { successtoast } from '@/app/utils/alerts/alerts'
+import { useRouter } from 'next/navigation'
 const Add = () => {
     const dispatch = useAppDispatch();
+    const router = useRouter();
     const { categories, loading: categoryloading } = useAppSelector((state: RootState) => state.category);
     const [title, setTitle] = useState("");
+    const [discription, setDiscription] = useState("");
     const [imgcompressloading, setimgcompressloading] = useState(false);
     const [image, setImage] = useState<File | any>("");
     const [category, setCategory] = useState("");
     const [subcategory, setSubCategory] = useState([]);
+    const [subcategory_id, setsubcategory_id] = useState("");
     const [originalPrice, setOriginalPrice] = useState("");
     const [discountPrice, setDiscountPrice] = useState("");
     const [stock, setStock] = useState("");
@@ -55,10 +61,25 @@ const Add = () => {
             })
         }
     }, [category])
-    const submitHandler = (e:FormEvent<HTMLFormElement>) => {
+    const submitHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(title);
-        
+        const formdata = new FormData();
+        formdata.append('name', title);
+        formdata.append('description', discription);
+        formdata.append('category_id', category);
+        formdata.append('subcategory_id', subcategory_id);
+        formdata.append('originalprice', originalPrice);
+        formdata.append('discountprice', discountPrice);
+        formdata.append('stock', stock);
+        formdata.append('image', image);
+
+        dispatch(addproductAsync(formdata)).unwrap().then((res) => {
+            successtoast(res.message);
+            router.replace("/supplier/dashboard/product");
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        });
     }
     if (categoryloading) {
         return <Loading />
@@ -75,7 +96,7 @@ const Add = () => {
                         </div>
                         <div className='mb-2'>
                             <label htmlFor="" className='mb-1'>Description</label>
-                            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className='input' />
+                            <input type="text" value={discription} onChange={(e) => setDiscription(e.target.value)} className='input' />
                         </div>
                         <div className='mb-2'>
                             <label htmlFor="" className='mb-1'>Category</label>
@@ -92,7 +113,7 @@ const Add = () => {
                         </div>
                         <div className='mb-2'>
                             <label htmlFor="" className='mb-1'>Sub-category</label>
-                            <select value={subcategory} name='subcategory' className='input'>
+                            <select value={subcategory_id} name='subcategory' className='input' onChange={(e) => setsubcategory_id(e.target.value)}>
                                 <option value="" hidden>select sub-category</option>
                                 {
                                     subcategory.length > 0 && subcategory.map((s: any) => {

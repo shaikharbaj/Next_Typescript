@@ -50,7 +50,7 @@ export function middleware(request: NextRequest) {
         new URL("/admin/dashboard", request.nextUrl.origin)
       );
     }
-  }
+    }
   // if(path.startsWith("/supplier")){
   //   if(!token){
   //     return NextResponse.redirect(

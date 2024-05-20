@@ -5,6 +5,7 @@ import styles from './style.module.css'
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks'
 import { RootState } from '@/app/Redux/store'
 import { loadallproductAsync } from '@/app/Redux/features/Product/productSlice'
+import Navbar from '../components/Navbar/Navbar'
 const AllProduct = () => {
     const { loading, products } = useAppSelector((state: RootState) => state.products)
     console.log(products)
@@ -14,6 +15,7 @@ const AllProduct = () => {
     }, [])
     return (
         <>
+            <Navbar/>
             {/* <ProductCard/> */}
             <div className={`${styles.section} mt-5`}>
                 <div className={`${styles.product_container}`}>
@@ -35,4 +37,4 @@ const AllProduct = () => {
     )
 }
 
-export default AllProduct
+export default AllProduct;

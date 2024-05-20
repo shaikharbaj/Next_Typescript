@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react';
 import useDebounce from '@/app/Hook/useDebounce';
-import { loadproductAsync } from '@/app/Redux/features/Product/productSlice';
+// import { loadproductAsync } from '@/app/Redux/features/Product/productSlice';
 import Loading from '@/app/components/Loading/Loading';
 import Pagination from '@/app/components/Pagination/Pagination';
 import { loadAllBanners } from '@/app/Redux/features/Banner/bannerSlice';
@@ -35,7 +35,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const payload: Payload = { currentpage, perPage, searchText }
-    dispatch(loadproductAsync(payload));
+    // dispatch(loadproductAsync(payload));
     dispatch(loadAllBanners())
   }, [debauncedValue, currentpage, perPage]);
 

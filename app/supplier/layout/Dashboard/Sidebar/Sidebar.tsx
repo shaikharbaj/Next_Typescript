@@ -71,7 +71,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                             {/* user */}
                             <li className="">
                                 <Link
-                                    href="/admin/dashboard/users"
+                                    href="/supplier/dashboard/product"
                                     className="w-full px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex rounded active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all no-underline"
                                 >
                                     <AiOutlineProject
