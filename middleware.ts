@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 interface Role {
@@ -11,14 +12,17 @@ interface DecodedToken extends JwtPayload {
   userId: number;
   email: string;
   name: string;
+  userType: string;
   roles?: string[];
-  permissions?:string[]
+  permissions?: string[]
 }
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
+  let decodedT;
   let userRole: DecodedToken["roles"] | undefined;
   if (token) {
     const decodedToken = jwtDecode<DecodedToken>(token);
+    decodedT = decodedToken;
     userRole = decodedToken.roles;
   }
 
@@ -30,7 +34,17 @@ export function middleware(request: NextRequest) {
   const isAdmin = userRole?.includes("ADMIN");
   const isModerator = userRole?.includes("SUBADMIN");
   const isUser = userRole?.includes("USER");
-  const isSupplier = userRole?.includes("SUPPLIER");
+  let isCustomer;
+  let isSupplier;
+  if (isUser) {
+    if (decodedT?.userType === "CUSTOMER") {
+      isCustomer = true;
+      isSupplier = false;
+    } else {
+      isSupplier = true;
+      isCustomer = false;
+    }
+  }
 
   if (path.startsWith("/admin")) {
     if (token && path === "/admin/login") {
@@ -50,21 +64,28 @@ export function middleware(request: NextRequest) {
         new URL("/admin/dashboard", request.nextUrl.origin)
       );
     }
-    }
-  // if(path.startsWith("/supplier")){
-  //   if(!token){
-  //     return NextResponse.redirect(
-  //       new URL("/supplier/login", request.nextUrl.origin)
-  //     );
-  //   }else{
-  //        if(token && (path==="/supplier/login"||path==="/supplier/register")){
-  //         return NextResponse.redirect(
-  //           new URL("/supplier/dashboard", request.nextUrl.origin)
-  //         ); 
-  //        }
-  //   }
-  // }
+  }
 
+  //for supplier roots...................................
+  if (path.startsWith("/supplier")) {
+    if (token && path === "/supplier/login") {
+      return NextResponse.redirect(
+        new URL("/supplier/dashboard", request.nextUrl.origin)
+      );
+    }
+    if (!token) {
+    }
+    if (token && !(isSupplier)) {
+      return NextResponse.redirect(
+        new URL("/dashboard/home", request.nextUrl.origin)
+      );
+    }
+    if (path === "/supplier" && (isSupplier)) {
+      return NextResponse.redirect(
+        new URL("/supplier/dashboard", request.nextUrl.origin)
+      );
+    }
+  }
   if (path === "/" || path === "/dashboard") {
     return NextResponse.redirect(
       new URL("/dashboard/home", request.nextUrl.origin)

@@ -4,6 +4,7 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Sidebar from "./Sidebar/Sidebar";
 import { GuestWrapper } from "@/app/utils/Wrapper/GuestWrapper";
+import AdminMiddleware from "@/app/utils/middleware/AdminMiddleware";
 
 interface IDashboardLayoutWrapperProps {
     children: React.ReactNode;
