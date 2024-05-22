@@ -46,6 +46,13 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  const userProtectedRoutes=[
+    "/about",
+    "/profile"
+  ]
+
+  console.log(isCustomer);
+
   if (path.startsWith("/admin")) {
     if (token && path === "/admin/login") {
       return NextResponse.redirect(
@@ -86,6 +93,7 @@ export function middleware(request: NextRequest) {
       );
     }
   }
+
   if (path === "/" || path === "/dashboard") {
     return NextResponse.redirect(
       new URL("/dashboard/home", request.nextUrl.origin)
@@ -94,6 +102,11 @@ export function middleware(request: NextRequest) {
   if (path === "/dashboard/home" && (isAdmin || isModerator) && token) {
     return NextResponse.redirect(
       new URL("/admin/dashboard", request.nextUrl.origin)
+    );
+  }
+  if(path === "/dashboard/home" && (isSupplier) && token){
+    return NextResponse.redirect(
+      new URL("/supplier/dashboard", request.nextUrl.origin)
     );
   }
   if ((path === "/login" || path === "/register") && token) {
@@ -108,13 +121,13 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  if ((path === "/about" || path === "/profile") && !isUser && token) {
-    return NextResponse.redirect(
-      new URL("/admin/dashboard", request.nextUrl.origin)
-    );
-  }
+  // if ((path === "/about" || path === "/profile") && !isCustomer && token) {
+  //   return NextResponse.redirect(
+  //     new URL("/admin/dashboard", request.nextUrl.origin)
+  //   );
+  // }
 
-  if ((path === "/about" || path === "/profile") && !token) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+  if ((path === "/about" || path === "/profile") &&(isAdmin||isSupplier||isModerator) ) {
+    return NextResponse.redirect(new URL("/dashboard/home", request.nextUrl.origin));
   }
 }
