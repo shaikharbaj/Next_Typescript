@@ -7,7 +7,8 @@ interface IProfilePayload {
 }
 interface IChangeRolePayload {
     user_id: number,
-    role_id: number
+    role_id: number,
+    userType?:string
 }
 export const loadProfileAsyncThunk = createAsyncThunk("profile/loadProfile", async (payload: IProfilePayload, thunkAPI) => {
     try {

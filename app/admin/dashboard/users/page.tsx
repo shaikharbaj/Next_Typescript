@@ -14,11 +14,15 @@ type Role = {
     id: number,
     name: string
 }
+interface IUtype {
+    userType: string | null
+}
 type userType = {
     id: number,
     name: string,
     email: string,
     role: Role,
+    userType: string | null,
     user_information: {
         date_of_birth: Date
         phone_number: number,
@@ -72,6 +76,7 @@ const UsersPage = () => {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
+                                <th>UserType</th>
                                 {/* <th>Date of Birth</th>
                                 <th>phone number</th>
                                 <th>street</th>
@@ -92,6 +97,7 @@ const UsersPage = () => {
                                                 <td>{u.name}</td>
                                                 <td>{u.email}</td>
                                                 <td><span className={styles.role_wrappere}>{u?.role?.name}</span></td>
+                                                <td>{u?.userType ? <span className={styles.user_wrappere}>{u?.userType}</span> : "-"}</td>
                                                 {/* <td> {u.user_information?.data_of_birth ? new Date(u?.user_information?.data_of_birth).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }) : null}</td>
                                                 <td>{u?.user_information?.phone_number}</td>
                                                 <td>{u?.user_information?.street}</td>
@@ -111,7 +117,7 @@ const UsersPage = () => {
                                                     </div>
 
                                                 )}</td>
-                                                <td><Link href={`/admin/dashboard/users/profile/${u?.id}`} className='me-3'><i className='bx bxs-show show'></i></Link>{(userinfo?.roles?.includes("ADMIN") || userinfo?.roles?.includes("SUBADMIN")) ?<Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
+                                                <td><Link href={`/admin/dashboard/users/profile/${u?.id}`} className='me-3'><i className='bx bxs-show show'></i></Link>{(userinfo?.roles?.includes("ADMIN") || userinfo?.roles?.includes("SUBADMIN")) ? <Link href={`/admin/dashboard/users/edit/${u.id}`}><i className='bx bxs-edit edit'></i></Link> : null}</td>
                                             </tr>
                                         })
                                     }

@@ -27,6 +27,8 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
     const [state, setState] = useState('');
     const [zipcode, setZipcode] = useState('');
     const [selectedrole, setSelectedRole] = useState<string | undefined>(undefined);
+    const [userType, setUserType] = useState("");
+    const [isuser, setIsUser] = useState(false);
     const [options, setOptions] = useState([]);
 
     //
@@ -58,6 +60,11 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
             setState(profile?.user_information?.state || '');
             setZipcode(profile?.user_information?.zipcode || '');
             setSelectedRole(profile?.role.id)
+            setUserType(profile?.userType);
+            if (profile?.role?.name === "USER") {
+                setIsUser(true);
+            }
+
             // let roleOptions: any = roles.map((option: any) => {
             //     return { value: option.id.toString(), label: option.name }
             // });
@@ -70,16 +77,34 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
     }, [profile, roles])
 
     const rolechangeHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedRole(e.target.value);
-        console.log(e.target.value);
+        const userRole: any = roles?.filter((r: any) => r.name === "USER")[0];
+        if (Number(userRole.id) !== Number(e.target.value)) {
+            setUserType("");
+            setIsUser(false);
+            setSelectedRole(e.target.value);
+            return;
+        } else {
+            setIsUser(true);
+            setUserType("SUPPLIER");
+            setAssignedPermissions([]);
+            setSelectedRole(e.target.value);
+            return;
+        }
+
+    }
+    const userTypeChangeHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+        setUserType(e.target.value);
     }
     const handleBackNavigation = () => {
-        router.replace("/admin/dashboard/users")
+        router.replace("/admin/dashboard/users");
     }
     const submitHandler = () => {
-        const payload = {
+        const payload: any = {
             user_id: Number(id),
-            role_id: Number(selectedrole)
+            role_id: Number(selectedrole),
+        }
+        if (userType) {
+            payload['userType'] = userType
         }
         dispatch(changeRoleAsync(payload)).unwrap().then((res) => {
             successtoast("user role updated successfully")
@@ -90,16 +115,30 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
 
     useEffect(() => {
         if (selectedrole) {
-            dispatch(loadAllPemissionofRolesAsync(Number(selectedrole))).unwrap().then((res) => {
+            console.log(selectedrole, userType);
+            const userRole: any = roles?.filter((r: any) => r.name === "USER")[0];
+            console.log(selectedrole, userType);
+            if (Number(selectedrole) !== Number(userRole?.id) && !userType) {
+                console.log("call for admin and other role")
+                dispatch(loadAllPemissionofRolesAsync({ selectedrole: Number(selectedrole), userType })).unwrap().then((res) => {
+                    setAssignedPermissions(res?.data);
+                });
+            }
+
+        }
+    }, [selectedrole])
+    useEffect(() => {
+        if (userType && selectedrole) {
+            console.log(userType, selectedrole)
+            dispatch(loadAllPemissionofRolesAsync(({ selectedrole: Number(selectedrole), userType }))).unwrap().then((res) => {
                 setAssignedPermissions(res?.data);
             });
         }
-    }, [selectedrole])
+    }, [userType]);
+    console.log(userType);
     if (loading) {
         return <Loading />
     }
-
-
     return (
         <>
             <div className="container mt-3">
@@ -201,6 +240,7 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                     </div>
                                     <div className="col-12">
                                         <div className="form-group">
+                                            <label htmlFor="">Role</label>
                                             <select id="" className="form-select" value={selectedrole} onChange={rolechangeHandler}>
                                                 {
                                                     roles?.length > 0 && roles.map((role: any) => {
@@ -211,6 +251,17 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                                 }
                                             </select>
                                         </div>
+                                        {
+                                            userType && <>
+                                                <div className="form-group">
+                                                    <label htmlFor="">UserType</label>
+                                                    <select id="" className="form-select" value={userType} onChange={userTypeChangeHandler}>
+                                                        <option value="SUPPLIER">SUPPLIER</option>
+                                                        <option value="CUSTOMER">CUSTOMER</option>
+                                                    </select>
+                                                </div>
+                                            </>
+                                        }
                                     </div>
                                 </div>
                                 <div className="row gutters mt-3">
@@ -218,11 +269,11 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                         <label htmlFor="permissions text-primary">Permissons</label>
                                         <ul className={styles.editcontainer}>
                                             {
-                                                assignedPermissions.length>0? (
-                                                       assignedPermissions.map((p,index)=>{
-                                                           return <li key={index} className='mb-1'><span className={styles.role_slug}> {p} </span></li>
-                                                       })
-                                                ): <li>No permission found</li>
+                                                assignedPermissions.length > 0 ? (
+                                                    assignedPermissions.map((p, index) => {
+                                                        return <li key={index} className='mb-1'><span className={styles.role_slug}> {p} </span></li>
+                                                    })
+                                                ) : <li>No permission found</li>
                                             }
                                         </ul>
                                         {/* <input type="number" className="form-control" id="zIp" placeholder="Zip Code" value={zipcode} readOnly /> */}
@@ -235,6 +286,9 @@ const EditUser: React.FunctionComponent<IEditUserProp> = ({ params }) => {
                                     <div className="col-12">
                                         <div className="text-right">
                                             <button type="button" id="submit" name="submit" className="btn btn-primary w-100" onClick={submitHandler}>UPDATE ROLE</button>
+                                        </div>
+                                        <div className="text-right mt-1">
+                                            <button type="button" id="submit" name="submit" className="btn btn-primary w-100" onClick={handleBackNavigation}>Back</button>
                                         </div>
                                     </div>
                                 </div>

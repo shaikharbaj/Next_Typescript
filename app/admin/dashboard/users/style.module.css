@@ -32,3 +32,11 @@
      border-radius: .2rem;
      font-size: 12px;
 }
+.user_wrappere{
+     border: 1px solid rgb(164, 164, 241);
+     background: #ffff;
+     color: rgb(160, 160, 236);
+     padding: 0 .2rem;
+     border-radius: .2rem;
+     font-size: 12px;
+}

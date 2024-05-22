@@ -26,9 +26,9 @@ export const loadAllDashboardCount = createAsyncThunk(
   }
 );
 
-export const loadAllPemissionofRolesAsync = createAsyncThunk("admin/getpermissionofrole", async (payload:number, thunkAPI) => {
+export const loadAllPemissionofRolesAsync = createAsyncThunk("admin/getpermissionofrole", async (payload:{selectedrole:number,userType:string}, thunkAPI) => {
   try {
-    const response = await privateRequest.get(`http://localhost:8000/role/get_role_permission/${payload}`);
+    const response = await privateRequest.get(`http://localhost:8000/role/get_role_permission?role=${payload.selectedrole}&userType=${payload.userType}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

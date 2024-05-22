@@ -2,6 +2,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import './productcard.css'
+import { useAppDispatch } from '@/app/Hook/hooks'
+import { addproducttocartAsync } from '@/app/Redux/features/cart/cartSlice'
+import { successtoast } from '@/app/utils/alerts/alerts'
 interface IProductProps {
   data: any
 }
@@ -20,8 +23,13 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
   //   sold_out: 10
   // }
   const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
   const AddToCartHandler = (id: number) => {
-
+        dispatch(addproducttocartAsync({product_id:id})).unwrap().then((res)=>{
+              successtoast(res.message);
+        }).catch((err)=>{
+             console.log(err);
+        })
   }
   return (
     <>
@@ -63,7 +71,7 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
             // true ? <i className='bx bxs-heart wishlist_icon added_to_wishlist' onClick={() => removeFromWishlistHandler(data)}></i> : <i className='bx bx-heart wishlist_icon' onClick={() => addToWishlistHandler(data)}></i>
           }
           <i className='bx bx-show-alt eye_icon' onClick={() => setOpen(true)}></i>
-          <i className='bx bx-cart-alt cart_icon' onClick={() => AddToCartHandler(data._id)} ></i>
+          <i className='bx bx-cart-alt cart_icon' onClick={() => AddToCartHandler(data.id)} ></i>
           {/* {open ? <ProductDetails setOpen={setOpen} data={data} /> : null} */}
         </div>
       </div>

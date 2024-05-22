@@ -51,8 +51,6 @@ export function middleware(request: NextRequest) {
     "/profile"
   ]
 
-  console.log(isCustomer);
-
   if (path.startsWith("/admin")) {
     if (token && path === "/admin/login") {
       return NextResponse.redirect(

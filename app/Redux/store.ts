@@ -9,6 +9,7 @@ import bannerReducer from "./features/Banner/bannerSlice";
 import categoryReducer from "./features/category/categorySlice";
 import blogReducer from "./features/blog/blogSlice";
 import supplierReducer from "./features/supplier/supplierSlice";
+import cartReducer from "./features/cart/cartSlice";
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -20,7 +21,8 @@ const store = configureStore({
         banner: bannerReducer,
         category: categoryReducer,
         blog: blogReducer,
-        supplier:supplierReducer
+        supplier:supplierReducer,
+        cart:cartReducer
     }
 })
 

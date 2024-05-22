@@ -22,7 +22,7 @@ const AllProduct = () => {
                     {
                         products && products.map((p: any) => {
                             return (
-                                <ProductCard data={p} />
+                                <ProductCard data={p} key={p.id}/>
                             )
                         })
                     }
