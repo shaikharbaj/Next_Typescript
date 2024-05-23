@@ -6,13 +6,16 @@ import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks'
 import { RootState } from '@/app/Redux/store'
 import { loadallproductAsync } from '@/app/Redux/features/Product/productSlice'
 import Navbar from '../components/Navbar/Navbar'
+import Loading from '../components/Loading/Loading'
 const AllProduct = () => {
     const { loading, products } = useAppSelector((state: RootState) => state.products)
-    console.log(products)
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(loadallproductAsync());
     }, [])
+    if(loading){
+          return <Loading/>
+    }
     return (
         <>
             <Navbar/>

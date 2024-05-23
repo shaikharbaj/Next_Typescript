@@ -8,7 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { successtoast } from "@/app/utils/alerts/alerts";
 import Helper from "@/app/utils/helper";
 import { logout } from '@/app/Redux/features/auth/authSlice';
-import { useAppDispatch } from '@/app/Hook/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
+import { FaShoppingCart } from "react-icons/fa";
+import { loadcartAsync } from '@/app/Redux/features/cart/cartSlice';
+import { RootState } from '@/app/Redux/store';
 
 
 type Authstate = {
@@ -23,6 +26,7 @@ const Navbar = () => {
     const path = usePathname();
     const [token, setToken] = useState<string | undefined | null>();
     const { userinfo } = useSelector((state: { auth: Authstate }) => state.auth);
+    const {cartItem} = useAppSelector((state:RootState)=>state.cart);
 
     const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
@@ -30,6 +34,15 @@ const Navbar = () => {
         router.replace("/login");
         successtoast('user logged out succesfully')
     };
+
+    const gotocartHandler = () => {
+            console.log("called")
+            router.push("/cart");
+    }
+
+    useEffect(() => {
+          dispatch(loadcartAsync());
+    }, [])
 
     useEffect(() => {
         const token = Helper.getLocalToken();
@@ -98,6 +111,12 @@ const Navbar = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" href="/product">
                                         Products
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link cart" href={"/cart"}>
+                                        <FaShoppingCart className='cartIcon' />
+                                        <span className='cart_count'>{cartItem?.length}</span>
                                     </Link>
                                 </li>
                                 <li className="nav-item">
