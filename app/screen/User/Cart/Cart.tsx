@@ -188,7 +188,7 @@ const Cart = () => {
                   </div>
 
                   <div className="mt-3">
-                    <Link href={"/checkout"} className="btn-checkout w-100 shadow-0 mb-2">Checkout</Link>
+                    <Link href={"/cart/checkout"} className="btn-checkout w-100 shadow-0 mb-2">Checkout</Link>
 
                     {/* <a onClick={gotohome} className="btn btn-light w-100 border mt-2"> Back to Home </a> */}
                   </div>

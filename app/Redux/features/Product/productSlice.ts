@@ -57,6 +57,17 @@ export const addproductAsync = createAsyncThunk("products/addproducts", async (p
     return thunkAPI.rejectWithValue("An unknown error occurred");
   }
 })
+interface ISingleProduct{
+           slug:string
+}
+export const getsingleproductAsync = createAsyncThunk("product/getsingleproduct",async(payload:ISingleProduct,thunkAPI)=>{
+      try {
+           const response = await axios.get(`http://localhost:8000/product/getsingleproduct/${payload.slug}`);
+           return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }
+})
 
 
 const productSlice = createSlice({
@@ -83,6 +94,15 @@ const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(addproductAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getsingleproductAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getsingleproductAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getsingleproductAsync.rejected, (state, action) => {
         state.loading = false;
       })
   },

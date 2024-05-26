@@ -1,13 +1,16 @@
 import privateRequest from "@/app/Interceptor/interceptor";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { taintObjectReference } from "next/dist/server/app-render/entry-base";
 
 interface IinitialState {
   cartItem: any;
+  orders: any;
   loading: boolean;
 }
 const initialState: IinitialState = {
   loading: false,
   cartItem: [],
+  orders: [],
 };
 
 interface IAddtoCartPayload {
@@ -37,6 +40,47 @@ export const loadcartAsync = createAsyncThunk(
     try {
       const response = await privateRequest.get(
         "http://localhost:8000/cart/all"
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+//load cart count.......
+export const loadcartcount = createAsyncThunk("cart/loadcartcount",async(payload,thunkAPI)=>{
+       try {
+            const response = await privateRequest.get("http://localhost:8000/cart/cartcount");
+            return response.data;
+       } catch (error) {
+            return thunkAPI.rejectWithValue(error);
+       }
+})
+
+//load orders......................................
+export const loadUsersOrderAsync = createAsyncThunk(
+  "cart/loadusersorder",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        "http://localhost:8000/cart/all"
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+//order products.........
+export const orderproductAsync = createAsyncThunk(
+  "cart/orderproduct",
+  async (payload:any, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        "http://localhost:8000/order/orderproduct",
+        payload
       );
       return response.data;
     } catch (error) {
@@ -160,7 +204,26 @@ const cartSlice = createSlice({
       })
       .addCase(removeproductfromcartAsync.rejected, (state, action) => {
         state.loading = false;
-      });
+      })
+      .addCase(orderproductAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(orderproductAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(orderproductAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(loadUsersOrderAsync.pending,(state,action)=>{
+          state.loading=true;
+      })
+      .addCase(loadUsersOrderAsync.fulfilled,(state,action)=>{
+          state.loading=false;
+      })
+      .addCase(loadUsersOrderAsync.rejected,(state,action)=>{
+          state.loading=false;  
+      })
+      ;
   },
 });
 

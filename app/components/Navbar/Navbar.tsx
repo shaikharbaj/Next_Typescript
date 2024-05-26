@@ -10,7 +10,7 @@ import Helper from "@/app/utils/helper";
 import { logout } from '@/app/Redux/features/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 import { FaShoppingCart } from "react-icons/fa";
-import { loadcartAsync } from '@/app/Redux/features/cart/cartSlice';
+import { loadcartAsync, loadcartcount } from '@/app/Redux/features/cart/cartSlice';
 import { RootState } from '@/app/Redux/store';
 
 
@@ -25,14 +25,19 @@ const Navbar = () => {
     const dispatch = useAppDispatch();
     const path = usePathname();
     const [token, setToken] = useState<string | undefined | null>();
+    const [cartcount,setCartCount] = useState(0);
     const { userinfo } = useSelector((state: { auth: Authstate }) => state.auth);
     const {cartItem} = useAppSelector((state:RootState)=>state.cart);
 
     const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         dispatch(logout());
-        router.replace("/login");
         successtoast('user logged out succesfully')
+        // router.replace("/login");
+        if (typeof window !== 'undefined') {
+            window.location.href="/login"; // This will trigger a full page reload
+          }
+       
     };
 
     const gotocartHandler = () => {
@@ -41,7 +46,12 @@ const Navbar = () => {
     }
 
     useEffect(() => {
-          dispatch(loadcartAsync());
+        //   dispatch(loadcartcount()).unwrap().then((res)=>{
+        //        setCartCount(res.cartcount);
+        //   }).catch((err)=>{
+        //         console.log(err);
+        //   });
+        dispatch(loadcartAsync());
     }, [])
 
     useEffect(() => {
@@ -49,6 +59,13 @@ const Navbar = () => {
         setToken(token)
     }, [userinfo])
 
+    useEffect(()=>{
+              const count = cartItem?.reduce((acc:number,curr:any)=>{
+                        acc+=Number(curr['quantity']);
+                        return acc;
+              },0)
+              setCartCount(count);
+    },[cartItem]);
     return (
         <nav className="navbar navbar-expand-sm navbar-light">
             <div className="container-fluid">
@@ -116,7 +133,7 @@ const Navbar = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link cart" href={"/cart"}>
                                         <FaShoppingCart className='cartIcon' />
-                                        <span className='cart_count'>{cartItem?.length}</span>
+                                        <span className='cart_count'>{cartcount?cartcount:0}</span>
                                     </Link>
                                 </li>
                                 <li className="nav-item">

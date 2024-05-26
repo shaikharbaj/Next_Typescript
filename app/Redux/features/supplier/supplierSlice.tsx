@@ -1,3 +1,4 @@
+import privateRequest from "@/app/Interceptor/interceptor";
 import Helper from "@/app/utils/helper";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -35,6 +36,24 @@ export const loginsupplierAsync = createAsyncThunk("supplier/login", async (payl
     }
 })
 
+export const loadallsupplierproductAsync = createAsyncThunk("suplier/loadallsupplierproducts", async (payload, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(`http://localhost:8000/product/supplier/all`);
+      const data = await response.data;
+      console.log(data);
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (error.response && error.response.data.message) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(error.message);
+        }
+      }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
+    }
+  })
 
 const supplierSlice = createSlice({
     name: "supplier",
@@ -74,6 +93,16 @@ const supplierSlice = createSlice({
             .addCase(loginsupplierAsync.rejected, (state, action) => {
                 state.loading = false;
             })
+            .addCase(loadallsupplierproductAsync.pending, (state, action) => {
+                state.loading = true;
+              })
+              .addCase(loadallsupplierproductAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.products = action.payload.data;
+              })
+              .addCase(loadallsupplierproductAsync.rejected, (state, action) => {
+                state.loading = false;
+              })
     }
 })
 
