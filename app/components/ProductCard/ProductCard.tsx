@@ -75,7 +75,7 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
       </span>
       <div className={styles.title_wrapper}>
         <a href="#">
-          <h5 className={styles.title}>{data.name}</h5>
+          <h5 className={styles.title}>{data?.name?.length>20?data?.name?.slice(0,20)+"...":data?.name}</h5>
         </a>
         <div className={styles.rating_wrapper}>
           {[...Array(5)].map((_, index) => (
@@ -127,7 +127,7 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="mr-2 h-6 w-6"
+                className="mr-2 h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
