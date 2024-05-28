@@ -70,13 +70,13 @@ body {
 
 .toggle .bx-menu {
   font-size: 2em !important;
-  font-weight: bold
+  font-weight: bold;
 }
 
 .show {
   font-size: 1.8em;
   color: rgb(23, 114, 219);
-  margin-right: .2rem;
+  margin-right: 0.2rem;
 }
 
 .edit {
@@ -92,7 +92,6 @@ body {
 .carousel-item {
   /* max-height: 100vh !important; */
   height: 80vh !important;
-
 }
 
 .carousel-item img {
@@ -126,4 +125,38 @@ body {
 
 .is-visible .cd-popup-container {
   transform: translateY(0);
+}
+.order_status {
+  background: #ffff;
+  padding: 0 0.2rem;
+  border-radius: 0.2rem;
+  font-size: 12px;
+}
+.o_pending {
+  color: hsl(41, 97%, 49%);
+  border: 1px solid hsl(36, 89%, 42%);
+}
+.o_delivered {
+  border: 1px solid rgb(108, 190, 108);
+  color: green;
+}
+.o_processing {
+  border: 1px solid rgb(35, 171, 224);
+  color: rgb(23, 133, 177);
+}
+.o_shipped {
+  border: 1px solid rgb(164, 164, 241);
+  background: #ffff;
+  color: rgb(160, 160, 236);
+  padding: 0 .2rem;
+  border-radius: .2rem;
+  font-size: 12px;
+}
+.o_cancelled {
+  border: 1px solid red;
+  background: #ffff;
+  color:rgb(212, 47, 47);
+  padding: 0 .2rem;
+  border-radius: .2rem;
+  font-size: 12px;
 }

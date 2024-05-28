@@ -10,6 +10,7 @@ import categoryReducer from "./features/category/categorySlice";
 import blogReducer from "./features/blog/blogSlice";
 import supplierReducer from "./features/supplier/supplierSlice";
 import cartReducer from "./features/cart/cartSlice";
+import orderReducer from "./features/order/orderSlice";
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -22,7 +23,8 @@ const store = configureStore({
         category: categoryReducer,
         blog: blogReducer,
         supplier:supplierReducer,
-        cart:cartReducer
+        cart:cartReducer,
+        order:orderReducer
     }
 })
 

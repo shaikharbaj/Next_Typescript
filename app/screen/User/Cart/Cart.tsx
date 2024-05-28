@@ -16,6 +16,8 @@ const Cart = () => {
   const { loading, cartItem } = useAppSelector(
     (state: RootState) => state.cart
   );
+
+  console.log(cartItem);
   const [totalItem, setTotalItem] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
   const dispatch = useAppDispatch();

@@ -1,9 +1,27 @@
-import React from "react";
-
+"use client";
+import React, { useEffect } from "react";
+import styles from "./order.module.css";
+import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
+import { RootState } from "@/app/Redux/store";
+import { getallordersofcustomerAsync } from "@/app/Redux/features/order/orderSlice";
+import Loading from "@/app/components/Loading/Loading";
+import Link from "next/link";
+import { formatDate } from "@/app/utils/date/date";
 const Order = () => {
+  const dispatch = useAppDispatch();
+  const { loading, orders } = useAppSelector((state: RootState) => state.order);
+
+  useEffect(() => {
+    dispatch(getallordersofcustomerAsync());
+  }, []);
+  if (loading) {
+    return <Loading />;
+  }
+
+  console.log(orders);
   return (
     <>
-      <div className="relative overflow-x-auto shadow-md mt-2 w-4/5 mx-auto">
+      {/* <div className="relative overflow-x-auto shadow-md mt-2 w-4/5 mx-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 mt-5">
             <tr>
@@ -23,10 +41,10 @@ const Order = () => {
                 OrderId
               </th>
               <th scope="col" className="px-6 py-3">
-                Color
+                ADDRESS
               </th>
               <th scope="col" className="px-6 py-3">
-                Category
+                Product
               </th>
               <th scope="col" className="px-6 py-3">
                 Accessories
@@ -448,7 +466,57 @@ const Order = () => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
+
+      <table className={`table table-info text-center ${styles.cutomize_table}`}>
+        <thead>
+          <tr>
+            <th scope="col">SR.NO</th>
+            <th scope="col">OrderId</th>
+            {/* <th scope="col">Products</th> */}
+            <th scope="col">Order Date</th>
+            {/* <th scope="col">Delivery Date</th> */}
+            <th scope="col">Status</th>
+            <th scope="col">PaymentMethod</th>
+            <th scope="col">Payment Status</th>
+            <th scope="col">Total</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders?.length > 0 ? (
+            <>
+              {orders?.map((order: any, index: number) => {
+                return (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td>{order?.id}</td>
+                    <td>{formatDate(order?.createdAt)}</td>
+                    <td>{order?.status}</td>
+                    <td>{order?.paymentMethod}</td>
+                    <td>{order?.paymentStatus}</td>
+                    <td>{`₹ ${order?.totalPrice}`}</td>
+                    <td>
+                      <Link
+                        href={`/orders/${order?.id}`}
+                        className={`${styles.view_order_btn} text-black`}
+                      >
+                        <i className={`bx bx-show ${styles.eye_icon}`}></i>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </>
+          ) : (
+            <tr>
+              <td colSpan={10} className="text-center">
+                No Order found
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </>
   );
 };
