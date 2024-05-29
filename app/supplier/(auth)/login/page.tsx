@@ -3,15 +3,15 @@ import React, { useState } from 'react'
 import '../register/register.css'
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 import { RootState } from '@/app/Redux/store';
-import { loginsupplierAsync } from '@/app/Redux/features/supplier/supplierSlice';
 import { errortoast, successtoast } from '@/app/utils/alerts/alerts';
 import { useRouter } from 'next/navigation';
+import { loginsupplierAsync } from '@/app/Redux/features/auth/authSlice';
 const page = () => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const router = useRouter()
     const dispatch = useAppDispatch();
-    const {loading} = useAppSelector((state:RootState)=>state.supplier);
+    const {loading} = useAppSelector((state:RootState)=>state.auth);
 
     const submitHandler=()=>{
         console.log(email,password);

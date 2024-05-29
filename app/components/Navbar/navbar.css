@@ -1,5 +1,10 @@
 .navbar {
     background-color: rgb(70, 70, 141);
+    /* position: fixed !important;
+    width: 100%;
+    z-index: 9999;
+    top: 0;
+    left: 0; */
 }
 
 .navbar .nav-link {

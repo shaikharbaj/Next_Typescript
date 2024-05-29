@@ -66,6 +66,7 @@ const Navbar = () => {
               },0)
               setCartCount(count);
     },[cartItem]);
+    console.log(userinfo)
     return (
         <nav className="navbar navbar-expand-sm navbar-light">
             <div className="container-fluid">

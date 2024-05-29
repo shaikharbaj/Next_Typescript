@@ -160,3 +160,10 @@ body {
   border-radius: .2rem;
   font-size: 12px;
 }
+.supplier_order_update_btn{
+     border: 1px solid black;
+     padding: .1rem .6rem;
+     background-color: black;
+     color: white;
+     font-weight: bold;
+}

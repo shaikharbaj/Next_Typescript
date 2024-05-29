@@ -80,7 +80,41 @@ export const loadallsupplierordersAsync = createAsyncThunk(
   }
 );
 
-// export const loadsinglesupplierOrder=createAsyncThunk("")
+interface IloadsinglesupplierOrder {
+  orderItemId: number;
+}
+export const loadsinglesupplierOrderAsync = createAsyncThunk(
+  "supplier/loadsinglesupplierorder",
+  async (payload: IloadsinglesupplierOrder, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/order/loadsinglesupplierorder/${payload?.orderItemId}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+interface IUpdateorderstatus {
+  orderItemId: number;
+  status: string;
+  paymentStatus: string;
+}
+export const updateorderstatusAsync = createAsyncThunk(
+  "supplier/updateorderstatus",
+  async (payload: IUpdateorderstatus, thunkAPI) => {
+    try {
+      const response = await privateRequest.patch(
+        `http://localhost:8000/order/updateorderstatus`,payload
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 const supplierSlice = createSlice({
   name: "supplier",
@@ -137,6 +171,15 @@ const supplierSlice = createSlice({
         state.orders = action.payload.data;
       })
       .addCase(loadallsupplierordersAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(loadsinglesupplierOrderAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loadsinglesupplierOrderAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(loadsinglesupplierOrderAsync.rejected, (state, action) => {
         state.loading = false;
       });
   },

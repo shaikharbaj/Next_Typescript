@@ -18,6 +18,7 @@ interface Product {
   discountprice: number;
   originalprice: number;
   soldOut: number;
+  stock: number;
 }
 
 interface IProductProps {
@@ -61,10 +62,9 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
       });
   };
 
-  const isProductInCart = cartItem.findIndex(
-    (i: any) => Number(i.product.id) === Number(data.id)
-  ) !== -1;
-
+  const isProductInCart =
+    cartItem.findIndex((i: any) => Number(i.product.id) === Number(data.id)) !==
+    -1;
   return (
     <div className={styles.product_card}>
       <Link href={`/product/${encodeURIComponent(data.name)}`}>
@@ -75,9 +75,14 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
       </span>
       <div className={styles.title_wrapper}>
         <a href="#">
-          <h5 className={styles.title}>{data?.name?.length>20?data?.name?.slice(0,20)+"...":data?.name}</h5>
+          <h5 className={styles.title}>
+            {data?.name?.length > 20
+              ? data?.name?.slice(0, 20) + "..."
+              : data?.name}
+          </h5>
         </a>
-        <div className={styles.rating_wrapper}>
+        <div className={styles.rating_stock_wrapper}>
+          <div className={styles.rating_wrapper}>
           {[...Array(5)].map((_, index) => (
             <svg
               key={index}
@@ -90,11 +95,26 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
             </svg>
           ))}
+          </div>
+         
+          <p className={styles.stock_wrapper}>
+            {data?.stock == 0 ? (
+              <span className={styles.out_of_stock}>out of stock</span>
+            ) : data?.stock > 5 ? (
+              <span className={styles.in_stock}>{`${data?.stock} in stock`}</span>
+            ) : (
+              <span className={styles.few_in_stock}>{`hurry up only ${data?.stock} in stock`}</span>
+            )}
+          </p>
         </div>
         <div className={styles.price_wrapper}>
           <p>
-            <span className={styles.discountPrice}>{`₹${data.discountprice}`}</span>
-            <span className={styles.originalPrice}>{`₹${data.originalprice}`}</span>
+            <span
+              className={styles.discountPrice}
+            >{`₹${data.discountprice}`}</span>
+            <span
+              className={styles.originalPrice}
+            >{`₹${data.originalprice}`}</span>
           </p>
           {isProductInCart ? (
             <div className={styles.increment_remove}>
