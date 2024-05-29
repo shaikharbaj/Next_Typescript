@@ -41,22 +41,22 @@ const SupplierOrders = () => {
         <tbody>
           {orders?.length > 0 ? (
             <>
-              {orders?.map((order: any, index: number) => {
+              {orders?.map((o: any, index: number) => {
                 return (
                   <tr>
                     <td>{index + 1}</td>
-                    <td>{order?.id}</td>
-                    <td>{formatDate(order?.createdAt)}</td>
-                    <td>{order?.status}</td>
-                    <td>{order?.paymentMethod}</td>
-                    <td>{order?.paymentStatus}</td>
-                    <td>{`₹ ${order?.totalPrice}`}</td>
+                    <td>{o?.order?.id}</td>
+                    <td>{formatDate(o?.order?.createdAt)}</td>
+                    <td>{o?.status}</td>
+                    <td>{o?.order?.paymentMethod}</td>
+                    <td>{o?.paymentStatus}</td>
+                    <td>{`₹ ${o?.price}`}</td>
                     <td>
                       <Link
-                        href={`/orders/${order?.id}`}
+                        href={`/supplier/dashboard/orders/${o?.id}`}
                         className={`${styles.view_order_btn} text-black`}
                       >
-                        <i className={`bx bx-show ${styles.eye_icon}`}></i>
+                        <i className={`bx bxs-edit ${styles.eye_icon}`}></i>
                       </Link>
                     </td>
                   </tr>

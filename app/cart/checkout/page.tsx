@@ -101,7 +101,7 @@ const page = () => {
           productId: Number(p.product.id),
           quantity: Number(p.quantity),
           price: parseFloat(p.product.discountprice),
-          // supplier_id:Number(p?.product?.supplier_id)
+          supplierId:Number(p?.product?.supplier_id)
         };
       });
       const payload = {
@@ -121,13 +121,11 @@ const page = () => {
         paymentStatus: "UNPAID",
         paymentMethod: "CASH_ON_DELIVERY",
       };
-
-      console.log(payload)
       dispatch(orderproductAsync(payload))
         .unwrap()
         .then((res) => {
           successtoast(res.message);
-          router.replace("/order");
+          router.replace("/orders");
         })
         .catch((error) => {
           console.log(error);

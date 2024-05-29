@@ -80,6 +80,8 @@ export const loadallsupplierordersAsync = createAsyncThunk(
   }
 );
 
+// export const loadsinglesupplierOrder=createAsyncThunk("")
+
 const supplierSlice = createSlice({
   name: "supplier",
   initialState,
