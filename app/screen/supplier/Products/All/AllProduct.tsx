@@ -24,6 +24,7 @@ const AllProduct = () => {
   if (loading) {
     return <Loading />;
   }
+  console.log(products);
   return (
     <>
       <section className="antialiased bg-gray-100 text-gray-600 h-screen px-4 w-100">
@@ -32,7 +33,12 @@ const AllProduct = () => {
           <div className="w-full mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
             <header className="flex justify-between px-5 py-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-800">Products</h2>
-              <button className={styles.add_product_btn} onClick={NavigateToAddProduct}>ADD PRODUCTS</button>
+              <button
+                className={styles.add_product_btn}
+                onClick={NavigateToAddProduct}
+              >
+                ADD PRODUCTS
+              </button>
             </header>
             <div className="p-3">
               <div className="overflow-x-auto text-center">
@@ -77,14 +83,16 @@ const AllProduct = () => {
                               <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
                                 <img
                                   className="rounded-full"
-                                  src={p?.image}
+                                  src={p?.productImages[p?.productImages.findIndex((i:any)=>i.isThumbnail==true)].url}
                                   width="40"
                                   height="40"
                                   alt="Alex Shatov"
                                 />
                               </div>
                               <div className="font-medium text-gray-800">
-                                {p?.name}
+                                {p?.name?.length > 20
+                                  ? p?.name.slice(0, 19) + "..."
+                                  : p?.name}
                               </div>
                             </div>
                           </td>
@@ -110,7 +118,13 @@ const AllProduct = () => {
                           </td>
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-center font-medium">
-                              {`${p?.stock>0?p?.stock: <span className={styles.out_of_stock}>{"out of stock"}</span>}`}
+                              {p?.stock > 0 ? (
+                                  p?.stock
+                                ) : (
+                                  <span className={styles.out_of_stock}>
+                                    {"out of stock"}
+                                  </span>
+                                )}
                             </div>
                           </td>
                           <td className="p-2 whitespace-nowrap">
@@ -119,7 +133,7 @@ const AllProduct = () => {
                                 Edit
                               </button>
                               <button className="btn btn-danger">Delete</button>
-                              <button className="btn btn-primary">View</button>
+                              <button className="btn btn-primary" onClick={()=>router.push(`/supplier/dashboard/product/edit/${p?.id}`)}>View</button>
                             </div>
                           </td>
                         </tr>

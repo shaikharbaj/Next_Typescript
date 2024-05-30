@@ -130,3 +130,6 @@ font-weight: 400;
 .submit_btn:focus{
   outline: none;
 }
+.primary_image{
+        border: 6px solid rgb(62, 197, 62);
+}

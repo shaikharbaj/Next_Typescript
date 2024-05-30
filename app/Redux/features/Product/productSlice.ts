@@ -8,10 +8,10 @@ type InitialState = {
   success: boolean | null;
 };
 type Payload = {
-  currentpage: number,
-  perPage: number,
-  searchText: string
-}
+  currentpage: number;
+  perPage: number;
+  searchText: string;
+};
 const initialState: InitialState = {
   loading: null,
   products: [],
@@ -20,55 +20,90 @@ const initialState: InitialState = {
 };
 
 //get product........
-export const loadallproductAsync = createAsyncThunk("products/loadproducts", async (payload, thunkAPI) => {
-  try {
-    const response = await axios.get(`http://localhost:8000/product/all`);
-    const data = await response.data;
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorData = error.response.data;
-      if (error.response && error.response.data.message) {
-        // Handle validation errors
-        return thunkAPI.rejectWithValue(error.message);
+export const loadallproductAsync = createAsyncThunk(
+  "products/loadproducts",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/product/all`);
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (error.response && error.response.data.message) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(error.message);
+        }
       }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
     }
-    // Handle other errors not related to Axios
-    return thunkAPI.rejectWithValue("An unknown error occurred");
   }
-})
+);
+
+interface IloadProductByID {
+  id: number;
+}
+export const loadsingleproductByID = createAsyncThunk(
+  "products/loadproductsbyID",
+  async (payload: IloadProductByID, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/product/getproductbyID/${payload?.id}`
+      );
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 //add product........
-export const addproductAsync = createAsyncThunk("products/addproducts", async (payload: FormData, thunkAPI) => {
-  try {
-    const response = await privateRequest.post(`http://localhost:8000/product/add`, payload);
-    const data = await response.data;
-    return data;
-  } catch (error) {
-
-    if (axios.isAxiosError(error) && error.response) {
-      const errorData = error.response.data;
-      if (error.response && error.response.data.message) {
-        // Handle validation errors
-        return thunkAPI.rejectWithValue(error.message);
+export const addproductAsync = createAsyncThunk(
+  "products/addproducts",
+  async (payload: FormData, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        `http://localhost:8000/product/add`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        if (error.response && error.response.data.message) {
+          // Handle validation errors
+          return thunkAPI.rejectWithValue(error.message);
+        }
       }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
     }
-    // Handle other errors not related to Axios
-    return thunkAPI.rejectWithValue("An unknown error occurred");
   }
-})
-interface ISingleProduct{
-           slug:string
+);
+interface ISingleProduct {
+  slug: string;
 }
-export const getsingleproductAsync = createAsyncThunk("product/getsingleproduct",async(payload:ISingleProduct,thunkAPI)=>{
-      try {
-           const response = await axios.get(`http://localhost:8000/product/getsingleproduct/${payload.slug}`);
-           return response.data;
-      } catch (error) {
-        return thunkAPI.rejectWithValue(error);
-      }
-})
-
+export const getsingleproductAsync = createAsyncThunk(
+  "product/getsingleproduct",
+  async (payload: ISingleProduct, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/product/getsingleproduct/${payload.slug}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 const productSlice = createSlice({
   name: "product",
@@ -105,6 +140,15 @@ const productSlice = createSlice({
       .addCase(getsingleproductAsync.rejected, (state, action) => {
         state.loading = false;
       })
+      .addCase(loadsingleproductByID.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loadsingleproductByID.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(loadsingleproductByID.rejected, (state, action) => {
+        state.loading = false;
+      });
   },
 });
 
