@@ -105,6 +105,25 @@ export const getsingleproductAsync = createAsyncThunk(
   }
 );
 
+//edit product..................
+interface IEditPayload {
+  id: number;
+  data:FormData
+}
+export const editproductAsync = createAsyncThunk(
+  "product/editproduct",
+  async (payload: IEditPayload, thunkAPI) => {
+    try {
+      const response = await privateRequest.patch(
+        `http://localhost:8000/product/edit/${payload.id}`,payload.data
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -147,6 +166,15 @@ const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(loadsingleproductByID.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(editproductAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(editproductAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(editproductAsync.rejected, (state, action) => {
         state.loading = false;
       });
   },

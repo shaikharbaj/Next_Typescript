@@ -83,7 +83,7 @@ const AllProduct = () => {
                               <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
                                 <img
                                   className="rounded-full"
-                                  src={p?.productImages[p?.productImages.findIndex((i:any)=>i.isThumbnail==true)].url}
+                                  src={p?.productImages[p?.productImages.findIndex((i:any)=>i.isThumbnail==true)]?.url}
                                   width="40"
                                   height="40"
                                   alt="Alex Shatov"
@@ -129,11 +129,11 @@ const AllProduct = () => {
                           </td>
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-center">
-                              <button className="btn btn-warning me-2">
+                              <button className="btn btn-warning me-2" onClick={()=>router.push(`/supplier/dashboard/product/edit/${p?.id}`)}>
                                 Edit
                               </button>
-                              <button className="btn btn-danger">Delete</button>
-                              <button className="btn btn-primary" onClick={()=>router.push(`/supplier/dashboard/product/edit/${p?.id}`)}>View</button>
+                              <button className="btn btn-danger me-2">Delete</button>
+                              <button className="btn btn-primary">View</button>
                             </div>
                           </td>
                         </tr>

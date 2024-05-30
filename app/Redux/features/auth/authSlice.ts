@@ -85,7 +85,7 @@ export const loginUserAsync = createAsyncThunk(
   "auth/login",
   async (payload: LoginPayload, thunkAPI) => {
     try {
-      const response = await axios.post<LoginResponse>(
+      const response = await axios.post(
         "http://localhost:8000/user/login_user",
         payload
       );

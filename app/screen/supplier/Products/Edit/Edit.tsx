@@ -9,20 +9,24 @@ import {
 } from "@/app/Redux/features/category/categorySlice";
 import { RootState } from "@/app/Redux/store";
 import {
+  editproductAsync,
   getsingleproductAsync,
   loadsingleproductByID,
 } from "@/app/Redux/features/Product/productSlice";
+import { successtoast } from "@/app/utils/alerts/alerts";
 interface IEditProps {
   id: number;
 }
 const Edit: React.FC<IEditProps> = ({ id }) => {
-  console.log(id);
   const dispatch = useAppDispatch();
   const { categories, loading: categoryloading } = useAppSelector(
     (state: RootState) => state.category
   );
+  const { loading:productloading } = useAppSelector(
+    (state: RootState) => state.products
+  );
   const [title, setTitle] = useState("");
-  const [description,setDiscription] = useState("");
+  const [description, setDiscription] = useState("");
   const [imgcompressloading, setimgcompressloading] = useState(false);
   const [image, setImage] = useState<File | any>("");
   const [categoryId, setCategoryId] = useState("");
@@ -61,13 +65,14 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
         dispatch(loadsingleproductByID({ id: Number(id) }))
           .unwrap()
           .then((res) => {
-              setTitle(res?.data?.name);
-              setDiscription(res?.data?.description);
-              setCategoryId(res?.data?.category?.id)
-              setSubCategory(res?.data?.subcategory?.id)
-              setOriginalPrice(res?.data?.originalprice);
-              setDiscountPrice(res?.data?.discountprice);
-              setStock(res?.data?.stock);
+            console.log(res)
+            setTitle(res?.data?.name);
+            setDiscription(res?.data?.description);
+            setCategoryId(res?.data?.category?.id)
+            setsubcategory_id(res?.data?.subcategory?.id)
+            setOriginalPrice(res?.data?.originalprice);
+            setDiscountPrice(res?.data?.discountprice);
+            setStock(res?.data?.stock);
           })
           .catch((err) => {
             console.log(err);
@@ -86,15 +91,36 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
         .then((res) => {
           setSubCategory(res.data);
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   }, [categoryId]);
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(title);
+    // console.log(title);
+    const formdata = new FormData();
+    formdata.append("name", title);
+    formdata.append("description", description);
+    formdata.append("category_id", categoryId);
+    formdata.append("subcategory_id", subcategory_id);
+    formdata.append("originalprice", originalPrice);
+    formdata.append("discountprice", discountPrice);
+    formdata.append("stock", stock);
+
+    dispatch(editproductAsync({id:Number(id),data:formdata})).unwrap().then((res)=>{
+         successtoast(res.message);
+         console.log(res.data);
+    }).catch((error)=>{
+           console.log(error);
+    });
+    // dispatch(editproductAsync({id:Number(id),data:formdata})).unwrap().then((res)=>{
+    //       console.log(res.data);
+    // })
+
   };
+
+  console.log(description)
 
   return (
     <>
@@ -119,8 +145,8 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
               </label>
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={description}
+                onChange={(e) => setDiscription(e.target.value)}
                 className="input"
               />
             </div>
@@ -151,7 +177,7 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
               <label htmlFor="" className="mb-1">
                 Sub-category
               </label>
-              <select value={subcategory} name="subcategory" className="input">
+              <select name="subcategory" className="input" value={subcategory_id}>
                 <option value="" hidden>
                   select sub-category
                 </option>
@@ -182,7 +208,7 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
               </label>
               <input
                 type="number"
-                value={ discountPrice}
+                value={discountPrice}
                 onChange={(e) => setDiscountPrice(e.target.value)}
                 className="input"
               />
@@ -218,7 +244,7 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
                 type="submit"
                 className="submit_btn"
                 // value={blogloading ? "Blog is Publishing" : (imgcompressloading ? "Image is Compressing" : "Publish")}
-                value={"Add Product"}
+                value={productloading?"wait":"Edit Product"}
                 disabled={imgcompressloading}
               />
             </div>

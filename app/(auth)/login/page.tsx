@@ -35,7 +35,20 @@ function Login() {
             email: value.email,
             password: value.password
         }
-        dispatch(loginUserAsync(payload))
+        dispatch(loginUserAsync(payload)).unwrap().then((response) => {
+            console.log(response);
+            if (response?.userType === "SUPPLIER") {
+                successtoast('supplier logged in successfully')
+                router.replace("/supplier/dashboard");
+                dispatch(clearState());
+            } else {
+                successtoast('user logged in successfully')
+                router.replace("/dashboard/home");
+                dispatch(clearState());
+            }
+        }).catch((err) => {
+
+        })
     }
 
     useEffect(() => {
@@ -58,9 +71,9 @@ function Login() {
             }
         }
         if (success) {
-            successtoast('user logged in successfully')
-            router.replace("/dashboard/home");
-            dispatch(clearState());
+            // successtoast('user logged in successfully')
+            // router.replace("/dashboard/home");
+            // dispatch(clearState());
         }
     }, [error, success]);
     return (
