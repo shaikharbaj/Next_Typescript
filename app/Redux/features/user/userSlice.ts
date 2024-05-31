@@ -61,21 +61,41 @@ export const loadAllUserAsync = createAsyncThunk(
 
 //toggle status
 
-export const togglestatus = createAsyncThunk("user/togglestatus", async (id: number, thunkAPI) => {
-  try {
-    const response = await privateRequest.patch(`http://localhost:8000/user/togglestatus/${id}`);
-    return response.data.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      if (error.response && error.response.data.message) {
-        return thunkAPI.rejectWithValue(error.response.data.message);
+export const togglestatus = createAsyncThunk(
+  "user/togglestatus",
+  async (id: number, thunkAPI) => {
+    try {
+      const response = await privateRequest.patch(
+        `http://localhost:8000/user/togglestatus/${id}`
+      );
+      return response.data.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response && error.response.data.message) {
+          return thunkAPI.rejectWithValue(error.response.data.message);
+        }
       }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
     }
-    // Handle other errors not related to Axios
-    return thunkAPI.rejectWithValue("An unknown error occurred");
   }
-})
+);
 
+//add address....
+export const addAddressAsync = createAsyncThunk(
+  "user/addAddress",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        "http://localhost:8000/user/add_address",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "users",
@@ -105,20 +125,21 @@ const userSlice = createSlice({
       })
       .addCase(togglestatus.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload)
-        console.log(state.users)
+        console.log(action.payload);
+        console.log(state.users);
         const updatedData = action.payload;
         let newData = state.users.map((u: any) => {
           if (Number(u.id) === Number(updatedData.id)) {
             return updatedData;
           }
-          return u
-        })
+          return u;
+        });
         state.users = newData;
       })
       .addCase(togglestatus.rejected, (state, action) => {
         state.loading = false;
-      });
+      })
+      ;
   },
 });
 

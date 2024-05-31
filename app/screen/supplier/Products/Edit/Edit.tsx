@@ -22,7 +22,7 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
   const { categories, loading: categoryloading } = useAppSelector(
     (state: RootState) => state.category
   );
-  const { loading:productloading } = useAppSelector(
+  const { loading: productloading } = useAppSelector(
     (state: RootState) => state.products
   );
   const [title, setTitle] = useState("");
@@ -65,11 +65,11 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
         dispatch(loadsingleproductByID({ id: Number(id) }))
           .unwrap()
           .then((res) => {
-            console.log(res)
+            console.log(res);
             setTitle(res?.data?.name);
             setDiscription(res?.data?.description);
-            setCategoryId(res?.data?.category?.id)
-            setsubcategory_id(res?.data?.subcategory?.id)
+            setCategoryId(res?.data?.category?.id);
+            setsubcategory_id(res?.data?.subcategory?.id);
             setOriginalPrice(res?.data?.originalprice);
             setDiscountPrice(res?.data?.discountprice);
             setStock(res?.data?.stock);
@@ -91,7 +91,7 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
         .then((res) => {
           setSubCategory(res.data);
         })
-        .catch((err) => { });
+        .catch((err) => {});
     }
   }, [categoryId]);
 
@@ -108,19 +108,21 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
     formdata.append("discountprice", discountPrice);
     formdata.append("stock", stock);
 
-    dispatch(editproductAsync({id:Number(id),data:formdata})).unwrap().then((res)=>{
-         successtoast(res.message);
-         console.log(res.data);
-    }).catch((error)=>{
-           console.log(error);
-    });
+    dispatch(editproductAsync({ id: Number(id), data: formdata }))
+      .unwrap()
+      .then((res) => {
+        successtoast(res.message);
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     // dispatch(editproductAsync({id:Number(id),data:formdata})).unwrap().then((res)=>{
     //       console.log(res.data);
     // })
-
   };
 
-  console.log(description)
+  console.log(description);
 
   return (
     <>
@@ -177,7 +179,11 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
               <label htmlFor="" className="mb-1">
                 Sub-category
               </label>
-              <select name="subcategory" className="input" value={subcategory_id}>
+              <select
+                name="subcategory"
+                className="input"
+                value={subcategory_id}
+              >
                 <option value="" hidden>
                   select sub-category
                 </option>
@@ -225,7 +231,7 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
               />
             </div>
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <label htmlFor="image" className="mb-1 image_title">
                 Upload Image
               </label>
@@ -234,17 +240,18 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
                 className="image_input"
                 id="image"
                 onChange={HandleFileChange}
+                disabled
               />
-            </div>
-            <div className="preview mt-2">
+            </div> */}
+            {/* <div className="preview mt-2">
               {image && <img src={URL.createObjectURL(image)} alt="" />}
-            </div>
+            </div> */}
             <div className="mt-2">
               <input
                 type="submit"
                 className="submit_btn"
                 // value={blogloading ? "Blog is Publishing" : (imgcompressloading ? "Image is Compressing" : "Publish")}
-                value={productloading?"wait":"Edit Product"}
+                value={productloading ? "wait" : "Edit Product"}
                 disabled={imgcompressloading}
               />
             </div>

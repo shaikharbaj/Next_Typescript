@@ -1,14 +1,19 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
+import {
+  addAddressAsync,
+  loadAllAddressOfUserAsync,
+} from "@/app/Redux/features/auth/authSlice";
 import { orderproductAsync } from "@/app/Redux/features/cart/cartSlice";
 import { RootState } from "@/app/Redux/store";
 import Loading from "@/app/components/Loading/Loading";
 import Navbar from "@/app/components/Navbar/Navbar";
 import CheckoutProductCard from "@/app/components/checkoutproductcard/CheckoutProductCard";
 import { successtoast } from "@/app/utils/alerts/alerts";
+import { validateaddressdata } from "@/app/utils/validation/addaddressValidation";
 import { validatedata } from "@/app/utils/validation/checkoutvalidation";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 
 interface IError {
   shippingAddressLine1?: string;
@@ -23,6 +28,9 @@ interface IError {
 const page = () => {
   const { cartItem, loading } = useAppSelector(
     (state: RootState) => state.cart
+  );
+  const { customerAddress, loading: addressloading } = useAppSelector(
+    (state: RootState) => state.auth
   );
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -39,7 +47,16 @@ const page = () => {
   const [grandTotal, setGrandTotal] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("CASH_ON_DELIVERY");
   const [error, setError] = useState<IError>({});
-  const [] = useState("");
+  const [addressErrors, setAddressErrors] = useState<any>({});
+  const [showaddAddress, setShowAddress] = useState(false);
+  const [newAddress, setNewAddress] = useState({
+    addressLine1: "",
+    country: "india",
+    state: "",
+    city: "",
+    phone_number: "",
+    zipcode: "",
+  });
 
   //   if(loading){
   //       return <Loading/>
@@ -77,8 +94,16 @@ const page = () => {
     }
   }, [cartItem]);
 
-  console.log(cartItem)
+  //loadaddress....
+  useEffect(() => {
+    dispatch(loadAllAddressOfUserAsync());
+  }, []);
 
+  const AddresschangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewAddress((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
   const submitHandler = () => {
     const data: any = {
       shippingName,
@@ -101,7 +126,7 @@ const page = () => {
           productId: Number(p.product.id),
           quantity: Number(p.quantity),
           price: parseFloat(p.product.discountprice),
-          supplierId:Number(p?.product?.supplier_id)
+          supplierId: Number(p?.product?.supplier_id),
         };
       });
       const payload = {
@@ -132,6 +157,41 @@ const page = () => {
         });
     }
   };
+
+  const AddAddressHandler = () => {
+    const payload: any = {
+      country: newAddress.country,
+      state: newAddress.state,
+      city: newAddress.city,
+      zipcode: Number(newAddress.zipcode),
+      phone_number: Number(newAddress.phone_number),
+      addressLine1: newAddress.addressLine1,
+    };
+    const validate: any = validateaddressdata(payload);
+
+    if (Object.keys(validate)?.length > 0) {
+      setAddressErrors(validate);
+    } else {
+      dispatch(addAddressAsync(payload))
+        .unwrap()
+        .then((res) => {
+          successtoast(res?.message);
+          setShowAddress(false);
+          setNewAddress({
+            addressLine1: "",
+            country: "india",
+            state: "",
+            city: "",
+            phone_number: "",
+            zipcode: "",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -147,7 +207,7 @@ const page = () => {
                 return <CheckoutProductCard data={p} key={p?.product.id} />;
               })}
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-gray-900">
                 Delivery Details.
               </h2>
 
@@ -329,32 +389,207 @@ const page = () => {
                     <p className="error">{error?.shippingZipCode}</p>
                   )}
                 </div>
+              </div>
+              <hr />
 
-                {/* <div className="sm:col-span-2">
-                  <button
-                    type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      viewBox="0 0 24 24"
+              {/* for add address........................ */}
+              <div className="">
+                <button
+                  className="mt-4 w-full rounded-md bg-gray-900 px-6 py-2 font-medium text-white"
+                  onClick={() => setShowAddress(!showaddAddress)}
+                >
+                  select Another ADDRESS{" "}
+                </button>
+                <form className="mt-5 grid gap-6">
+                  <div className="relative">
+                    <input
+                      className="peer hidden"
+                      id="radio_1"
+                      type="radio"
+                      name="radio"
+                      checked
+                    />
+                    <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
+                    <label
+                      className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
+                      htmlFor="radio_1"
                     >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 12h14m-7 7V5"
+                      <img
+                        className="w-14 object-contain"
+                        src="/images/naorrAeygcJzX0SyNI4Y0.png"
+                        alt=""
                       />
-                    </svg>
-                    Add new address
-                  </button>
-                </div> */}
+                      <div className="ml-5">
+                        <span className="mt-2 font-semibold">
+                          Fedex Delivery
+                        </span>
+                        <p className="text-slate-500 text-sm leading-6">
+                          Delivery: 2-4 Days
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </form>
+                <button
+                  className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-2 font-medium text-white"
+                  onClick={() => setShowAddress(!showaddAddress)}
+                >
+                  + ADD NEW ADDRESS{" "}
+                </button>
+                {showaddAddress && (
+                  <div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <div className="mb-2 flex items-center gap-2">
+                          <label
+                            htmlFor="select-country-input-3"
+                            className="block text-sm font-medium"
+                          >
+                            {" "}
+                            Country*{" "}
+                          </label>
+                        </div>
+                        <select
+                          value={shippingCountry}
+                          onChange={(e) =>
+                            setNewAddress((prev) => {
+                              return { ...prev, country: "india" };
+                            })
+                          }
+                          id="select-country-input-3"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm font-bold focus:border-primary-500"
+                        >
+                          <option value={"india"}>India</option>
+                        </select>
+                        {addressErrors?.country && (
+                          <p className="error">{addressErrors?.country}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <div className="mb-2 flex items-center gap-2">
+                          <label
+                            htmlFor="select-state-input-3"
+                            className="block text-sm font-medium"
+                          >
+                            {" "}
+                            State*{" "}
+                          </label>
+                        </div>
+                        <input
+                          type="text"
+                          id="select-state-input-3"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm font-bold focus:border-primary-500"
+                          name="state"
+                          placeholder="state"
+                          value={newAddress.state}
+                          onChange={AddresschangeHandler}
+                          required
+                        />
+                        {addressErrors?.state && (
+                          <p className="error">{addressErrors?.state}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="city"
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          {" "}
+                          city*{" "}
+                        </label>
+                        <input
+                          type="text"
+                          id="city"
+                          name="city"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm font-bold focus:border-primary-500"
+                          placeholder="name@flowbite.com"
+                          value={newAddress.city}
+                          onChange={AddresschangeHandler}
+                          required
+                        />
+                        {addressErrors?.city && (
+                          <p className="error">{addressErrors?.city}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="phone-input-3"
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          {" "}
+                          Phone Number*{" "}
+                        </label>
+                        <input
+                          type="number"
+                          id="phone-input-3"
+                          name="phone_number"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm font-bold focus:border-primary-500"
+                          value={newAddress.phone_number}
+                          placeholder="phone_number"
+                          onChange={AddresschangeHandler}
+                          required
+                        />
+                        {addressErrors?.phone_number && (
+                          <p className="error">{addressErrors?.phone_number}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="company_name"
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          {" "}
+                          Address{" "}
+                        </label>
+                        <input
+                          type="text"
+                          id="company_name"
+                          name="addressLine1"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm font-bold focus:border-primary-500"
+                          placeholder="floatno / street no"
+                          value={newAddress.addressLine1}
+                          onChange={AddresschangeHandler}
+                          required
+                        />
+                        {addressErrors?.addressLine1 && (
+                          <p className="error">{addressErrors?.addressLine1}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="zipcode"
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          {" "}
+                          zipcode*{" "}
+                        </label>
+                        <input
+                          type="number"
+                          id="zipcode"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm font-bold focus:border-primary-500"
+                          placeholder="123456"
+                          name="zipcode"
+                          onChange={AddresschangeHandler}
+                          value={newAddress.zipcode}
+                          required
+                        />
+                        {addressErrors?.zipcode && (
+                          <p className="error">{addressErrors?.zipcode}</p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-2 font-medium text-white"
+                      onClick={AddAddressHandler}
+                    >
+                      ADD{" "}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -369,7 +604,7 @@ const page = () => {
                   id="radio_1"
                   type="radio"
                   name="radio"
-                  checked
+                  // checked
                 />
                 <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
                 <label
@@ -389,17 +624,6 @@ const page = () => {
                   </div>
                 </label>
               </div>
-              {/* <div className="relative">
-                            <input className="peer hidden" id="radio_2" type="radio" name="radio" checked />
-                            <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
-                            <label className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4" htmlFor="radio_2">
-                                <img className="w-14 object-contain" src="/images/oG8xsl3xsOkwkMsrLGKM4.png" alt="" />
-                                <div className="ml-5">
-                                    <span className="mt-2 font-semibold">Fedex Delivery</span>
-                                    <p className="text-slate-500 text-sm leading-6">Delivery: 2-4 Days</p>
-                                </div>
-                            </label>
-                        </div> */}
             </form>
           </>
           <p className="text-xl font-medium pt-4">Payment Details</p>

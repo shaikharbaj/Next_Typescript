@@ -18,6 +18,7 @@ const AllProduct = () => {
   if (loading) {
     return <Loading />;
   }
+  console.log(products)
   return (
     <>
       <Navbar />

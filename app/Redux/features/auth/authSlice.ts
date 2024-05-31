@@ -7,6 +7,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 let initialState: any = {
   userinfo: Helper.getUser() || null,
   token: Helper.getLocalToken() || null,
+  customerAddress: [],
   error: null,
   success: null,
   loading: null,
@@ -339,6 +340,46 @@ export const resetpasswordwithlinkAsync = createAsyncThunk(
   }
 );
 
+//add address....
+interface IAddAddressPayload {
+  country: string;
+  state: string;
+  city: string;
+  addressLine1: string;
+  zipcode: number;
+  phone_number: number;
+}
+export const addAddressAsync = createAsyncThunk(
+  "user/addAddress",
+  async (payload:IAddAddressPayload, thunkAPI) => {
+    try {
+      console.log(payload)
+      const response = await privateRequest.post(
+        "http://localhost:8000/user/add_address",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const loadAllAddressOfUserAsync = createAsyncThunk(
+  "user/loadalladdressofuser",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        "http://localhost:8000/user/getalladdressofuser",
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const authSlice = createSlice({
   initialState,
   name: "auth",
@@ -505,7 +546,28 @@ const authSlice = createSlice({
       .addCase(resetpasswordwithlinkAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(addAddressAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(addAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload.data);
+      })
+      .addCase(addAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(loadAllAddressOfUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loadAllAddressOfUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload.data);
+      })
+      .addCase(loadAllAddressOfUserAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      ;
   },
 });
 

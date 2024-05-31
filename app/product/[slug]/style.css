@@ -67,6 +67,9 @@
     background-color: black;
     color: white;
 }
+.primary_image{
+      border: 6px solid rgb(84, 233, 84);
+}
 
 @media (min-width: 640px) {
     .count_wrapper {

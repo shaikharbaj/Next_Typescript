@@ -17,6 +17,7 @@ import { successtoast } from "@/app/utils/alerts/alerts";
 const ProductDescription = () => {
   const { slug } = useParams();
   const { loading } = useAppSelector((state: RootState) => state.products);
+  const [selected_image, setSelectedImage] = useState<any>(0);
   const { cartItem, loading: cartitemloading } = useAppSelector(
     (state: RootState) => state.cart
   );
@@ -32,6 +33,9 @@ const ProductDescription = () => {
         .unwrap()
         .then((res) => {
           setProduct(res.data);
+          setSelectedImage(
+            res?.data?.productImages?.findIndex((i: any) => i?.isThumbnail)
+          );
         })
         .catch((err) => {
           console.log(err);
@@ -73,13 +77,12 @@ const ProductDescription = () => {
   };
 
   const isProductInCart = cartItem?.findIndex(
-    (i: any) => Number(i?.product?.id) === Number(product.id)
+    (i: any) => Number(i?.product?.id) === Number(product?.id)
   );
 
   if (loading && cartitemloading) {
     return <Loading />;
   }
-  console.log(isProductInCart)
   return (
     <>
       <Navbar />
@@ -112,8 +115,8 @@ const ProductDescription = () => {
                   </svg>
                 </button>
                 <img
-                  src={product?.image}
-                  alt="sneaker"
+                  src={product?.productImages?.[selected_image]?.url}
+                  alt="product"
                   className="block sm:rounded-xl xl:w-[70%] xl:rounded-xl m-auto pointer-events-none transition duration-300 lg:w-3/4 lg:pointer-events-auto lg:cursor-pointer lg:hover:shadow-xl"
                   id="hero"
                 />
@@ -140,60 +143,28 @@ const ProductDescription = () => {
               </picture>
 
               <div className="thumbnails hidden justify-between gap-4 m-auto sm:flex sm:flex-col sm:justify-start sm:items-center sm:h-fit md:gap-5 lg:flex-row">
-                <div
-                  id="1"
-                  className="w-1/5 cursor-pointer rounded-xl sm:w-28 md:w-32 lg:w-[72px] xl:w-[78px] ring-active"
-                >
-                  <img
-                    src="https://ecommerce-product-page-bravonoid.vercel.app/images/image-product-1.jpg"
-                    alt="thumbnail"
-                    className="rounded-xl hover:opacity-50 transition active"
-                    id="thumb-1"
-                  />
-                </div>
-
-                <div
-                  id="2"
-                  className="w-1/5 cursor-pointer rounded-xl sm:w-28 md:w-32 lg:w-[72px] xl:w-[78px]"
-                >
-                  <img
-                    src="https://ecommerce-product-page-bravonoid.vercel.app/images/image-product-1.jpg"
-                    alt="thumbnail"
-                    className="rounded-xl hover:opacity-50 transition"
-                    id="thumb-2"
-                  />
-                </div>
-
-                <div
-                  id="3"
-                  className="w-1/5 cursor-pointer rounded-xl sm:w-28 md:w-32 lg:w-[72px] xl:w-[78px]"
-                >
-                  <img
-                    src="https://ecommerce-product-page-bravonoid.vercel.app/images/image-product-2.jpg"
-                    alt="thumbnail"
-                    className="rounded-xl hover:opacity-50 transition"
-                    id="thumb-3"
-                  />
-                </div>
-
-                <div
-                  id="4"
-                  className="w-1/5 cursor-pointer rounded-xl sm:w-28 md:w-32 lg:w-[72px] xl:w-[78px]"
-                >
-                  <img
-                    src="https://ecommerce-product-page-bravonoid.vercel.app/images/image-product-3.jpg"
-                    alt="thumbnail"
-                    className="rounded-xl hover:opacity-50 transition"
-                    id="thumb-4"
-                  />
-                </div>
+                {product?.productImages?.map((i: any, index: number) => {
+                  return (
+                    <div className="w-1/5 cursor-pointer rounded-xl sm:w-28 md:w-32 lg:w-[72px] xl:w-[78px] ring-active">
+                      <img
+                        src={i?.url}
+                        alt="thumbnail"
+                        className={`rounded-xl hover:opacity-50 transition active ${
+                          selected_image == index ? "primary_image" : ""
+                        }`}
+                        onClick={() => setSelectedImage(index)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
             {/* <!-- Text --> */}
             <section className="w-full p-6 lg:mt-36 lg:pr-20 lg:py-10 2xl:pr-40 2xl:mt-40">
               <h4 className="font-bold text-orange mb-2 uppercase text-xs tracking-widest">
-                {/* Sneaker Company */}{`${product?.category?.name}/${product?.subcategory?.name}`}
+                {/* Sneaker Company */}
+                {`${product?.category?.name}/${product?.subcategory?.name}`}
               </h4>
               <h1 className="text-very-dark mb-4 font-bold text-3xl lg:text-4xl">
                 {product?.name}
@@ -215,7 +186,7 @@ const ProductDescription = () => {
               </div>
 
               <div className="flex flex-col gap-5 mb-16 sm:flex-row lg:mb-0">
-                {(isProductInCart!== -1) ? (
+                {isProductInCart !== -1 ? (
                   <>
                     <div className="count_wrapper">
                       <div
@@ -248,7 +219,11 @@ const ProductDescription = () => {
                   </>
                 ) : (
                   <>
-                    <button className="add-to-cart-btn" id="add-cart" onClick={()=>AddToCartHandler(product?.id)}>
+                    <button
+                      className="add-to-cart-btn"
+                      id="add-cart"
+                      onClick={() => AddToCartHandler(product?.id)}
+                    >
                       <svg
                         width="16"
                         height="16"

@@ -80,7 +80,13 @@ const Cart = () => {
                           return (
                             <div className="cart_menu" key={item?.id}>
                               <img
-                                src={item?.product?.image}
+                                src={
+                                  item?.product?.productImages[
+                                    item?.product?.productImages.findIndex(
+                                      (ele: any) => ele.isThumbnail == true
+                                    )
+                                  ]?.url
+                                }
                                 className="border rounded me-3"
                               />
                               <div className="details">
@@ -190,7 +196,12 @@ const Cart = () => {
                   </div>
 
                   <div className="mt-3">
-                    <Link href={"/cart/checkout"} className="btn-checkout w-100 shadow-0 mb-2">Checkout</Link>
+                    <Link
+                      href={"/cart/checkout"}
+                      className="btn-checkout w-100 shadow-0 mb-2"
+                    >
+                      Checkout
+                    </Link>
 
                     {/* <a onClick={gotohome} className="btn btn-light w-100 border mt-2"> Back to Home </a> */}
                   </div>
