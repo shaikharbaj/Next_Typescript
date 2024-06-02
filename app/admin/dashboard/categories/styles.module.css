@@ -41,3 +41,13 @@
       margin: auto;
       max-height: 100px;
 }
+.inputbox{
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 60%;
+    padding: .3rem .4rem;
+}
+.inputbox input{
+    width: 100%;
+    border: none;
+    outline: none;
+}

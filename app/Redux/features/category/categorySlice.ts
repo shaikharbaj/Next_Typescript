@@ -2,12 +2,21 @@ import privateRequest from "@/app/Interceptor/interceptor";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+type metaType = {
+  total: number;
+  lastPage: number;
+  currentPage: number;
+  perPage: number;
+  prev: number | null;
+  next: number | null;
+};
 interface IInitialState {
   loading: boolean;
   categories: any;
   activeCategories: any;
   activeSubCategories: any;
   subcategories: any;
+  meta: metaType;
 }
 const initialState: IInitialState = {
   loading: false,
@@ -15,14 +24,26 @@ const initialState: IInitialState = {
   activeCategories: [],
   activeSubCategories: [],
   subcategories: [],
+  meta: {
+    total: 0,
+    lastPage: 0,
+    currentPage: 1,
+    perPage: 0,
+    prev: null,
+    next: null,
+  },
 };
 
+type Payload = {
+  currentpage: number;
+  searchTerm: string;
+};
 export const loadCategoriesAsync = createAsyncThunk(
   "categories/loadall",
-  async (payload, thunkAPI) => {
+  async (payload:Payload, thunkAPI) => {
     try {
       const response = await privateRequest.get(
-        "http://localhost:8000/category/all"
+        `http://localhost:8000/category/all?page=${payload.currentpage}&searchTerm=${payload.searchTerm}`
       );
       return await response.data;
     } catch (error) {
@@ -404,7 +425,9 @@ const categorySlice = createSlice({
         state.loading = true;
       })
       .addCase(loadCategoriesAsync.fulfilled, (state, action) => {
-        state.categories = action.payload.data;
+        console.log(action.payload);
+        state.categories = action.payload.data.data;
+        state.meta = action.payload.data.meta;
         state.loading = false;
       })
       .addCase(loadCategoriesAsync.rejected, (state, action) => {

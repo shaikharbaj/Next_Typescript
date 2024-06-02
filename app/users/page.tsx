@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination/Pagination';
 import Loading from '../components/Loading/Loading';
 import { clearstate, loadAllUserAsync } from '../Redux/features/user/userSlice';
 import { errortoast, successtoast } from '../utils/alerts/alerts';
+import { RootState } from '../Redux/store';
 
 
 type userType = {
@@ -24,7 +25,7 @@ type userType = {
     }
 }
 const UsersPage = () => {
-    const { users, meta, loading, error, success } = useAppSelector(state => state.users);
+    const { users, meta, loading, error, success } = useAppSelector((state:RootState) => state.users);
     const [searchTerm, setSerchText] = useState('');
     const debauncedValue = useDebounce(searchTerm, 600);
     const [currentpage, setCurrentPage] = useState(1);

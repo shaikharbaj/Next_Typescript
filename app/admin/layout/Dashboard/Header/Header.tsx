@@ -27,8 +27,10 @@ const Header: React.FunctionComponent<IHeaderProps> = ({ }) => {
     // //Function to handel logout
     const handelLogout = () => {
         dispatch(logout());
-        successtoast("logged out successfully...!")
-        router.replace("/admin/login");
+        successtoast("logged out successfully...!");
+        if (typeof window !== "undefined") {
+            window.location.href = "/admin/login"; // This will trigger a full page reload
+        }
     };
 
     useEffect(() => {

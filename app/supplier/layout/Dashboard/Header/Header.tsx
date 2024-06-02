@@ -24,12 +24,12 @@ const Header: React.FunctionComponent<IHeaderProps> = ({}) => {
   const { userinfo } = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
 
-  // //Function to handel logout
+  // //Function to handel logout.......
   const handelLogout = () => {
     dispatch(logout());
     successtoast("logged out successfully...!");
     if (typeof window !== "undefined") {
-      window.location.href = "/supplier/login"; // This will trigger a full page reload
+      window.location.href = "/login"; // This will trigger a full page reload
     }
   };
 

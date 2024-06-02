@@ -4,26 +4,42 @@ import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks'
 import styles from './styles.module.css'
 import { deletecategoryAsync, loadCategoriesAsync, togglecategorystatusAsync } from '@/app/Redux/features/category/categorySlice';
 import { RootState } from '@/app/Redux/store';
-import React, { useEffect } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { errortoast, successtoast } from '@/app/utils/alerts/alerts';
 import Link from 'next/link';
 import Loading from '@/app/components/Loading/Loading';
+import useDebounce from '@/app/Hook/useDebounce';
+import Pagination from '@/app/components/Pagination/Pagination';
 
 const Category = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const { loading, categories } = useAppSelector((state: RootState) => state.category);
+    const { loading, categories,meta } = useAppSelector((state: RootState) => state.category);
+    console.log(categories);
+    const [searchTerm, setSerchText] = useState('');
+    const debauncedValue = useDebounce(searchTerm, 600);
+    const [currentpage, setCurrentPage] = useState(1);
+    const [perPage, setPerPage] = useState(10);
+    const handlesearch = (e: ChangeEvent<HTMLInputElement>) => {
+        setSerchText(e.target.value);
+    }
+
     const navigateToEdit = (id: number) => {
         router.push(`/admin/dashboard/categories/edit/${id}`)
     }
-    useEffect(() => {
-        dispatch(loadCategoriesAsync()).unwrap().then((res) => {
 
-        }).catch((err) => {
-            console.log(err);
-        });
-    }, [])
+
+    useEffect(() => {
+        dispatch(loadCategoriesAsync({ currentpage, searchTerm }))
+    }, [debauncedValue, currentpage]);
+    // useEffect(() => {
+    //     dispatch(loadCategoriesAsync()).unwrap().then((res) => {
+
+    //     }).catch((err) => {
+    //         console.log(err);
+    //     });
+    // }, [])
 
     const deleteHandler = (id: number) => {
         dispatch(deletecategoryAsync(id)).unwrap().then((res) => {
@@ -33,13 +49,13 @@ const Category = () => {
         });
     }
     const changeStatusToggle = (id: number) => {
-             dispatch(togglecategorystatusAsync({id})).unwrap().then((res)=>{
-                   console.log(res);
-                   successtoast(res.message);
-             }).catch((error)=>{
-                console.log(error);
-                   errortoast(error.message);
-             });
+        dispatch(togglecategorystatusAsync({ id })).unwrap().then((res) => {
+            console.log(res);
+            successtoast(res.message);
+        }).catch((error) => {
+            console.log(error);
+            errortoast(error.message);
+        });
     }
 
     if (loading) {
@@ -48,6 +64,9 @@ const Category = () => {
     return (
         <>
             <div className={styles.wrapper}>
+                <div className={`${styles.inputbox} mt-5`}>
+                    <input type="text" onChange={handlesearch} value={searchTerm} placeholder='search something here.....' />
+                </div>
                 <div className={`${styles.add_btn_wrapper} mt-4`}>
                     <button className='me-2' onClick={() => router.push("/admin/dashboard/categories/add")}>ADD CATEGORY.</button>
 
@@ -71,7 +90,7 @@ const Category = () => {
                     </thead>
                     <tbody>
                         {
-                            categories.map((c: any, index:number) => {
+                            categories?.map((c: any, index: number) => {
                                 return (
                                     <tr key={c.id}>
                                         <td>{index + 1}</td>
@@ -101,6 +120,7 @@ const Category = () => {
                         }
                     </tbody>
                 </table>
+                <Pagination currentpage={currentpage} setCurrentPage={setCurrentPage} total={meta?.total} perpage={perPage} />
             </div>
 
 

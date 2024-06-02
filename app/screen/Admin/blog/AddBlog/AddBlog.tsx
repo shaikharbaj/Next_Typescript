@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import imageCompression from 'browser-image-compression'
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 import { RootState } from '@/app/Redux/store';
-import { getsubcategoryById, loadCategoriesAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice';
+import { getsubcategoryById, loadAllActiveCategoriesAsync, loadCategoriesAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice';
 import { addblogAsync } from '@/app/Redux/features/blog/blogSlice';
 import { successtoast } from '@/app/utils/alerts/alerts';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,7 @@ const AddBlog = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { loading: blogloading, blogs } = useAppSelector((state: RootState) => state.blog);
-    const { loading, categories, subcategories } = useAppSelector((state: RootState) => state.category);
+    const { loading, activeCategories:categories, activeSubCategories:subcategories } = useAppSelector((state: RootState) => state.category);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
@@ -68,7 +68,7 @@ const AddBlog = () => {
 
     }
     useEffect(() => {
-        dispatch(loadCategoriesAsync()).unwrap().then((res) => {
+        dispatch(loadAllActiveCategoriesAsync()).unwrap().then((res) => {
             //    setCategory(res.data);
         }).catch((error) => {
             console.log(error);
