@@ -125,8 +125,7 @@ const userSlice = createSlice({
       })
       .addCase(togglestatus.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
-        console.log(state.users);
+
         const updatedData = action.payload;
         let newData = state.users.map((u: any) => {
           if (Number(u.id) === Number(updatedData.id)) {

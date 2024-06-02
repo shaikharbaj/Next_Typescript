@@ -351,16 +351,16 @@ interface IAddAddressPayload {
 }
 export const addAddressAsync = createAsyncThunk(
   "user/addAddress",
-  async (payload:IAddAddressPayload, thunkAPI) => {
+  async (payload: IAddAddressPayload, thunkAPI) => {
     try {
-      console.log(payload)
+      console.log(payload);
       const response = await privateRequest.post(
         "http://localhost:8000/user/add_address",
         payload
       );
       return response.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -370,11 +370,11 @@ export const loadAllAddressOfUserAsync = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const response = await privateRequest.get(
-        "http://localhost:8000/user/getalladdressofuser",
+        "http://localhost:8000/user/getalladdressofuser"
       );
       return response.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -552,6 +552,7 @@ const authSlice = createSlice({
       })
       .addCase(addAddressAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.customerAddress.push(action.payload.data)
         console.log(action.payload.data);
       })
       .addCase(addAddressAsync.rejected, (state, action) => {
@@ -562,12 +563,11 @@ const authSlice = createSlice({
       })
       .addCase(loadAllAddressOfUserAsync.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload.data);
+        state.customerAddress = action.payload.data;
       })
       .addCase(loadAllAddressOfUserAsync.rejected, (state, action) => {
         state.loading = false;
-      })
-      ;
+      });
   },
 });
 

@@ -148,22 +148,45 @@ body {
   border: 1px solid rgb(164, 164, 241);
   background: #ffff;
   color: rgb(160, 160, 236);
-  padding: 0 .2rem;
-  border-radius: .2rem;
+  padding: 0 0.2rem;
+  border-radius: 0.2rem;
   font-size: 12px;
 }
 .o_cancelled {
   border: 1px solid red;
   background: #ffff;
-  color:rgb(212, 47, 47);
-  padding: 0 .2rem;
-  border-radius: .2rem;
+  color: rgb(212, 47, 47);
+  padding: 0 0.2rem;
+  border-radius: 0.2rem;
   font-size: 12px;
 }
-.supplier_order_update_btn{
-     border: 1px solid black;
-     padding: .1rem .6rem;
-     background-color: black;
-     color: white;
-     font-weight: bold;
+.supplier_order_update_btn {
+  border: 1px solid black;
+  padding: 0.1rem 0.6rem;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+}
+.add_checkbox {
+  box-sizing: content-box;
+  display: block;
+  position: absolute;
+  right: 1rem;
+  top: 40%;
+  border-radius: 9999px;
+  border-width: 8px;
+  border-color: #d1d5db;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: #ffffff;
+}
+.add_checked{
+     background-color: rgb(227, 221, 221);
+}
+.add_checkbox_checked{
+  border-color: #374151;
+}
+.check_bx{
+      float: none !important;
+      margin-right: .4rem;
 }

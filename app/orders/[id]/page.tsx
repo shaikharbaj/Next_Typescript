@@ -51,7 +51,11 @@ const OrderDetailsPage = ({ params }: { params: { id: number } }) => {
                     <div className="pb-4 md:pb-8 w-full md:w-40">
                       <img
                         className="w-full hidden md:block"
-                        src={o?.product?.image}
+                        src={o?.product?.productImages[
+                          o?.product?.productImages?.findIndex(
+                            (ele: any) => ele.isThumbnail == true
+                          )
+                        ]?.url}
                         alt="product_image"
                       />
                     </div>

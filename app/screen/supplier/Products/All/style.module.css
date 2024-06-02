@@ -65,3 +65,13 @@
     gap: 1rem;
   }
 }
+.inputbox {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  width: 60%;
+  padding: 0.3rem 0.4rem;
+}
+.inputbox input {
+  width: 100%;
+  border: none;
+  outline: none;
+}

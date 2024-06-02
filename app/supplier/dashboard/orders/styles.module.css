@@ -1,12 +1,29 @@
 .cutomize_table {
-    width: 90% !important;
-    margin: auto;
-    margin-top: 2rem;
-    overflow-x: scroll;
+  width: 90% !important;
+  margin: auto;
+  margin-top: 1rem;
+  overflow-x: scroll;
   }
   .view_order_btn .eye_icon {
     font-size: 24px;
     padding: 0.1rem 0rem;
     font-weight: 600;
   }
+  .wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.inputbox{
+     border: 1px solid rgba(0, 0, 0, 0.3);
+     width: 60%;
+     padding: .3rem .4rem;
+}
+.inputbox input{
+     width: 100%;
+     border: none;
+     outline: none;
+}
+
   

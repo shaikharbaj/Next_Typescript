@@ -2,18 +2,18 @@
 import Loader from '@/app/components/Loader/Loader';
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks'
 import styles from './styles.module.css'
-import { deletecategoryAsync, loadCategoriesAsync } from '@/app/Redux/features/category/categorySlice';
+import { deletecategoryAsync, loadCategoriesAsync, togglecategorystatusAsync } from '@/app/Redux/features/category/categorySlice';
 import { RootState } from '@/app/Redux/store';
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation';
-import { successtoast } from '@/app/utils/alerts/alerts';
+import { errortoast, successtoast } from '@/app/utils/alerts/alerts';
 import Link from 'next/link';
+import Loading from '@/app/components/Loading/Loading';
 
 const Category = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { loading, categories } = useAppSelector((state: RootState) => state.category);
-
     const navigateToEdit = (id: number) => {
         router.push(`/admin/dashboard/categories/edit/${id}`)
     }
@@ -29,12 +29,21 @@ const Category = () => {
         dispatch(deletecategoryAsync(id)).unwrap().then((res) => {
             successtoast(res?.message);
         }).catch((err) => {
-            console.log(err);
+            errortoast(err.message);
         });
+    }
+    const changeStatusToggle = (id: number) => {
+             dispatch(togglecategorystatusAsync({id})).unwrap().then((res)=>{
+                   console.log(res);
+                   successtoast(res.message);
+             }).catch((error)=>{
+                console.log(error);
+                   errortoast(error.message);
+             });
     }
 
     if (loading) {
-        return <Loader />
+        return <Loading />
     }
     return (
         <>
@@ -52,9 +61,9 @@ const Category = () => {
                             <th>
                                 Cateogry Name
                             </th>
-                            {/* <th>
-                            ParentCategory.
-                        </th> */}
+                            <th>
+                                status
+                            </th>
                             <th>
                                 Action
                             </th>
@@ -62,13 +71,25 @@ const Category = () => {
                     </thead>
                     <tbody>
                         {
-                            categories.map((c: any, index) => {
+                            categories.map((c: any, index:number) => {
                                 return (
                                     <tr key={c.id}>
                                         <td>{index + 1}</td>
                                         <td>{c.name}</td>
-                                        {/* <td>{c?.parent_id}</td> */}
-                                        {/* <td><button className='btn btn-warning me-2' onClick={() => navigateToEdit(c.id)}>EDIT</button><button className='btn btn-danger me-2' onClick={() => deleteHandler(c.id)}>DELETE</button><button className='btn btn-success me-2' onClick={() => router.push(`/admin/dashboard/categories/${c.id}`)}>View</button></td> */}
+                                        <td>{c.category_status
+                                            ? (
+                                                <div className="form-check form-switch">
+                                                    <input className="form-check-input check_bx" type="checkbox" id="flexSwitchCheckChecked" onChange={() => changeStatusToggle(c?.id)} checked />
+                                                    <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Active</label>
+                                                </div>
+                                            ) : (
+
+                                                <div className="form-check form-switch">
+                                                    <input className="form-check-input check_bx" type="checkbox" id="flexSwitchCheckDefault" onChange={() => changeStatusToggle(c?.id)} checked={false} />
+                                                    <label className="form-check-label" htmlFor="flexSwitchCheckDefault">InActive</label>
+                                                </div>
+
+                                            )}</td>
                                         <td>
                                             <Link href={`/admin/dashboard/categories/subcategories/edit/${c.id}`} className='me-2'><i className='bx bxs-edit edit '></i></Link>
                                             <span onClick={() => deleteHandler(c?.id)}><i className='bx bxs-trash delete me-2'></i></span>

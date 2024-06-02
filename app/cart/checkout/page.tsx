@@ -13,6 +13,7 @@ import { successtoast } from "@/app/utils/alerts/alerts";
 import { validateaddressdata } from "@/app/utils/validation/addaddressValidation";
 import { validatedata } from "@/app/utils/validation/checkoutvalidation";
 import { useRouter } from "next/navigation";
+import { FaLocationDot } from "react-icons/fa6";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 interface IError {
@@ -49,6 +50,8 @@ const page = () => {
   const [error, setError] = useState<IError>({});
   const [addressErrors, setAddressErrors] = useState<any>({});
   const [showaddAddress, setShowAddress] = useState(false);
+  const [isselectanotherADDRESS, setisselectanotherADDRESS] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const [newAddress, setNewAddress] = useState({
     addressLine1: "",
     country: "india",
@@ -104,6 +107,23 @@ const page = () => {
       return { ...prev, [e.target.name]: e.target.value };
     });
   };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const selectedAddress = customerAddress?.filter((add: any) => {
+      return Number(add?.id) == Number(e.target.value);
+    })[0];
+    if (selectedAddress) {
+      setSelectedAddressId(selectedAddress?.id)
+      setShippingCountry(selectedAddress?.country);
+      setShippingState(selectedAddress?.state);
+      setShippingCity(selectedAddress?.city);
+      setShippingAddressLine1(selectedAddress.address);
+      setShippingPhone(selectedAddress?.phone_number);
+      setShippingZipCode(selectedAddress?.zipcode)
+      console.log(selectedAddress);
+    }
+  }
   const submitHandler = () => {
     const data: any = {
       shippingName,
@@ -394,42 +414,63 @@ const page = () => {
 
               {/* for add address........................ */}
               <div className="">
-                <button
-                  className="mt-4 w-full rounded-md bg-gray-900 px-6 py-2 font-medium text-white"
-                  onClick={() => setShowAddress(!showaddAddress)}
-                >
-                  select Another ADDRESS{" "}
-                </button>
-                <form className="mt-5 grid gap-6">
-                  <div className="relative">
-                    <input
-                      className="peer hidden"
-                      id="radio_1"
-                      type="radio"
-                      name="radio"
-                      checked
-                    />
-                    <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
-                    <label
-                      className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
-                      htmlFor="radio_1"
-                    >
-                      <img
-                        className="w-14 object-contain"
-                        src="/images/naorrAeygcJzX0SyNI4Y0.png"
-                        alt=""
-                      />
-                      <div className="ml-5">
-                        <span className="mt-2 font-semibold">
-                          Fedex Delivery
-                        </span>
-                        <p className="text-slate-500 text-sm leading-6">
-                          Delivery: 2-4 Days
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-                </form>
+
+                {
+                  customerAddress?.length > 0 && (
+                    <>
+                      <button
+                        className="mt-4 w-full rounded-md bg-gray-900 px-6 py-2 font-medium text-white"
+                        onClick={() => setisselectanotherADDRESS(!isselectanotherADDRESS)}
+                      >
+                        SELECT ANOTHER ADDRESS{" "}
+                      </button>
+                      {
+                        isselectanotherADDRESS && (
+                          <>
+                            <form className="mt-5 grid gap-6" onSubmit={(e) => e.preventDefault()}>
+                              {
+                                customerAddress?.length > 0 && customerAddress.map((add: any) => {
+                                  return (
+                                    <div className="relative" key={add?.id}>
+                                      <input
+                                        className="peer hidden"
+                                        id={add?.id}
+                                        type="radio"
+                                        name="radio"
+                                        value={add?.id}
+                                        onChange={(e) => handleAddressChange(e)}
+                                        checked={Number(add?.id) == Number(selectedAddressId)}
+                                      />
+                                      <span className={`add_checkbox ${Number(add?.id) == Number(selectedAddressId) ? "add_checkbox_checked" : ""}`}></span>
+                                      <label
+                                        className={`flex cursor-pointer select-none rounded-lg border border-gray-300 p-4 ${Number(add?.id) == Number(selectedAddressId) ? "add_checked" : ""}`}
+                                        htmlFor={add?.id}
+                                      >
+
+                                        <div className="ml-5 flex">
+                                          <span className="mt-2 font-semibold">
+                                            <FaLocationDot />
+                                          </span>
+                                          <p className="text-slate-500 text-sm leading-6 ml-3">
+                                            <span>{add?.address}, </span>
+                                            <span>{add?.city}</span><br /><span>{add?.state}, </span><span>{add?.country}, </span><span>{add?.zipcode}</span>
+                                          </p>
+                                        </div>
+                                      </label>
+                                    </div>
+                                  )
+                                })
+                              }
+                            </form>
+                          </>
+                        )
+                      }
+                    </>
+                  )
+                }
+
+
+
                 <button
                   className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-2 font-medium text-white"
                   onClick={() => setShowAddress(!showaddAddress)}
@@ -604,7 +645,7 @@ const page = () => {
                   id="radio_1"
                   type="radio"
                   name="radio"
-                  // checked
+                // checked
                 />
                 <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
                 <label

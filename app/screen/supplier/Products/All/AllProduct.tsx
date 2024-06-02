@@ -1,34 +1,76 @@
 "use client";
 import ProductCard from "@/app/components/ProductCard/ProductCard";
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import { RootState } from "@/app/Redux/store";
 import Loading from "@/app/components/Loading/Loading";
-import { loadallsupplierproductAsync } from "@/app/Redux/features/supplier/supplierSlice";
+import { deleteproductAsync, loadallsupplierproductAsync } from "@/app/Redux/features/supplier/supplierSlice";
 import { useRouter } from "next/navigation";
+import useDebounce from "@/app/Hook/useDebounce";
+import Pagination from "@/app/components/Pagination/Pagination";
+import { slugify } from "@/app/utils/slug/slug_generator";
+import Swal from 'sweetalert2'
+import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
 const AllProduct = () => {
-  const { loading, products } = useAppSelector(
+  const { loading, products, meta } = useAppSelector(
     (state: RootState) => state.supplier
   );
+  const [searchTerm, setSerchText] = useState('');
+  const debauncedValue = useDebounce(searchTerm, 600);
+  const [currentpage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(loadallsupplierproductAsync());
-  }, []);
 
   const NavigateToAddProduct = () => {
     router.push("/supplier/dashboard/product/add");
   };
 
+  const handlesearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSerchText(e.target.value);
+  }
+
+  const deleteProduct = (id: number) => {
+    dispatch(deleteproductAsync({ product_id: Number(id) })).unwrap().then((res) => {
+      successtoast(res.message);
+      dispatch(loadallsupplierproductAsync({ currentpage, searchTerm })).unwrap().then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        console.log(err);
+      })
+    }).catch((err) => {
+      console.log(err);
+      errortoast(err.message);
+    })
+  }
+
+  useEffect(() => {
+    dispatch(loadallsupplierproductAsync({ currentpage, searchTerm })).unwrap().then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      // if (typeof (err) === "string") {
+      //     errortoast(err);
+      //     dispatch(clearstate())
+      // }
+    })
+  }, [debauncedValue, currentpage]);
+  const navigatetoviewPage = (slug: string) => {
+    router.push(`/supplier/dashboard/product/${slugify(slug)}`)
+  }
   if (loading) {
     return <Loading />;
   }
-  console.log(products);
+
   return (
     <>
       <section className="antialiased bg-gray-100 text-gray-600 h-screen px-4 w-100">
-        <div className="flex flex-col pt-5 h-full">
+        <div className="flex justify-center mt-3">
+          <div className={`mt-3 ${styles.inputbox}`}>
+            <input type="text" onChange={handlesearch} value={searchTerm} placeholder='search something here.....' />
+          </div>
+        </div>
+        <div className="flex flex-col pt-4 h-full">
           {/* <!-- Table --> */}
           <div className="w-full mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
             <header className="flex justify-between px-5 py-4 border-b border-gray-100">
@@ -83,7 +125,7 @@ const AllProduct = () => {
                               <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
                                 <img
                                   className="rounded-full"
-                                  src={p?.productImages[p?.productImages.findIndex((i:any)=>i.isThumbnail==true)]?.url}
+                                  src={p?.productImages[p?.productImages.findIndex((i: any) => i.isThumbnail == true)]?.url}
                                   width="40"
                                   height="40"
                                   alt="Alex Shatov"
@@ -119,21 +161,21 @@ const AllProduct = () => {
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-center font-medium">
                               {p?.stock > 0 ? (
-                                  p?.stock
-                                ) : (
-                                  <span className={styles.out_of_stock}>
-                                    {"out of stock"}
-                                  </span>
-                                )}
+                                p?.stock
+                              ) : (
+                                <span className={styles.out_of_stock}>
+                                  {"out of stock"}
+                                </span>
+                              )}
                             </div>
                           </td>
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-center">
-                              <button className="btn btn-warning me-2" onClick={()=>router.push(`/supplier/dashboard/product/edit/${p?.id}`)}>
+                              <button className="btn btn-warning me-2" onClick={() => router.push(`/supplier/dashboard/product/edit/${p?.id}`)}>
                                 Edit
                               </button>
-                              <button className="btn btn-danger me-2">Delete</button>
-                              <button className="btn btn-primary">View</button>
+                              <button className="btn btn-danger me-2" onClick={() => deleteProduct(p?.id)}>Delete</button>
+                              <button className="btn btn-primary" onClick={() => navigatetoviewPage(p?.name)}>View</button>
                             </div>
                           </td>
                         </tr>
@@ -144,7 +186,9 @@ const AllProduct = () => {
               </div>
             </div>
           </div>
+          <Pagination currentpage={currentpage} setCurrentPage={setCurrentPage} total={meta?.total} perpage={perPage} />
         </div>
+
       </section>
     </>
   );

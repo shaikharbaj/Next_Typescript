@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import "../Add/addproduct.css";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import {
+  loadAllActiveCategoriesAsync,
   loadCategoriesAsync,
   loadsubcategoriesofsingleCategory,
 } from "@/app/Redux/features/category/categorySlice";
@@ -19,7 +20,7 @@ interface IEditProps {
 }
 const Edit: React.FC<IEditProps> = ({ id }) => {
   const dispatch = useAppDispatch();
-  const { categories, loading: categoryloading } = useAppSelector(
+  const { activeCategories:categories, loading: categoryloading } = useAppSelector(
     (state: RootState) => state.category
   );
   const { loading: productloading } = useAppSelector(
@@ -58,14 +59,14 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
   };
 
   useEffect(() => {
-    dispatch(loadCategoriesAsync())
+    dispatch(loadAllActiveCategoriesAsync())
       .unwrap()
       .then((res) => {
         //load product..............
         dispatch(loadsingleproductByID({ id: Number(id) }))
           .unwrap()
           .then((res) => {
-            console.log(res);
+            console.log(res.data);
             setTitle(res?.data?.name);
             setDiscription(res?.data?.description);
             setCategoryId(res?.data?.category?.id);
@@ -121,8 +122,6 @@ const Edit: React.FC<IEditProps> = ({ id }) => {
     //       console.log(res.data);
     // })
   };
-
-  console.log(description);
 
   return (
     <>

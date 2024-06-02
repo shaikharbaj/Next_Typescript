@@ -82,7 +82,7 @@ const Cart = () => {
                               <img
                                 src={
                                   item?.product?.productImages[
-                                    item?.product?.productImages.findIndex(
+                                    item?.product?.productImages?.findIndex(
                                       (ele: any) => ele.isThumbnail == true
                                     )
                                   ]?.url

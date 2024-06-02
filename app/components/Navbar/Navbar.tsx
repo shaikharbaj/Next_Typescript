@@ -140,6 +140,11 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link className="nav-link" href="/orders">
+                    Orders
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link className="nav-link cart" href={"/cart"}>
                     <FaShoppingCart className="cartIcon" />
                     <span className="cart_count">

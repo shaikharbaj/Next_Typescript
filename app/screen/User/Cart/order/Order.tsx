@@ -3,17 +3,22 @@ import React, { useEffect } from "react";
 import styles from "./order.module.css";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import { RootState } from "@/app/Redux/store";
-import { getallordersofcustomerAsync } from "@/app/Redux/features/order/orderSlice";
+import { generate_invoiceAsync, getallordersofcustomerAsync } from "@/app/Redux/features/order/orderSlice";
 import Loading from "@/app/components/Loading/Loading";
 import Link from "next/link";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 import { formatDate } from "@/app/utils/date/date";
 const Order = () => {
   const dispatch = useAppDispatch();
   const { loading, orders } = useAppSelector((state: RootState) => state.order);
-
+  console.log(loading);
   useEffect(() => {
     dispatch(getallordersofcustomerAsync());
   }, []);
+
+  const generate_invoice=(id:number)=>{
+           dispatch(generate_invoiceAsync({order_id:id}))    
+  }
   if (loading) {
     return <Loading />;
   }
@@ -34,6 +39,7 @@ const Order = () => {
             <th scope="col">Payment Status</th>
             <th scope="col">Total</th>
             <th scope="col">Action</th>
+            <th scope="col">generate Invoice</th>
           </tr>
         </thead>
         <tbody>
@@ -49,13 +55,16 @@ const Order = () => {
                     <td>{order?.paymentMethod}</td>
                     <td>{order?.paymentStatus}</td>
                     <td>{`₹ ${order?.totalPrice}`}</td>
-                    <td>
+                    <td className={styles.action}>
                       <Link
                         href={`/orders/${order?.id}`}
                         className={`${styles.view_order_btn} text-black`}
                       >
                         <i className={`bx bx-show ${styles.eye_icon}`}></i>
                       </Link>
+                    </td>
+                    <td className="d-flex justify-center align-items-center pb-3">
+                        <FaFileInvoiceDollar fontSize={"20px"} onClick={()=>generate_invoice(order?.id)} />
                     </td>
                   </tr>
                 );

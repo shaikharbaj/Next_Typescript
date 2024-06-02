@@ -2,10 +2,19 @@ import privateRequest from "@/app/Interceptor/interceptor";
 import Helper from "@/app/utils/helper";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+type metaType = {
+  total: number;
+  lastPage: number;
+  currentPage: number;
+  perPage: number;
+  prev: number | null;
+  next: number | null;
+};
 interface IInitialState {
   loading: boolean;
   products: [];
   orders: any;
+  meta: metaType;
 }
 const initialState: any = {
   loading: false,
@@ -13,6 +22,14 @@ const initialState: any = {
   orders: [],
   userinfo: Helper.getUser() || null,
   token: Helper.getLocalToken() || null,
+  meta: {
+    total: 0,
+    lastPage: 0,
+    currentPage: 1,
+    perPage: 0,
+    prev: null,
+    next: null,
+  },
 };
 
 interface ILoginPayload {
@@ -42,15 +59,20 @@ export const loginsupplierAsync = createAsyncThunk(
   }
 );
 
+type Payload = {
+  currentpage: number;
+  searchTerm: string;
+};
+
 export const loadallsupplierproductAsync = createAsyncThunk(
   "suplier/loadallsupplierproducts",
-  async (payload, thunkAPI) => {
+  async (payload: Payload, thunkAPI) => {
     try {
+      const { currentpage, searchTerm } = payload;
       const response = await privateRequest.get(
-        `http://localhost:8000/product/supplier/all`
+        `http://localhost:8000/product/supplier/all?page=${currentpage}&searchTerm=${searchTerm}`
       );
       const data = await response.data;
-      console.log(data);
       return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -65,13 +87,13 @@ export const loadallsupplierproductAsync = createAsyncThunk(
     }
   }
 );
-
 export const loadallsupplierordersAsync = createAsyncThunk(
   "supplier/loadallsupplierproducts",
-  async (payload, thunkAPI) => {
+  async (payload: Payload, thunkAPI) => {
     try {
+      const { currentpage, searchTerm } = payload;
       const response = await privateRequest(
-        "http://localhost:8000/order/loadallsupplierorders"
+        `http://localhost:8000/order/loadallsupplierorders?page=${currentpage}&searchTerm=${searchTerm}`
       );
       return response.data;
     } catch (error) {
@@ -79,6 +101,23 @@ export const loadallsupplierordersAsync = createAsyncThunk(
     }
   }
 );
+interface IdeleteproductPayload {
+  product_id: number
+}
+export const deleteproductAsync = createAsyncThunk("supplier/deleteproduct", async (payload: IdeleteproductPayload, thunkAPI) => {
+  try {
+    const response = await privateRequest.delete(`http://localhost:8000/product/delete/${payload.product_id}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response && error.response.data.message) {
+        return thunkAPI.rejectWithValue(error.response.data);
+      }
+    }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
+})
 
 interface IloadsinglesupplierOrder {
   orderItemId: number;
@@ -107,7 +146,7 @@ export const updateorderstatusAsync = createAsyncThunk(
   async (payload: IUpdateorderstatus, thunkAPI) => {
     try {
       const response = await privateRequest.patch(
-        `http://localhost:8000/order/updateorderstatus`,payload
+        `http://localhost:8000/order/updateorderstatus`, payload
       );
       return response.data;
     } catch (error) {
@@ -158,7 +197,9 @@ const supplierSlice = createSlice({
       })
       .addCase(loadallsupplierproductAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload.data;
+        console.log(action.payload.data);
+        state.products = action.payload.data.data;
+        state.meta = action.payload.data.meta;
       })
       .addCase(loadallsupplierproductAsync.rejected, (state, action) => {
         state.loading = false;
@@ -168,7 +209,8 @@ const supplierSlice = createSlice({
       })
       .addCase(loadallsupplierordersAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload.data;
+        state.orders = action.payload.data.data;
+        state.meta = action.payload.data.meta;
       })
       .addCase(loadallsupplierordersAsync.rejected, (state, action) => {
         state.loading = false;

@@ -1,30 +1,49 @@
 import privateRequest from "@/app/Interceptor/interceptor";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+type metaType = {
+  total: number;
+  lastPage: number;
+  currentPage: number;
+  perPage: number;
+  prev: number | null;
+  next: number | null;
+};
 type InitialState = {
   loading?: boolean | null;
   products: any;
   error: any;
   success: boolean | null;
-};
-type Payload = {
-  currentpage: number;
-  perPage: number;
-  searchText: string;
+  meta: metaType;
 };
 const initialState: InitialState = {
   loading: null,
   products: [],
   error: null,
   success: null,
+  meta: {
+    total: 0,
+    lastPage: 0,
+    currentPage: 1,
+    perPage: 0,
+    prev: null,
+    next: null,
+  },
 };
 
 //get product........
+type Payload = {
+  currentpage: number;
+  searchTerm: string;
+};
 export const loadallproductAsync = createAsyncThunk(
   "products/loadproducts",
-  async (payload, thunkAPI) => {
+  async (payload: Payload, thunkAPI) => {
     try {
-      const response = await axios.get(`http://localhost:8000/product/all`);
+      const { currentpage, searchTerm } = payload;
+      const response = await axios.get(
+        `http://localhost:8000/product/all?page=${currentpage}&searchTerm=${searchTerm}`
+      );
       const data = await response.data;
       return data;
     } catch (error) {
@@ -108,14 +127,15 @@ export const getsingleproductAsync = createAsyncThunk(
 //edit product..................
 interface IEditPayload {
   id: number;
-  data:FormData
+  data: FormData;
 }
 export const editproductAsync = createAsyncThunk(
   "product/editproduct",
   async (payload: IEditPayload, thunkAPI) => {
     try {
       const response = await privateRequest.patch(
-        `http://localhost:8000/product/edit/${payload.id}`,payload.data
+        `http://localhost:8000/product/edit/${payload.id}`,
+        payload.data
       );
       return response.data;
     } catch (error) {
@@ -136,7 +156,8 @@ const productSlice = createSlice({
       .addCase(loadallproductAsync.fulfilled, (state, action) => {
         state.success = true;
         state.loading = false;
-        state.products = action.payload.data;
+        state.products = action.payload.data.data;
+        state.meta = action.payload.data.meta;
       })
       .addCase(loadallproductAsync.rejected, (state, action) => {
         state.loading = false;

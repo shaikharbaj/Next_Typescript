@@ -1,10 +1,10 @@
 "use client"
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
-import { deletesubcategoryAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice';
+import { deletesubcategoryAsync, loadsubcategoriesofsingleCategory, togglesubcategorystatusAsync } from '@/app/Redux/features/category/categorySlice';
 import React, { useEffect, useState } from 'react'
 import styles from './styles.module.css'
 import { useRouter } from 'next/navigation';
-import { successtoast } from '@/app/utils/alerts/alerts';
+import { errortoast, successtoast } from '@/app/utils/alerts/alerts';
 import { RootState } from '@/app/Redux/store';
 import Link from 'next/link';
 const Allsubcategories = ({ id }: { id: number }) => {
@@ -31,6 +31,15 @@ const Allsubcategories = ({ id }: { id: number }) => {
             })
         }
     }
+    const changeStatusToggle = (id: number) => {
+        dispatch(togglesubcategorystatusAsync({ id })).unwrap().then((res) => {
+            console.log(res);
+            successtoast(res.message);
+        }).catch((error) => {
+            console.log(error);
+            errortoast(error.message);
+        });
+    }
     return (
         <>
             <>
@@ -50,6 +59,7 @@ const Allsubcategories = ({ id }: { id: number }) => {
                                 <th>
                                     Parent Category
                                 </th>
+                                <th>status</th>
                                 <th>
                                     Action
                                 </th>
@@ -57,12 +67,26 @@ const Allsubcategories = ({ id }: { id: number }) => {
                         </thead>
                         <tbody>
                             {
-                                subcategories.length > 0 && subcategories.map((c: any, index) => {
+                                subcategories.length > 0 && subcategories.map((c: any, index:number) => {
                                     return (
                                         <tr key={c.id}>
                                             <td>{index + 1}</td>
                                             <td>{c.name}</td>
                                             <td>{c?.parent?.name}</td>
+                                            <td>{c?.subcategory_status
+                                                ? (
+                                                    <div className="form-check form-switch">
+                                                        <input className="form-check-input check_bx" type="checkbox" id="flexSwitchCheckChecked" onChange={() => changeStatusToggle(c?.id)} checked />
+                                                        <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Active</label>
+                                                    </div>
+                                                ) : (
+
+                                                    <div className="form-check form-switch">
+                                                        <input className="form-check-input check_bx" type="checkbox" id="flexSwitchCheckDefault" onChange={() => changeStatusToggle(c?.id)} checked={false} />
+                                                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">InActive</label>
+                                                    </div>
+
+                                                )}</td>
                                             <td>
                                                 <Link href={`/admin/dashboard/categories/subcategories/edit/${c.id}`} className='me-2'><i className='bx bxs-edit edit '></i></Link>
                                                 <span onClick={() => deleteHandler(c?.id)}><i className='bx bxs-trash delete'></i></span>

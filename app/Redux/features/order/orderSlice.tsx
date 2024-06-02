@@ -1,5 +1,6 @@
 import privateRequest from "@/app/Interceptor/interceptor";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 interface IInitialState {
   loading: boolean;
@@ -35,10 +36,44 @@ export const getorderbyIdAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      thunkAPI.rejectWithValue(error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response && error.response.data.message) {
+          return thunkAPI.rejectWithValue(error.response.data);
+        }
+      }
+      // Handle other errors not related to Axios
+      return thunkAPI.rejectWithValue("An unknown error occurred");
     }
   }
 );
+
+//generate invoice...................
+interface IGenerateInvoicePay {
+  order_id: number
+}
+export const generate_invoiceAsync = createAsyncThunk("order/generateinvoice", async (payload: IGenerateInvoicePay, thunkAPI) => {
+  try {
+    const response = await privateRequest.get(`http://localhost:8000/order/generate_invoice/${payload.order_id}`, {
+      responseType: "blob"
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `invoice_${payload.order_id}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response && error.response.data.message) {
+        return thunkAPI.rejectWithValue(error.response.data);
+      }
+    }
+    // Handle other errors not related to Axios
+    return thunkAPI.rejectWithValue("An unknown error occurred");
+  }
+})
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -69,4 +104,4 @@ const orderSlice = createSlice({
 });
 
 export default orderSlice.reducer;
-export const {} = orderSlice.actions;
+export const { } = orderSlice.actions;

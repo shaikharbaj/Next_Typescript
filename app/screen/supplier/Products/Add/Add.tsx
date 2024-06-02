@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import { RootState } from "@/app/Redux/store";
 import imageCompression from "browser-image-compression";
 import {
+  loadAllActiveCategoriesAsync,
   loadCategoriesAsync,
   loadsubcategoriesofsingleCategory,
 } from "@/app/Redux/features/category/categorySlice";
@@ -16,7 +17,7 @@ import { validateProductData } from "@/app/utils/validation/supplier/addproductv
 const Add = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { categories, loading: categoryloading } = useAppSelector(
+  const { activeCategories:categories, loading: categoryloading } = useAppSelector(
     (state: RootState) => state.category
   );
   const [title, setTitle] = useState("");
@@ -66,7 +67,7 @@ const Add = () => {
     }
   };
   useEffect(() => {
-    dispatch(loadCategoriesAsync())
+    dispatch(loadAllActiveCategoriesAsync())
       .unwrap()
       .then((res) => {
         //    setCategory(res.data);
