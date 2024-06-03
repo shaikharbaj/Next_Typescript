@@ -11,6 +11,7 @@ import blogReducer from "./features/blog/blogSlice";
 import supplierReducer from "./features/supplier/supplierSlice";
 import cartReducer from "./features/cart/cartSlice";
 import orderReducer from "./features/order/orderSlice";
+import attributeReducer from "./features/attributes/attributeSlice";
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -24,7 +25,8 @@ const store = configureStore({
         blog: blogReducer,
         supplier:supplierReducer,
         cart:cartReducer,
-        order:orderReducer
+        order:orderReducer,
+        attribute:attributeReducer
     }
 })
 

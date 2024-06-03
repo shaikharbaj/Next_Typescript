@@ -508,7 +508,7 @@ const categorySlice = createSlice({
       })
       .addCase(loadsubcategoriesofsingleCategory.fulfilled, (state, action) => {
         state.loading = false;
-        state.subcategories = action.payload.data;
+        state.activeSubCategories = action.payload.data;
       })
       .addCase(loadsubcategoriesofsingleCategory.rejected, (state, action) => {
         state.loading = false;
