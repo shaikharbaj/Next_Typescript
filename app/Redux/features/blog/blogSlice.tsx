@@ -83,7 +83,9 @@ export const loadblogbyID = createAsyncThunk('blog/loadblogbyID', async (id: num
         const response = await privateRequest.get(`http://localhost:8000/blog/${id}`);
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error);
+        if (axios.isAxiosError(error) && error.response) {
+            return thunkAPI.rejectWithValue(error?.response?.data);
+          }
     }
 })
 interface IgetblogwithfilterPayload{

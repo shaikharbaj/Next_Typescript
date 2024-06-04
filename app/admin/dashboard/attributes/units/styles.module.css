@@ -48,3 +48,33 @@
     font-size: 12px;
     width: 55px;
 }
+.edit_btn{
+    font-size: 14px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    background-color: #17C666;
+    border-color: #17C666;
+    color: #ffffff;
+    display: inline-block;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.edit_btn i{
+      font-size: 16px;
+}
+.delete_btn{
+    font-size: 14px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    background-color: #EA4D4D;
+    border-color: #EA4D4D;
+    color: #ffffff;
+    display: inline-block;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.delete_btn i{
+       font-size: 16px;
+}

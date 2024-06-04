@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import imageCompression from 'browser-image-compression'
 import { useAppDispatch, useAppSelector } from '@/app/Hook/hooks';
 import { RootState } from '@/app/Redux/store';
-import { getsubcategoryById, loadCategoriesAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice';
+import { getsubcategoryById, loadAllActiveCategoriesAsync, loadCategoriesAsync, loadsubcategoriesofsingleCategory } from '@/app/Redux/features/category/categorySlice';
 import { addblogAsync, editblogAsync, loadblogbyID } from '@/app/Redux/features/blog/blogSlice';
 import { successtoast } from '@/app/utils/alerts/alerts';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,7 @@ const EditBlog = ({ id }: { id: number }) => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { loading: blogloading, blogs } = useAppSelector((state: RootState) => state.blog);
-    const { loading, categories, subcategories } = useAppSelector((state: RootState) => state.category);
+    const { loading, activeCategories: categories, activeSubCategories:subcategories } = useAppSelector((state: RootState) => state.category);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
@@ -79,8 +79,9 @@ const EditBlog = ({ id }: { id: number }) => {
     }
     useEffect(() => {
         dispatch(loadblogbyID(id)).unwrap().then((res) => {
-            setsubCategory(res.data.subcategory_id)
+            console.log(res.data);
             setCategory(res.data.category_id)
+            setsubCategory(res.data.subcategory_id)
             setTitle(res.data.title);
             setDescription(res.data.description);
             setImagePreview(res.data.image);
@@ -91,8 +92,9 @@ const EditBlog = ({ id }: { id: number }) => {
     }, []);
     useEffect(() => {
         if (category) {
-            dispatch(loadCategoriesAsync()).unwrap().then((res) => {
+            dispatch(loadAllActiveCategoriesAsync()).unwrap().then((res) => {
                 dispatch(loadsubcategoriesofsingleCategory(Number(category))).unwrap().then((res) => {
+
                 }).catch((err) => {
                     console.log(err);
                 })

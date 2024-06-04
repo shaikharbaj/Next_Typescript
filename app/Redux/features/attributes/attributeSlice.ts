@@ -52,19 +52,44 @@ export const createAttributeUnitsAsync = createAsyncThunk(
   }
 );
 type Payload = {
-    currentpage: number;
-    searchTerm: string;
-  };
-export const getallAtrributeUnitsAsync = createAsyncThunk("attribute/getallattributeunits",async(payload:Payload,thunkAPI)=>{
-      try {
-         const response =await privateRequest.get(`http://localhost:8000/attributeunit/all?page=${payload.currentpage}&searchTerm=${payload.searchTerm}`);
-         return response.data;
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            return thunkAPI.rejectWithValue(error?.response?.data);
-          }
+  currentpage: number;
+  searchTerm: string;
+};
+export const getallAtrributeUnitsAsync = createAsyncThunk(
+  "attribute/getallattributeunits",
+  async (payload: Payload, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/attributeunit/all?page=${payload.currentpage}&searchTerm=${payload.searchTerm}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
       }
-})
+    }
+  }
+);
+
+//load single attributeunit
+interface ILoadSingleAttUnit {
+  id: number;
+}
+export const loadattributeunitByID = createAsyncThunk(
+  "",
+  async (payload: ILoadSingleAttUnit, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/attributeunit/loadattributeuniteById/${payload.id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
 
 const attributeSlice = createSlice({
   name: "attribute",
