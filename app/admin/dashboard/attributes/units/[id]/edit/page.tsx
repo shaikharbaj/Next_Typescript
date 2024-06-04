@@ -1,5 +1,5 @@
 "use client"
-import Edit from '@/app/screen/Admin/AttributeUnits/Edit/Edit';
+import Edit from '@/app/screen/Admin/AttributeUnits/EDIT/Edit';
 import { useParams} from 'next/navigation';
 import React from 'react'
 

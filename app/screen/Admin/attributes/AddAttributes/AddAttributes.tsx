@@ -1,57 +1,44 @@
+"use client";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import {
+  createAttributeAsync,
   createAttributeUnitsAsync,
-  editattributeUnitAsync,
-  loadattributeunitByID,
 } from "@/app/Redux/features/attributes/attributeSlice";
 import { loadAllActiveCategoriesAsync } from "@/app/Redux/features/category/categorySlice";
 import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const Edit = ({ id }: { id: number }) => {
+const AddAttributes = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const { activeCategories: categories } = useAppSelector(
     (state) => state.category
   );
   const [category_id, setCategoryId] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState(false);
+  const [required, setRequired] = useState(false);
 
   useEffect(() => {
-    dispatch(loadAllActiveCategoriesAsync())
-      .unwrap()
-      .then((res) => {
-        dispatch(loadattributeunitByID({ id }))
-          .unwrap()
-          .then((res) => {
-            console.log(res.data);
-            setCategoryId(res?.data?.category_id);
-            setName(res?.data?.name);
-            setStatus(res?.data?.status);
-          })
-          .catch((err) => {});
-      })
-      .catch((err) => {});
+    dispatch(loadAllActiveCategoriesAsync());
   }, []);
   const submitHandler = () => {
     const payload: any = {
       name,
       category_id,
       status,
-      attribute_unit_ID: Number(id),
+      required,
     };
-
-    console.log(payload);
-    // console.log(payload);
-    dispatch(editattributeUnitAsync(payload))
+    dispatch(createAttributeAsync(payload))
       .unwrap()
       .then((res) => {
         successtoast(res.message);
-        router.replace("/admin/dashboard/attributes/units");
+        setCategoryId("");
+        setName("");
+        setStatus(false);
+        setRequired(false);
       })
       .catch((error) => {
+        console.log(error);
         errortoast(error?.message);
       });
   };
@@ -64,7 +51,7 @@ const Edit = ({ id }: { id: number }) => {
               <div className="card-body">
                 <div className="row gutters">
                   <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <h6 className="mb-2 text-primary">Add Unit</h6>
+                    <h6 className="mb-2 text-primary">Create Attribute</h6>
                   </div>
                   <div className="col-12 mb-2">
                     <div className="form-group">
@@ -92,18 +79,32 @@ const Edit = ({ id }: { id: number }) => {
                   </div>
                   <div className="col-12 mb-2">
                     <div className="form-group">
-                      <label htmlFor="unit" className="mb-1">
-                        Unit <span style={{ color: "red" }}>*</span>
+                      <label htmlFor="name" className="mb-1">
+                        Name <span style={{ color: "red" }}>*</span>
                       </label>
                       <input
                         type="text"
                         className="form-control"
-                        id="unit"
+                        id="name"
                         placeholder="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                       />
                       {/* {error?.title && <span className="error">{error.title}</span>} */}
+                    </div>
+                  </div>
+                  <div className="col-12 mb-1 mt-4 ms-1">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={required}
+                        id="required"
+                        onChange={() => setRequired(!required)}
+                      />
+                      <label className="form-check-label" htmlFor="required">
+                        Required
+                      </label>
                     </div>
                   </div>
                   <div className="col-12 mb-2 mt-4 ms-1">
@@ -148,4 +149,4 @@ const Edit = ({ id }: { id: number }) => {
   );
 };
 
-export default Edit;
+export default AddAttributes;

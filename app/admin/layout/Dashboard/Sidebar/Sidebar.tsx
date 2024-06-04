@@ -154,7 +154,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = ({
                     <li>
                       <Link
                         className="inline-block text-white w-full px-4 py-2 text-xs rounded hover:bg-gray-800 hover:text-white"
-                        href="/dashboard/attributes?page=1&take=10"
+                        href="/admin/dashboard/attributes"
                       >
                         Attributes
                       </Link>

@@ -1,0 +1,93 @@
+.table_wrapper {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    overflow-x: auto;
+  }
+  
+  .inputbox {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 60%;
+    padding: 0.3rem 0.4rem;
+    margin: auto;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .inputbox input {
+    width: 100%;
+    border: none;
+    outline: none;
+  }
+  .add_btn_wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 4.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .add_btn_wrapper button {
+    border: 1px solid black;
+    padding: 0.2rem 0.8rem;
+    background-color: black;
+    color: white;
+  }
+  .active {
+    border: 1px solid rgb(117, 221, 117);
+    padding: 0.1rem 0.3rem;
+    background-color: #17c666;
+    color: white;
+    font-size: 12px;
+    width: 55px;
+  }
+  .inactive {
+    border: 1px solid rgb(212, 79, 79);
+    padding: 0.1rem 0.3rem;
+    background-color: #ea4d4d;
+    color: white;
+    font-size: 12px;
+    width: 55px;
+  }
+  .edit_btn {
+    font-size: 14px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    background-color: #17c666;
+    border-color: #17c666;
+    color: #ffffff;
+    display: inline-block;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .edit_btn i {
+    font-size: 16px;
+  }
+  .delete_btn {
+    font-size: 14px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    background-color: #ea4d4d;
+    border-color: #ea4d4d;
+    color: #ffffff;
+    display: inline-block;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .delete_btn i {
+    font-size: 16px;
+  }
+  .isRequired {
+    font-size: 14px;
+    padding: 0.1rem 0.5rem;
+    border-radius: 5px;
+    background-color: #ea4d4d;
+    border-color: #ea4d4d;
+    color: #ffffff;
+    display: inline-block;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  

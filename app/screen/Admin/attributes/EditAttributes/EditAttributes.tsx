@@ -1,7 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import {
   createAttributeUnitsAsync,
+  editattributeAsync,
   editattributeUnitAsync,
+  loadattributeByIDAsync,
   loadattributeunitByID,
 } from "@/app/Redux/features/attributes/attributeSlice";
 import { loadAllActiveCategoriesAsync } from "@/app/Redux/features/category/categorySlice";
@@ -9,7 +11,7 @@ import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const Edit = ({ id }: { id: number }) => {
+const EditAttributes = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { activeCategories: categories } = useAppSelector(
@@ -18,18 +20,20 @@ const Edit = ({ id }: { id: number }) => {
   const [category_id, setCategoryId] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState(false);
+  const [required, setRequired] = useState(false);
 
   useEffect(() => {
     dispatch(loadAllActiveCategoriesAsync())
       .unwrap()
       .then((res) => {
-        dispatch(loadattributeunitByID({ id }))
+        dispatch(loadattributeByIDAsync({ id }))
           .unwrap()
           .then((res) => {
             console.log(res.data);
             setCategoryId(res?.data?.category_id);
             setName(res?.data?.name);
             setStatus(res?.data?.status);
+            setRequired(res?.data?.required);
           })
           .catch((err) => {});
       })
@@ -40,16 +44,17 @@ const Edit = ({ id }: { id: number }) => {
       name,
       category_id,
       status,
-      attribute_unit_ID: Number(id),
+      attribute_ID: Number(id),
+      required,
     };
 
     console.log(payload);
     // console.log(payload);
-    dispatch(editattributeUnitAsync(payload))
+    dispatch(editattributeAsync(payload))
       .unwrap()
       .then((res) => {
         successtoast(res.message);
-        router.replace("/admin/dashboard/attributes/units");
+        router.replace("/admin/dashboard/attributes");
       })
       .catch((error) => {
         errortoast(error?.message);
@@ -93,7 +98,7 @@ const Edit = ({ id }: { id: number }) => {
                   <div className="col-12 mb-2">
                     <div className="form-group">
                       <label htmlFor="unit" className="mb-1">
-                        Unit <span style={{ color: "red" }}>*</span>
+                        Name <span style={{ color: "red" }}>*</span>
                       </label>
                       <input
                         type="text"
@@ -104,6 +109,20 @@ const Edit = ({ id }: { id: number }) => {
                         onChange={(e) => setName(e.target.value)}
                       />
                       {/* {error?.title && <span className="error">{error.title}</span>} */}
+                    </div>
+                  </div>
+                  <div className="col-12 mb-1 mt-4 ms-1">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={required}
+                        id="required"
+                        onChange={() => setRequired(!required)}
+                      />
+                      <label className="form-check-label" htmlFor="required">
+                        Required
+                      </label>
                     </div>
                   </div>
                   <div className="col-12 mb-2 mt-4 ms-1">
@@ -148,4 +167,4 @@ const Edit = ({ id }: { id: number }) => {
   );
 };
 
-export default Edit;
+export default EditAttributes;

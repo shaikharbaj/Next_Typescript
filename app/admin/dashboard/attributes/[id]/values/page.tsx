@@ -2,12 +2,14 @@
 import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./styles.module.css";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import {
-  changeattributeunitstatusAsync,
+  changeattributestatusAsync,
+  deleteattributeAsync,
   deleteattributeunitAsync,
-  getallAtrributeUnitsAsync,
+  getallAtrributeAsync,
+  getattributewithvalueAsync,
 } from "@/app/Redux/features/attributes/attributeSlice";
 import { RootState } from "@/app/Redux/store";
 import useDebounce from "@/app/Hook/useDebounce";
@@ -19,30 +21,32 @@ import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
 const page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { loading, meta, attributeunits } = useAppSelector(
-    (state: RootState) => state.attribute
-  );
+  const { id } = useParams();
+  //   const { loading, meta, attributes } = useAppSelector(
+  //     (state: RootState) => state.attribute
+  //   );
+
   const [searchTerm, setSerchText] = useState("");
+  const [attribute, setAttribute] = useState<any>({});
   const debauncedValue = useDebounce(searchTerm, 600);
   const [currentpage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const handlesearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSerchText(e.target.value);
   };
-
   useEffect(() => {
-    dispatch(getallAtrributeUnitsAsync({ currentpage, searchTerm }))
+    dispatch(getattributewithvalueAsync({ currentpage, searchTerm, id }))
       .unwrap()
       .then((res) => {
-        console.log(res);
+        setAttribute(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [debauncedValue, currentpage]);
 
-  const deleteAttributeUnitHandler = (id: number) => {
-    dispatch(deleteattributeunitAsync({ id: 15 }))
+  const deleteAttributeHandler = (id: number) => {
+    dispatch(deleteattributeAsync({ id }))
       .unwrap()
       .then((res) => {
         console.log(res);
@@ -53,8 +57,9 @@ const page = () => {
         errortoast(err.message);
       });
   };
+
   const changeStatusHandler = (id: number) => {
-    dispatch(changeattributeunitstatusAsync({ id }))
+    dispatch(changeattributestatusAsync({ id }))
       .unwrap()
       .then((res) => {
         successtoast(res.message);
@@ -63,9 +68,9 @@ const page = () => {
         errortoast(error?.message);
       });
   };
-  if (loading) {
-    return <Loading />;
-  }
+  //   if (loading) {
+  //     return <Loading />;
+  //   }
   return (
     <div className={styles.wrapper}>
       <div className={`${styles.inputbox}`}>
@@ -78,11 +83,9 @@ const page = () => {
       </div>
       <div className={styles.add_btn_wrapper}>
         <button
-          onClick={() =>
-            router.push("/admin/dashboard/attributes/units/create")
-          }
+          onClick={() => router.push("/admin/dashboard/attributes/create")}
         >
-          ADD Units
+          Create {`${attribute?.name} value`}
         </button>
       </div>
       <div className={styles.table_wrapper}>
@@ -91,31 +94,31 @@ const page = () => {
             <tr>
               <th>SR.NO</th>
               <th>NAME</th>
-              <th>CATEGORY</th>
+              <th>ATTRIBUTE</th>
               <th>STATUS</th>
               <th>OPERATIONS</th>
             </tr>
           </thead>
           <tbody>
-            {attributeunits?.length > 0 ? (
-              attributeunits.map((att: any, index: number) => {
+            {attribute?.attributevalues?.length > 0 ? (
+              attribute?.attributevalues.map((val: any, index: number) => {
                 return (
-                  <tr key={att?.id}>
-                    <td>{index + 1}</td>
-                    <td>{att?.name}</td>
-                    <td>{att?.category?.name}</td>
+                  <tr key={val?.id}>
+                    <td>{val + 1}</td>
+                    <td>{val?.name}</td>
+                    <td>{val?.category?.name}</td>
                     <td>
-                      {att?.status ? (
+                      {val?.status ? (
                         <button
                           className={styles.active}
-                          onClick={() => changeStatusHandler(att?.id)}
+                          onClick={() => changeStatusHandler(val?.id)}
                         >
                           Active
                         </button>
                       ) : (
                         <button
                           className={styles.inactive}
-                          onClick={() => changeStatusHandler(att?.id)}
+                          onClick={() => changeStatusHandler(val?.id)}
                         >
                           InActive
                         </button>
@@ -123,14 +126,14 @@ const page = () => {
                     </td>
                     <td>
                       <Link
-                        href={`/admin/dashboard/attributes/units/${att?.id}/edit`}
+                        href={`/admin/dashboard/attributes/${val?.id}/edit`}
                         className={`${styles.edit_btn} me-2`}
                       >
                         <i className="bx bxs-edit"></i>Edit
                       </Link>
                       <span
                         className={styles.delete_btn}
-                        onClick={() => deleteAttributeUnitHandler(att?.id)}
+                        onClick={() => deleteAttributeHandler(val?.id)}
                       >
                         <i className="bx bxs-trash-alt"></i>Delete
                       </span>
@@ -146,12 +149,12 @@ const page = () => {
           </tbody>
         </table>
       </div>
-      <Pagination
+      {/* <Pagination
         currentpage={currentpage}
         setCurrentPage={setCurrentPage}
         total={meta?.total}
         perpage={perPage}
-      />
+      /> */}
     </div>
   );
 };
