@@ -83,7 +83,7 @@ const page = () => {
       </div>
       <div className={styles.add_btn_wrapper}>
         <button
-          onClick={() => router.push("/admin/dashboard/attributes/create")}
+          onClick={() => router.push(`/admin/dashboard/attributes/${attribute?.id}/values/create`)}
         >
           Create {`${attribute?.name} value`}
         </button>
