@@ -299,6 +299,117 @@ export const getattributewithvalueAsync = createAsyncThunk(
     }
   }
 );
+
+//create attribute value..................
+interface ICreateAttributeValuePayload {
+  attributes_id: number;
+  status: boolean;
+  attributevalueName: string;
+  attributeunit_id: number;
+}
+export const createAttributeValueAsync = createAsyncThunk(
+  "attribute/createattributevalue",
+  async (payload: ICreateAttributeValuePayload, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        `http://localhost:8000/attributevalue/create`,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+//get attribute value by id
+interface IGetattributevaluePay {
+  id: number;
+}
+export const getattributevalueByIdAsync = createAsyncThunk(
+  "attribute/getattributevaluebyId",
+  async (payload: IGetattributevaluePay, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/attributevalue/getattributevaluebyid/${payload.id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+//edit attribute.......
+interface IEditAttributeValuePay {
+  id: number;
+  attributevalueName: string;
+  status: boolean;
+  attributes_id: number;
+  attributeunit_id: number;
+}
+export const editattributevalueAsync = createAsyncThunk(
+  "attribute/editattributevalue",
+  async (payload: IEditAttributeValuePay, thunkAPI) => {
+    try {
+      const response = await privateRequest.patch(
+        `http://localhost:8000/attributevalue/edit/${payload.id}`,
+        {
+          name: payload.attributevalueName,
+          status: payload.status,
+          attributes_id: payload.attributes_id,
+          attributeunit_id: payload.attributeunit_id,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+//change status of attribute value..........................
+interface IUpdateAttributeValueStatus {
+  id: number;
+}
+export const changestatus_attributevalueAsync = createAsyncThunk(
+  "attribute/changeattributevaluestatus",
+  async (payload: IUpdateAttributeValueStatus, thunkAPI) => {
+    try {
+      const response = await privateRequest.patch(
+        `http://localhost:8000/attributevalue/changestatus/${payload.id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const delete_attributevalueAsync = createAsyncThunk(
+  "attribute/deleteattributevaluestatus",
+  async (payload: IUpdateAttributeValueStatus, thunkAPI) => {
+    try {
+      const response = await privateRequest.delete(
+        `http://localhost:8000/attributevalue/delete/${payload.id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const attributeSlice = createSlice({
   name: "attribute",
   initialState,
@@ -413,6 +524,33 @@ const attributeSlice = createSlice({
         state.attributes.splice(findIndex, 1, action.payload.data);
       })
       .addCase(changeattributestatusAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createAttributeValueAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(createAttributeValueAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createAttributeValueAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(editattributevalueAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(editattributevalueAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(editattributevalueAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(changestatus_attributevalueAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(changestatus_attributevalueAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(changestatus_attributevalueAsync.rejected, (state, action) => {
         state.loading = false;
       });
   },

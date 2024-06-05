@@ -6,6 +6,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import {
   changeattributestatusAsync,
+  changestatus_attributevalueAsync,
+  delete_attributevalueAsync,
   deleteattributeAsync,
   deleteattributeunitAsync,
   getallAtrributeAsync,
@@ -46,10 +48,19 @@ const page = () => {
   }, [debauncedValue, currentpage]);
 
   const deleteAttributeHandler = (id: number) => {
-    dispatch(deleteattributeAsync({ id }))
+    dispatch(delete_attributevalueAsync({ id }))
       .unwrap()
       .then((res) => {
-        console.log(res);
+        const newattributevalue = attribute?.attributevalues?.filter(
+          (att: any) => {
+            if (Number(att?.id) !== Number(res.data.id)) {
+              return { ...att, status: res?.data?.status };
+            }
+          }
+        );
+        setAttribute((prev: any) => {
+          return { ...prev, attributevalues: newattributevalue };
+        });
         successtoast(res.message);
       })
       .catch((err) => {
@@ -59,9 +70,20 @@ const page = () => {
   };
 
   const changeStatusHandler = (id: number) => {
-    dispatch(changeattributestatusAsync({ id }))
+    dispatch(changestatus_attributevalueAsync({ id }))
       .unwrap()
       .then((res) => {
+        const newattributevalue = attribute?.attributevalues?.map(
+          (att: any) => {
+            if (Number(att?.id) === Number(res.data.id)) {
+              return { ...att, status: res?.data?.status };
+            }
+            return att;
+          }
+        );
+        setAttribute((prev: any) => {
+          return { ...prev, attributevalues: newattributevalue };
+        });
         successtoast(res.message);
       })
       .catch((error) => {
@@ -83,7 +105,11 @@ const page = () => {
       </div>
       <div className={styles.add_btn_wrapper}>
         <button
-          onClick={() => router.push(`/admin/dashboard/attributes/${attribute?.id}/values/create`)}
+          onClick={() =>
+            router.push(
+              `/admin/dashboard/attributes/${attribute?.id}/values/create`
+            )
+          }
         >
           Create {`${attribute?.name} value`}
         </button>
@@ -104,9 +130,9 @@ const page = () => {
               attribute?.attributevalues.map((val: any, index: number) => {
                 return (
                   <tr key={val?.id}>
-                    <td>{val + 1}</td>
+                    <td>{index + 1}</td>
                     <td>{val?.name}</td>
-                    <td>{val?.category?.name}</td>
+                    <td>{attribute?.name}</td>
                     <td>
                       {val?.status ? (
                         <button
@@ -126,7 +152,7 @@ const page = () => {
                     </td>
                     <td>
                       <Link
-                        href={`/admin/dashboard/attributes/${val?.id}/edit`}
+                        href={`/admin/dashboard/attributes/${attribute?.id}/values/${val?.id}/edit`}
                         className={`${styles.edit_btn} me-2`}
                       >
                         <i className="bx bxs-edit"></i>Edit

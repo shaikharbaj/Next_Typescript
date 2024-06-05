@@ -1,28 +1,49 @@
-"use client";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
 import {
   createAttributeUnitsAsync,
   createAttributeValueAsync,
+  editattributevalueAsync,
+  getattributevalueByIdAsync,
   loadattributeByIDAsync,
 } from "@/app/Redux/features/attributes/attributeSlice";
 import { loadAllActiveCategoriesAsync } from "@/app/Redux/features/category/categorySlice";
 import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
-import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const AddAttributeValue = () => {
+const EditAttributeValue = ({
+  attribute_id,
+  attributevalue_id,
+}: {
+  attribute_id: number;
+  attributevalue_id: number;
+}) => {
   const dispatch = useAppDispatch();
-  const { id } = useParams();
   const [attributevalueName, setAttributeValueName] = useState("");
+  const router = useRouter();
+  const [moduleName, setModuleName] = useState("");
   const [unit_id, setUnitId] = useState("");
   const [units, setUnits] = useState<any>([]);
   const [status, setStatus] = useState(false);
 
   useEffect(() => {
-    dispatch(loadattributeByIDAsync({ id: Number(id) }))
+    dispatch(loadattributeByIDAsync({ id: Number(attribute_id) }))
       .unwrap()
       .then((res) => {
         setUnits(res?.data?.category?.attributeUnit);
+        dispatch(getattributevalueByIdAsync({ id: Number(attributevalue_id) }))
+          .unwrap()
+          .then((res) => {
+            setAttributeValueName(res?.data?.name);
+            setUnitId(res?.data?.attributeunit?.id);
+            setStatus(res?.data?.status);
+            setModuleName(res?.data?.attributes?.name);
+          })
+          .catch((err) => {
+            console.log(err);
+            errortoast(err.message);
+          });
       })
       .catch((error) => {
         console.log(error.message);
@@ -30,20 +51,19 @@ const AddAttributeValue = () => {
   }, []);
   const submitHandler = () => {
     const payload: any = {
-      attributes_id: Number(id),
+      id: attributevalue_id,
+      attributes_id: Number(attribute_id),
       status,
       attributevalueName,
     };
     if (unit_id) {
       payload["attributeunit_id"] = Number(unit_id);
     }
-    dispatch(createAttributeValueAsync(payload))
+    dispatch(editattributevalueAsync(payload))
       .unwrap()
       .then((res) => {
-        successtoast(res.message);
-        setAttributeValueName("");
-        setUnitId("");
-        setStatus(false);
+        successtoast(res?.message);
+        router.replace(`/admin/dashboard/attributes/${attribute_id}/values`);
       })
       .catch((error) => {
         errortoast(error?.message);
@@ -58,7 +78,9 @@ const AddAttributeValue = () => {
               <div className="card-body">
                 <div className="row gutters">
                   <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <h6 className="mb-2 text-primary">Add Unit</h6>
+                    <h6 className="mb-2 text-primary">
+                      Edit {`${moduleName} value`}
+                    </h6>
                   </div>
                   <div className="col-12 mb-2">
                     <div className="form-group">
@@ -117,7 +139,7 @@ const AddAttributeValue = () => {
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
                       >
-                        status
+                        Active
                       </label>
                     </div>
                   </div>
@@ -146,4 +168,4 @@ const AddAttributeValue = () => {
   );
 };
 
-export default AddAttributeValue;
+export default EditAttributeValue;
