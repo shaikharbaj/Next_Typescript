@@ -14,32 +14,44 @@ import { addproductAsync } from "@/app/Redux/features/Product/productSlice";
 import { successtoast } from "@/app/utils/alerts/alerts";
 import { useRouter } from "next/navigation";
 import { validateProductData } from "@/app/utils/validation/supplier/addproductvalidation";
+import {
+  getattributeby_categoryid,
+  getattributeunitby_categoryid,
+  getattributevalueby_attributeid,
+} from "@/app/Redux/features/attributes/attributeSlice";
 const Add = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { activeCategories:categories, loading: categoryloading } = useAppSelector(
-    (state: RootState) => state.category
-  );
+  const { activeCategories: categories, loading: categoryloading } =
+    useAppSelector((state: RootState) => state.category);
+  const { activeAttributes, activeAttributeUnit, activeAttributeValue } =
+    useAppSelector((state) => state.attribute);
   const [title, setTitle] = useState("");
   const [discription, setDiscription] = useState("");
   const [imgcompressloading, setimgcompressloading] = useState(false);
   const [images, setImages] = useState<File | any>("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState([]);
+  const [attributeId, setAttributeId] = useState("");
+  const [attributeunit_id, setAttributeUnitID] = useState("");
+  const [attributevalue_id, setAttributeValueId] = useState("");
   const [subcategory_id, setsubcategory_id] = useState("");
   const [originalprice, setOriginalPrice] = useState("");
   const [discountprice, setDiscountPrice] = useState("");
   const [primaryImageIndex, setPrimaryImageIndex] = useState<number>(0);
   const [stock, setStock] = useState("");
   const [errors, setErrors] = useState<any>({});
-  const [imagePreview,setPreviews] = useState<any>([])
+  const [imagePreview, setPreviews] = useState<any>([]);
+
+  //add unit.......
+  const [unit_name, setUnitName] = useState("");
   const HandleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     setimgcompressloading(true);
     if (event?.target?.files) {
       const files = Array.from(event.target.files);
       const compressedFiles: File[] = [];
       const imagePreviews: string[] = []; // Array to store image URLs for previews
-  
+
       for (const file of files) {
         if (file.size > 1 * 1024 * 1024) {
           try {
@@ -60,7 +72,7 @@ const Add = () => {
           imagePreviews.push(previewURL);
         }
       }
-  
+
       setImages(compressedFiles);
       setimgcompressloading(false);
       setPreviews(imagePreviews); // Set the image previews in state
@@ -83,10 +95,55 @@ const Add = () => {
         .unwrap()
         .then((res) => {
           setSubCategory(res.data);
+          dispatch(getattributeby_categoryid({ categoty_id: Number(category) }))
+            .unwrap()
+            .then((res) => {})
+            .catch((error) => {
+              console.log(error);
+            });
+          dispatch(
+            getattributeunitby_categoryid({ categoty_id: Number(category) })
+          )
+            .unwrap()
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((error) => {
+              console.log(error.message);
+            });
         })
         .catch((err) => {});
     }
   }, [category]);
+
+  useEffect(() => {
+    if (attributeId) {
+      dispatch(
+        getattributevalueby_attributeid({ attribute_id: Number(attributeId) })
+      )
+        .unwrap()
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [attributeId]);
+
+  const addunitHandler = () => {
+    const error: any = {};
+    if (!category) {
+      error.category = "category is required";
+    }
+    if (!unit_name) {
+      error.unit_name = "unit is required";
+    }
+    if (Object.keys(error).values.length < 0) {
+      console.log("unit added successfully");
+    }
+  };
+
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = {
@@ -99,6 +156,9 @@ const Add = () => {
       stock,
       images,
       primaryImageIndex,
+      attribute_id: attributeId,
+      attributevalue_id: attributevalue_id,
+      attributeunit_id: attributeunit_id,
     };
     const validate: any = validateProductData(payload);
     if (Object.keys(validate)?.length > 0) {
@@ -120,16 +180,16 @@ const Add = () => {
         formdata.append("primaryImageIndex", primaryImageIndex.toString());
       }
 
-      dispatch(addproductAsync(formdata))
-        .unwrap()
-        .then((res) => {
-          successtoast(res.message);
-          router.replace("/supplier/dashboard/product");
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      // dispatch(addproductAsync(formdata))
+      //   .unwrap()
+      //   .then((res) => {
+      //     successtoast(res.message);
+      //     router.replace("/supplier/dashboard/product");
+      //     console.log(res);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     }
   };
   if (categoryloading) {
@@ -221,6 +281,98 @@ const Add = () => {
             </div>
             <div className="mb-2">
               <label htmlFor="" className="mb-1">
+                Select Attribute
+              </label>
+              <select
+                value={attributeId}
+                name="attribute"
+                className="input"
+                onChange={(e) => setAttributeId(e.target.value)}
+              >
+                <option value="">select attribute</option>
+                {activeAttributes?.length > 0 &&
+                  activeAttributes.map((s: any) => {
+                    return (
+                      <option value={s.id} key={s.id}>
+                        {s.name}
+                      </option>
+                    );
+                  })}
+              </select>
+              {errors?.subcategory_id && (
+                <p className="error">{errors?.subcategory_id}</p>
+              )}
+            </div>
+            <div className="mb-2">
+              <label htmlFor="" className="mb-1">
+                Select Attribute value
+              </label>
+              <select
+                value={attributevalue_id}
+                name="attributevalue"
+                className="input"
+                onChange={(e) => setAttributeValueId(e.target.value)}
+              >
+                <option value="">select attribute value</option>
+                {activeAttributeValue?.length > 0 &&
+                  activeAttributeValue.map((s: any) => {
+                    return (
+                      <option value={s.id} key={s.id}>
+                        {s.name}
+                      </option>
+                    );
+                  })}
+              </select>
+              {errors?.subcategory_id && (
+                <p className="error">{errors?.subcategory_id}</p>
+              )}
+            </div>
+            <div className="mb-2">
+              <div className="row">
+                <div className="col-12 col-sm-8">
+                  <label htmlFor="" className="mb-1">
+                    Select Attribute unit
+                  </label>
+                  <select
+                    value={attributeunit_id}
+                    name="attribute_unit"
+                    className="input"
+                    onChange={(e) => setAttributeUnitID(e.target.value)}
+                  >
+                    <option value="">select attribute unit</option>
+                    {activeAttributeUnit?.length > 0 &&
+                      activeAttributeUnit?.map((s: any) => {
+                        return (
+                          <option value={s.id} key={s.id}>
+                            {s.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  {errors?.subcategory_id && (
+                    <p className="error">{errors?.subcategory_id}</p>
+                  )}
+                </div>
+                <div className="col-12 col-sm-3 d-flex align-items-end create_unit_btn">
+                  <button className="input">ADD UNIT + </button>
+                </div>
+              </div>
+            </div>
+            <div className="mb-2 add_unit_container">
+              <label htmlFor="" className="mb-1">
+                Add Unit
+              </label>
+              <input
+                type="text"
+                value={unit_name}
+                onChange={(e) => setUnitName(e.target.value)}
+                className="input"
+              />
+              <button className="">ADD</button>
+              {errors?.name && <p className="error">{errors?.name}</p>}
+            </div>
+            <div className="mb-2">
+              <label htmlFor="" className="mb-1">
                 OriginalPrice
               </label>
               <input
@@ -280,10 +432,12 @@ const Add = () => {
                   return (
                     <div key={index}>
                       <img
-                        className={`h-auto max-w-full rounded-lg ${primaryImageIndex==index?"primary_image":""}`}
+                        className={`h-auto max-w-full rounded-lg ${
+                          primaryImageIndex == index ? "primary_image" : ""
+                        }`}
                         src={i}
                         alt=""
-                        onClick={()=>setPrimaryImageIndex(index)}
+                        onClick={() => setPrimaryImageIndex(index)}
                       />
                     </div>
                   );

@@ -13,12 +13,18 @@ interface IInitialState {
   loading: boolean;
   attributeunits: any;
   attributes: any;
+  activeAttributes: any;
+  activeAttributeUnit: any;
+  activeAttributeValue:any;
   meta: metaType;
 }
 const initialState: IInitialState = {
   loading: false,
   attributeunits: [],
   attributes: [],
+  activeAttributes: [],
+  activeAttributeUnit: [],
+  activeAttributeValue:[],
   meta: {
     total: 0,
     lastPage: 0,
@@ -410,6 +416,63 @@ export const delete_attributevalueAsync = createAsyncThunk(
   }
 );
 
+interface IGetAttributeByCategory_Id {
+  categoty_id: number;
+}
+export const getattributeby_categoryid = createAsyncThunk(
+  "attribute/getattributebycategory_id",
+  async (payload: IGetAttributeByCategory_Id, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/attribute/getactiveattribute_by_category_id/${payload.categoty_id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+interface IGetAttributeUnitByCategory_Id {
+  categoty_id: number;
+}
+export const getattributeunitby_categoryid = createAsyncThunk(
+  "attribute/getattributeunitbycategory_id",
+  async (payload: IGetAttributeUnitByCategory_Id, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/attributeunit/getattributeunitby_categoty_id/${payload.categoty_id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+interface IGetAttributeValueByAttribute_Id {
+  attribute_id: number;
+}
+export const getattributevalueby_attributeid = createAsyncThunk(
+  "attribute/getattributevaluebyattribute_id",
+  async (payload: IGetAttributeValueByAttribute_Id, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/attributevalue/getactiveattributevaluebyid/${payload.attribute_id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const attributeSlice = createSlice({
   name: "attribute",
   initialState,
@@ -552,7 +615,37 @@ const attributeSlice = createSlice({
       })
       .addCase(changestatus_attributevalueAsync.rejected, (state, action) => {
         state.loading = false;
-      });
+      })
+      .addCase(getattributeby_categoryid.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getattributeby_categoryid.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activeAttributes = action.payload.data;
+      })
+      .addCase(getattributeby_categoryid.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getattributeunitby_categoryid.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getattributeunitby_categoryid.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activeAttributeUnit = action.payload.data;
+      })
+      .addCase(getattributeunitby_categoryid.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getattributevalueby_attributeid.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getattributevalueby_attributeid.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activeAttributeValue = action.payload.data;
+      })
+      .addCase(getattributevalueby_attributeid.rejected, (state, action) => {
+        state.loading = false;
+      })
   },
 });
 export default attributeSlice.reducer;
