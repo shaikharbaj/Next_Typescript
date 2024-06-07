@@ -145,8 +145,19 @@ a {
   font-size: 14px;
   /* padding: 0 .6rem */
 }
-.add_unit_container{
-        /* border:  ; */
+.add_unit_container {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 0.6rem;
+  background-color: white;
+}
+.add_btn {
+  border: 1px solid black;
+  width: 100%;
+  background-color: black !important;
+  color: white;
+  font-size: 15px;
+  padding: 0.3rem 0rem;
+  font-weight: bold;
 }
 
 @media (max-width: 578px) {

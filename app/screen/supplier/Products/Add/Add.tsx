@@ -11,10 +11,11 @@ import {
 } from "@/app/Redux/features/category/categorySlice";
 import Loading from "@/app/components/Loading/Loading";
 import { addproductAsync } from "@/app/Redux/features/Product/productSlice";
-import { successtoast } from "@/app/utils/alerts/alerts";
+import { errortoast, successtoast } from "@/app/utils/alerts/alerts";
 import { useRouter } from "next/navigation";
 import { validateProductData } from "@/app/utils/validation/supplier/addproductvalidation";
 import {
+  createAttributeUnitsAsync,
   getattributeby_categoryid,
   getattributeunitby_categoryid,
   getattributevalueby_attributeid,
@@ -42,6 +43,7 @@ const Add = () => {
   const [stock, setStock] = useState("");
   const [errors, setErrors] = useState<any>({});
   const [imagePreview, setPreviews] = useState<any>([]);
+  const [isaddAttributeUnit, setIsAddAttributeUnit] = useState(false);
 
   //add unit.......
   const [unit_name, setUnitName] = useState("");
@@ -134,13 +136,29 @@ const Add = () => {
   const addunitHandler = () => {
     const error: any = {};
     if (!category) {
-      error.category = "category is required";
+      error.category_id = "category is required";
     }
     if (!unit_name) {
       error.unit_name = "unit is required";
     }
-    if (Object.keys(error).values.length < 0) {
-      console.log("unit added successfully");
+    if (Object.keys(error).length > 0) {
+      console.log(error);
+
+      setErrors(error);
+    } else {
+      setErrors({});
+      const payload: any = {};
+      payload.category_id = category;
+      payload.status = true;
+      payload.name = unit_name;
+      dispatch(createAttributeUnitsAsync(payload))
+        .unwrap()
+        .then((res) => {
+          successtoast(res?.message);
+        })
+        .catch((err) => {
+          errortoast(err?.message);
+        });
     }
   };
 
@@ -164,6 +182,7 @@ const Add = () => {
     if (Object.keys(validate)?.length > 0) {
       setErrors(validate);
     } else {
+      setErrors({});
       const formdata = new FormData();
       formdata.append("name", title);
       formdata.append("description", discription);
@@ -353,24 +372,40 @@ const Add = () => {
                     <p className="error">{errors?.subcategory_id}</p>
                   )}
                 </div>
-                <div className="col-12 col-sm-3 d-flex align-items-end create_unit_btn">
-                  <button className="input">ADD UNIT + </button>
+                <div className="col-12 col-sm-4 d-flex align-items-end create_unit_btn">
+                  <button
+                    className="input"
+                    type="button"
+                    onClick={() => setIsAddAttributeUnit(!isaddAttributeUnit)}
+                  >
+                    ADD UNIT +{" "}
+                  </button>
                 </div>
               </div>
             </div>
-            <div className="mb-2 add_unit_container">
-              <label htmlFor="" className="mb-1">
-                Add Unit
-              </label>
-              <input
-                type="text"
-                value={unit_name}
-                onChange={(e) => setUnitName(e.target.value)}
-                className="input"
-              />
-              <button className="">ADD</button>
-              {errors?.name && <p className="error">{errors?.name}</p>}
-            </div>
+            {isaddAttributeUnit && (
+              <div className="mb-2 add_unit_container">
+                <label htmlFor="" className="mb-1">
+                  Add Unit
+                </label>
+                <input
+                  type="text"
+                  value={unit_name}
+                  onChange={(e) => setUnitName(e.target.value)}
+                  className="input"
+                />
+                {errors?.unit_name && (
+                  <p className="error">{errors?.unit_name}</p>
+                )}
+                <button
+                  className=" mt-2 add_btn"
+                  type="button"
+                  onClick={addunitHandler}
+                >
+                  ADD
+                </button>
+              </div>
+            )}
             <div className="mb-2">
               <label htmlFor="" className="mb-1">
                 OriginalPrice
