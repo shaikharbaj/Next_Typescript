@@ -44,6 +44,7 @@ const Add = () => {
   const [errors, setErrors] = useState<any>({});
   const [imagePreview, setPreviews] = useState<any>([]);
   const [isaddAttributeUnit, setIsAddAttributeUnit] = useState(false);
+  const [variants, setVariants] = useState<any[]>([]);
 
   //add unit.......
   const [unit_name, setUnitName] = useState("");
@@ -99,7 +100,7 @@ const Add = () => {
           setSubCategory(res.data);
           dispatch(getattributeby_categoryid({ categoty_id: Number(category) }))
             .unwrap()
-            .then((res) => {})
+            .then((res) => { })
             .catch((error) => {
               console.log(error);
             });
@@ -114,7 +115,7 @@ const Add = () => {
               console.log(error.message);
             });
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   }, [category]);
 
@@ -162,6 +163,21 @@ const Add = () => {
     }
   };
 
+  const handleAddVariant = () => {
+    // Initialize a new variant with empty attribute values
+    const newVariant = activeAttributes.map((attribute: any) => ({
+      attributeId: attribute.id,
+      attributeValueId: ""
+    }));
+    setVariants([...variants, newVariant]);
+  };
+
+  const handleAttributeChange = (variantIndex: number, attributeIndex: number, value: string) => {
+    const updatedVariants = [...variants];
+    updatedVariants[variantIndex][attributeIndex].attributeValueId = Number(value);
+    setVariants(updatedVariants);
+  };
+
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = {
@@ -174,10 +190,12 @@ const Add = () => {
       stock,
       images,
       primaryImageIndex,
-      attribute_id: attributeId,
-      attributevalue_id: attributevalue_id,
-      attributeunit_id: attributeunit_id,
+      // attribute_id: attributeId,
+      // attributevalue_id: attributevalue_id,
+      // attributeunit_id: attributeunit_id,
+      variants:variants
     };
+    console.log(payload);
     const validate: any = validateProductData(payload);
     if (Object.keys(validate)?.length > 0) {
       setErrors(validate);
@@ -198,19 +216,27 @@ const Add = () => {
       if (primaryImageIndex !== null) {
         formdata.append("primaryImageIndex", primaryImageIndex.toString());
       }
-
-      // dispatch(addproductAsync(formdata))
-      //   .unwrap()
-      //   .then((res) => {
-      //     successtoast(res.message);
-      //     router.replace("/supplier/dashboard/product");
-      //     console.log(res);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      console.log(variants);
+      variants.forEach((variant, variantIndex) => {
+        variant.forEach((attribute: any, attributeIndex:number) => {
+          formdata.append(`variants[${variantIndex}][${attributeIndex}][attributeId]`, attribute.attributeId);
+          formdata.append(`variants[${variantIndex}][${attributeIndex}][attributeValueId]`, attribute.attributeValueId);
+        });
+      });
+    
+      dispatch(addproductAsync(formdata))
+        .unwrap()
+        .then((res) => {
+          successtoast(res.message);
+          router.replace("/supplier/dashboard/product");
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
+
   if (categoryloading) {
     return <Loading />;
   }
@@ -298,7 +324,41 @@ const Add = () => {
                 <p className="error">{errors?.subcategory_id}</p>
               )}
             </div>
-            <div className="mb-2">
+
+            <p className="mb-1">Add Varient</p>
+            <div className="mb-2 varient">
+              {variants.map((variant, variantIndex) => (
+                <div className="row gutters" key={variantIndex}>
+                  {/* <div key={variantIndex}> */}
+                    {variant?.map((attribute: any, attributeIndex: number) => (
+                      <div key={attributeIndex} className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <div className="form-group">
+                          <label>{activeAttributes[attributeIndex].name}</label>
+                          <select
+                            className="form-control"
+                            value={attribute.attributeValueId}
+                            onChange={(e) =>
+                              handleAttributeChange(variantIndex, attributeIndex, e.target.value)
+                            }
+                          >
+                            <option value="">Select {activeAttributes[attributeIndex].name}</option>
+                            {/* Render attribute values dynamically */}
+                            {activeAttributes[attributeIndex].attributevalues.map((value: any) => (
+                              <option key={value.id} value={value.id}>
+                                {value.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                // </div>
+              ))}
+              <button onClick={handleAddVariant} type="button">Add Variant</button>
+
+            </div>
+            {/* <div className="mb-2">
               <label htmlFor="" className="mb-1">
                 Select Attribute
               </label>
@@ -405,7 +465,8 @@ const Add = () => {
                   ADD
                 </button>
               </div>
-            )}
+            )} */}
+
             <div className="mb-2">
               <label htmlFor="" className="mb-1">
                 OriginalPrice
@@ -467,9 +528,8 @@ const Add = () => {
                   return (
                     <div key={index}>
                       <img
-                        className={`h-auto max-w-full rounded-lg ${
-                          primaryImageIndex == index ? "primary_image" : ""
-                        }`}
+                        className={`h-auto max-w-full rounded-lg ${primaryImageIndex == index ? "primary_image" : ""
+                          }`}
                         src={i}
                         alt=""
                         onClick={() => setPrimaryImageIndex(index)}
@@ -478,7 +538,6 @@ const Add = () => {
                   );
                 })}
             </div>
-
             <div className="mt-2">
               <input
                 type="submit"

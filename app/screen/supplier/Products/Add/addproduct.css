@@ -160,8 +160,43 @@ a {
   font-weight: bold;
 }
 
+.varient{
+       border: 1px solid rgba(0, 0, 0,0.1);
+       padding: 1rem;
+}
+.varient_value{
+     display: flex !important;
+
+}
+
+@media (min-width: 778px) {
+  .varient_value select{
+      width: 33.33%;
+}
+}
+
 @media (max-width: 578px) {
   .create_unit_btn {
     margin-top: 0.5rem !important;
   }
 }
+
+
+@media (max-width: 578px) {
+  .create_unit_btn {
+    margin-top: 0.5rem !important;
+  }
+}
+
+.addvarient_btn{
+  border: 1px solid black;
+  width: 90%;
+  background-color: black !important;
+  color: white;
+  font-size: 15px;
+  padding: 0.3rem 0rem;
+  margin-top: .5rem;
+  font-weight: bold;
+  margin: auto;
+}
+

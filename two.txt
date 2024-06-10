@@ -5,7 +5,33 @@
 
 
 
-
+<div className="mb-2 varient">
+              {variants.map((variant, index) => (
+                <div className="mb-2 varient" key={index}>
+                  <div className="row gutters">
+                    {activeAttributes?.map((attribute: any) => (
+                      <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12" key={attribute.id}>
+                        <div className="form-group">
+                          <label>{attribute.name}</label>
+                          <select
+                            value={attributeVariants[index][attribute.id]}
+                            className="form-control"
+                            onChange={(e) => handleAttributeChange(index, attribute.id, e.target.value)}
+                          >
+                            <option value="">Select {attribute.name}</option>
+                            {attribute?.attributevalues?.map((value: any, valueIndex: number) => (
+                              <option key={valueIndex} value={value.id}>
+                                {value.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
 
 
 
