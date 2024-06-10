@@ -169,6 +169,18 @@ a {
 
 }
 
+.variant_box{
+     border: 1px solid black;
+     background-color: whitesmoke;
+     padding: .5rem;
+}
+.varient_image{
+       width: 60px !important;
+}
+.varient_image-preview{
+    width: 60px;
+}
+
 @media (min-width: 778px) {
   .varient_value select{
       width: 33.33%;

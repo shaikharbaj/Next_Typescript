@@ -100,7 +100,7 @@ const Add = () => {
           setSubCategory(res.data);
           dispatch(getattributeby_categoryid({ categoty_id: Number(category) }))
             .unwrap()
-            .then((res) => { })
+            .then((res) => {})
             .catch((error) => {
               console.log(error);
             });
@@ -115,7 +115,7 @@ const Add = () => {
               console.log(error.message);
             });
         })
-        .catch((err) => { });
+        .catch((err) => {});
     }
   }, [category]);
 
@@ -164,18 +164,86 @@ const Add = () => {
   };
 
   const handleAddVariant = () => {
-    // Initialize a new variant with empty attribute values
-    const newVariant = activeAttributes.map((attribute: any) => ({
-      attributeId: attribute.id,
-      attributeValueId: ""
-    }));
+    const newVariant = {
+      attributes: activeAttributes.map((attribute: any) => ({
+        attributeId: attribute.id,
+        attributeValueId: "",
+      })),
+      originalprice: "",
+      discountprice: "",
+      stock: "",
+      images: [],
+      primaryImageIndex: 0,
+    };
     setVariants([...variants, newVariant]);
   };
 
-  const handleAttributeChange = (variantIndex: number, attributeIndex: number, value: string) => {
+  const handleAttributeChange = (
+    variantIndex: number,
+    attributeIndex: number,
+    value: string
+  ) => {
     const updatedVariants = [...variants];
-    updatedVariants[variantIndex][attributeIndex].attributeValueId = Number(value);
+    updatedVariants[variantIndex][attributeIndex].attributeValueId =
+      Number(value);
     setVariants(updatedVariants);
+  };
+
+  const handleVariantChange = (
+    variantIndex: number,
+    field: string,
+    value: any
+  ) => {
+    const updatedVariants = [...variants];
+    if (field === "attributeValueId") {
+      updatedVariants[variantIndex].attributes[value.index].attributeValueId =
+        value.value;
+    } else if (field === "images") {
+      console.log(field);
+      console.log(updatedVariants);
+      updatedVariants[variantIndex][field] = value.files;
+      updatedVariants[variantIndex].primaryImageIndex = 0; // Reset primary image index
+    } else {
+      updatedVariants[variantIndex][field] = value;
+    }
+    setVariants(updatedVariants);
+  };
+
+  const handleVariantImageChange = async (
+    event: ChangeEvent<HTMLInputElement>,
+    variantIndex: number
+  ) => {
+    setimgcompressloading(true);
+    if (event?.target?.files) {
+      const files = Array.from(event.target.files);
+      const compressedFiles: File[] = [];
+      const imagePreviews: string[] = [];
+
+      for (const file of files) {
+        if (file.size > 1 * 1024 * 1024) {
+          try {
+            const compressedFile = await imageCompression(file, {
+              maxSizeMB: 1,
+            });
+            compressedFiles.push(compressedFile);
+            const previewURL = URL.createObjectURL(compressedFile);
+            imagePreviews.push(previewURL);
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          compressedFiles.push(file);
+          const previewURL = URL.createObjectURL(file);
+          imagePreviews.push(previewURL);
+        }
+      }
+
+      handleVariantChange(variantIndex, "images", {
+        files: compressedFiles,
+        previews: imagePreviews,
+      });
+      setimgcompressloading(false);
+    }
   };
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -193,7 +261,7 @@ const Add = () => {
       // attribute_id: attributeId,
       // attributevalue_id: attributevalue_id,
       // attributeunit_id: attributeunit_id,
-      variants:variants
+      variants: variants,
     };
     console.log(payload);
     const validate: any = validateProductData(payload);
@@ -218,12 +286,20 @@ const Add = () => {
       }
       console.log(variants);
       variants.forEach((variant, variantIndex) => {
-        variant.forEach((attribute: any, attributeIndex:number) => {
-          formdata.append(`variants[${variantIndex}][${attributeIndex}][attributeId]`, attribute.attributeId);
-          formdata.append(`variants[${variantIndex}][${attributeIndex}][attributeValueId]`, attribute.attributeValueId);
+        variant.forEach((attribute: any, attributeIndex: number) => {
+          if (attribute.attributeValueId !== "") {
+            formdata.append(
+              `variants[${variantIndex}][${attributeIndex}][attributeId]`,
+              attribute.attributeId
+            );
+            formdata.append(
+              `variants[${variantIndex}][${attributeIndex}][attributeValueId]`,
+              attribute.attributeValueId
+            );
+          }
         });
       });
-    
+
       dispatch(addproductAsync(formdata))
         .unwrap()
         .then((res) => {
@@ -236,7 +312,6 @@ const Add = () => {
         });
     }
   };
-
   if (categoryloading) {
     return <Loading />;
   }
@@ -327,146 +402,226 @@ const Add = () => {
 
             <p className="mb-1">Add Varient</p>
             <div className="mb-2 varient">
-              {variants.map((variant, variantIndex) => (
-                <div className="row gutters" key={variantIndex}>
-                  {/* <div key={variantIndex}> */}
-                    {variant?.map((attribute: any, attributeIndex: number) => (
-                      <div key={attributeIndex} className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                        <div className="form-group">
-                          <label>{activeAttributes[attributeIndex].name}</label>
-                          <select
-                            className="form-control"
-                            value={attribute.attributeValueId}
-                            onChange={(e) =>
-                              handleAttributeChange(variantIndex, attributeIndex, e.target.value)
-                            }
-                          >
-                            <option value="">Select {activeAttributes[attributeIndex].name}</option>
-                            {/* Render attribute values dynamically */}
-                            {activeAttributes[attributeIndex].attributevalues.map((value: any) => (
-                              <option key={value.id} value={value.id}>
-                                {value.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                // </div>
-              ))}
-              <button onClick={handleAddVariant} type="button">Add Variant</button>
-
-            </div>
-            {/* <div className="mb-2">
-              <label htmlFor="" className="mb-1">
-                Select Attribute
-              </label>
-              <select
-                value={attributeId}
-                name="attribute"
-                className="input"
-                onChange={(e) => setAttributeId(e.target.value)}
-              >
-                <option value="">select attribute</option>
-                {activeAttributes?.length > 0 &&
-                  activeAttributes.map((s: any) => {
-                    return (
-                      <option value={s.id} key={s.id}>
-                        {s.name}
-                      </option>
-                    );
-                  })}
-              </select>
-              {errors?.subcategory_id && (
-                <p className="error">{errors?.subcategory_id}</p>
-              )}
-            </div>
-            <div className="mb-2">
-              <label htmlFor="" className="mb-1">
-                Select Attribute value
-              </label>
-              <select
-                value={attributevalue_id}
-                name="attributevalue"
-                className="input"
-                onChange={(e) => setAttributeValueId(e.target.value)}
-              >
-                <option value="">select attribute value</option>
-                {activeAttributeValue?.length > 0 &&
-                  activeAttributeValue.map((s: any) => {
-                    return (
-                      <option value={s.id} key={s.id}>
-                        {s.name}
-                      </option>
-                    );
-                  })}
-              </select>
-              {errors?.subcategory_id && (
-                <p className="error">{errors?.subcategory_id}</p>
-              )}
-            </div>
-            <div className="mb-2">
-              <div className="row">
-                <div className="col-12 col-sm-8">
-                  <label htmlFor="" className="mb-1">
-                    Select Attribute unit
-                  </label>
-                  <select
-                    value={attributeunit_id}
-                    name="attribute_unit"
-                    className="input"
-                    onChange={(e) => setAttributeUnitID(e.target.value)}
-                  >
-                    <option value="">select attribute unit</option>
-                    {activeAttributeUnit?.length > 0 &&
-                      activeAttributeUnit?.map((s: any) => {
+              <div className="">
+                {variants.map((variant, variantIndex) => (
+                  <div key={variantIndex} className="mb-2 row variant_box">
+                    <h5 className="h5 heading">Variant {variantIndex + 1}</h5>
+                    {variant?.attributes?.map(
+                      (attribute: any, attributeIndex: any) => {
+                        const attributeName =
+                          activeAttributes[attributeIndex]?.name || "";
+                        const attributeValues =
+                          activeAttributes[attributeIndex]?.attributevalues ||
+                          [];
                         return (
-                          <option value={s.id} key={s.id}>
-                            {s.name}
-                          </option>
+                          <div
+                            key={attributeIndex}
+                            className="mb-2 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12"
+                          >
+                            <div className="form-group">
+                              <label className="mb-1">{attributeName}</label>
+                              <select
+                                value={attribute.attributeValueId}
+                                onChange={(e) =>
+                                  handleVariantChange(
+                                    variantIndex,
+                                    "attributeValueId",
+                                    {
+                                      index: attributeIndex,
+                                      value: e.target.value,
+                                    }
+                                  )
+                                }
+                                className="select form-control"
+                              >
+                                <option value="">Select {attributeName}</option>
+                                {attributeValues.map((value: any) => (
+                                  <option key={value.id} value={value.id}>
+                                    {value?.name}
+                                  </option>
+                                ))}
+                              </select>
+                              {errors?.variants &&
+                                errors?.variants[variantIndex] &&
+                                errors?.variants[variantIndex][
+                                  attributeIndex
+                                ] && (
+                                  <p className="error">
+                                    {
+                                      errors?.variants[variantIndex][
+                                        attributeIndex
+                                      ]
+                                    }
+                                  </p>
+                                )}
+                            </div>
+                          </div>
                         );
-                      })}
-                  </select>
-                  {errors?.subcategory_id && (
-                    <p className="error">{errors?.subcategory_id}</p>
-                  )}
-                </div>
-                <div className="col-12 col-sm-4 d-flex align-items-end create_unit_btn">
-                  <button
-                    className="input"
-                    type="button"
-                    onClick={() => setIsAddAttributeUnit(!isaddAttributeUnit)}
-                  >
-                    ADD UNIT +{" "}
-                  </button>
-                </div>
+                      }
+                    )}
+                    <div className="mb-2">
+                      <label htmlFor="" className="mb-1">
+                        Original Price
+                      </label>
+                      <input
+                        type="number"
+                        value={variant.originalprice}
+                        onChange={(e) =>
+                          handleVariantChange(
+                            variantIndex,
+                            "originalprice",
+                            e.target.value
+                          )
+                        }
+                        className="input"
+                      />
+                      {errors?.variants &&
+                        errors?.variants[variantIndex] &&
+                        errors?.variants[variantIndex].originalprice && (
+                          <p className="error">
+                            {errors?.variants[variantIndex].originalprice}
+                          </p>
+                        )}
+                    </div>
+                    <div className="mb-2">
+                      <label htmlFor="" className="mb-1">
+                        Discount Price
+                      </label>
+                      <input
+                        type="number"
+                        value={variant.discountprice}
+                        onChange={(e) =>
+                          handleVariantChange(
+                            variantIndex,
+                            "discountprice",
+                            e.target.value
+                          )
+                        }
+                        className="input"
+                      />
+                      {errors?.variants &&
+                        errors?.variants[variantIndex] &&
+                        errors?.variants[variantIndex].discountprice && (
+                          <p className="error">
+                            {errors?.variants[variantIndex].discountprice}
+                          </p>
+                        )}
+                    </div>
+                    <div className="mb-2">
+                      <label htmlFor="" className="mb-1">
+                        Stock
+                      </label>
+                      <input
+                        type="number"
+                        value={variant.stock}
+                        onChange={(e) =>
+                          handleVariantChange(
+                            variantIndex,
+                            "stock",
+                            e.target.value
+                          )
+                        }
+                        className="input"
+                      />
+                      {errors?.variants &&
+                        errors?.variants[variantIndex] &&
+                        errors?.variants[variantIndex].stock && (
+                          <p className="error">
+                            {errors?.variants[variantIndex].stock}
+                          </p>
+                        )}
+                    </div>
+                    <div className="mb-2">
+                      <label
+                        htmlFor={`variantImageUpload-${variantIndex}`}
+                        className="mb-1"
+                      >
+                        Upload Images
+                      </label>
+                      <input
+                        type="file"
+                        id={`variantImageUpload-${variantIndex}`}
+                        accept="image/*"
+                        onChange={(e) =>
+                          handleVariantImageChange(e, variantIndex)
+                        }
+                        multiple
+                      />
+                      {imgcompressloading ? (
+                        <p>Loading...</p>
+                      ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {variant.images.map((image: File, index: number) => {
+                            return (
+                              <div key={index}>
+                                <img
+                                  className={`h-auto max-w-full rounded-lg ${
+                                    primaryImageIndex == index
+                                      ? "primary_image"
+                                      : ""
+                                  }`}
+                                  src={URL.createObjectURL(image)}
+                                  alt={`Preview ${index}`}
+                                  // onClick={() => setPrimaryImageIndex(index)}
+                                  onClick={() =>
+                                    handleVariantChange(
+                                      variantIndex,
+                                      "primaryImageIndex",
+                                      index
+                                    )
+                                  }
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                        // <div className="image-preview-container d-flex">
+                        //   {variant.images.map((image: File, index: number) => (
+                        //     <div key={index} className="varient_image-preview">
+                        //       <img
+                        //         src={URL.createObjectURL(image)}
+                        //         alt={`Preview ${index}`}
+                        //       />
+                        //       <div>
+                        //         <label>
+                        //           <input
+                        //             type="radio"
+                        //             name={`primaryImage-${variantIndex}`}
+                        //             value={index}
+                        //             checked={
+                        //               index === variant.primaryImageIndex
+                        //             }
+                        //             onChange={() =>
+                        //               handleVariantChange(
+                        //                 variantIndex,
+                        //                 "primaryImageIndex",
+                        //                 index
+                        //               )
+                        //             }
+                        //           />
+                        //           Primary
+                        //         </label>
+                        //       </div>
+                        //     </div>
+                        //   ))}
+                        // </div>
+                      )}
+                      {errors?.variants &&
+                        errors?.variants[variantIndex] &&
+                        errors?.variants[variantIndex].images && (
+                          <p className="error">
+                            {errors?.variants[variantIndex].images}
+                          </p>
+                        )}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-            {isaddAttributeUnit && (
-              <div className="mb-2 add_unit_container">
-                <label htmlFor="" className="mb-1">
-                  Add Unit
-                </label>
-                <input
-                  type="text"
-                  value={unit_name}
-                  onChange={(e) => setUnitName(e.target.value)}
-                  className="input"
-                />
-                {errors?.unit_name && (
-                  <p className="error">{errors?.unit_name}</p>
-                )}
-                <button
-                  className=" mt-2 add_btn"
-                  type="button"
-                  onClick={addunitHandler}
-                >
-                  ADD
-                </button>
-              </div>
-            )} */}
 
+              <button onClick={handleAddVariant} type="button">
+                Add Variant
+              </button>
+            </div>
             <div className="mb-2">
               <label htmlFor="" className="mb-1">
                 OriginalPrice
@@ -528,8 +683,9 @@ const Add = () => {
                   return (
                     <div key={index}>
                       <img
-                        className={`h-auto max-w-full rounded-lg ${primaryImageIndex == index ? "primary_image" : ""
-                          }`}
+                        className={`h-auto max-w-full rounded-lg ${
+                          primaryImageIndex == index ? "primary_image" : ""
+                        }`}
                         src={i}
                         alt=""
                         onClick={() => setPrimaryImageIndex(index)}

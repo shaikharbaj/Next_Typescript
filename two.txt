@@ -130,3 +130,153 @@
               />
             </div>
           </div>
+
+
+
+
+{/* <div className="mb-2">
+              <label htmlFor="" className="mb-1">
+                Select Attribute
+              </label>
+              <select
+                value={attributeId}
+                name="attribute"
+                className="input"
+                onChange={(e) => setAttributeId(e.target.value)}
+              >
+                <option value="">select attribute</option>
+                {activeAttributes?.length > 0 &&
+                  activeAttributes.map((s: any) => {
+                    return (
+                      <option value={s.id} key={s.id}>
+                        {s.name}
+                      </option>
+                    );
+                  })}
+              </select>
+              {errors?.subcategory_id && (
+                <p className="error">{errors?.subcategory_id}</p>
+              )}
+            </div>
+            <div className="mb-2">
+              <label htmlFor="" className="mb-1">
+                Select Attribute value
+              </label>
+              <select
+                value={attributevalue_id}
+                name="attributevalue"
+                className="input"
+                onChange={(e) => setAttributeValueId(e.target.value)}
+              >
+                <option value="">select attribute value</option>
+                {activeAttributeValue?.length > 0 &&
+                  activeAttributeValue.map((s: any) => {
+                    return (
+                      <option value={s.id} key={s.id}>
+                        {s.name}
+                      </option>
+                    );
+                  })}
+              </select>
+              {errors?.subcategory_id && (
+                <p className="error">{errors?.subcategory_id}</p>
+              )}
+            </div>
+            <div className="mb-2">
+              <div className="row">
+                <div className="col-12 col-sm-8">
+                  <label htmlFor="" className="mb-1">
+                    Select Attribute unit
+                  </label>
+                  <select
+                    value={attributeunit_id}
+                    name="attribute_unit"
+                    className="input"
+                    onChange={(e) => setAttributeUnitID(e.target.value)}
+                  >
+                    <option value="">select attribute unit</option>
+                    {activeAttributeUnit?.length > 0 &&
+                      activeAttributeUnit?.map((s: any) => {
+                        return (
+                          <option value={s.id} key={s.id}>
+                            {s.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  {errors?.subcategory_id && (
+                    <p className="error">{errors?.subcategory_id}</p>
+                  )}
+                </div>
+                <div className="col-12 col-sm-4 d-flex align-items-end create_unit_btn">
+                  <button
+                    className="input"
+                    type="button"
+                    onClick={() => setIsAddAttributeUnit(!isaddAttributeUnit)}
+                  >
+                    ADD UNIT +{" "}
+                  </button>
+                </div>
+              </div>
+            </div>
+            {isaddAttributeUnit && (
+              <div className="mb-2 add_unit_container">
+                <label htmlFor="" className="mb-1">
+                  Add Unit
+                </label>
+                <input
+                  type="text"
+                  value={unit_name}
+                  onChange={(e) => setUnitName(e.target.value)}
+                  className="input"
+                />
+                {errors?.unit_name && (
+                  <p className="error">{errors?.unit_name}</p>
+                )}
+                <button
+                  className=" mt-2 add_btn"
+                  type="button"
+                  onClick={addunitHandler}
+                >
+                  ADD
+                </button>
+              </div>
+            )} */}
+
+
+
+<div className="row gutters" key={variantIndex}>
+                  {variant?.map((attribute: any, attributeIndex: number) => (
+                    <div
+                      key={attributeIndex}
+                      className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12"
+                    >
+                      <div className="form-group">
+                        <label>{activeAttributes[attributeIndex]?.name}</label>
+                        <select
+                          className="form-control"
+                          value={attribute.attributeValueId}
+                          onChange={(e) =>
+                            handleAttributeChange(
+                              variantIndex,
+                              attributeIndex,
+                              e.target.value
+                            )
+                          }
+                        >
+                          <option value="">
+                            Select {activeAttributes[attributeIndex].name}
+                          </option>
+                          {/* Render attribute values dynamically */}
+                          {activeAttributes[attributeIndex].attributevalues.map(
+                            (value: any) => (
+                              <option key={value.id} value={value.id}>
+                                {value.name}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
+                    </div>
+                  ))}
+                </div>
