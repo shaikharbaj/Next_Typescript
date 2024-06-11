@@ -199,11 +199,12 @@ const Add = () => {
       updatedVariants[variantIndex].attributes[value.index].attributeValueId =
         value.value;
     } else if (field === "images") {
-      console.log(field);
+      console.log(value);
       console.log(updatedVariants);
       updatedVariants[variantIndex][field] = value.files;
       updatedVariants[variantIndex].primaryImageIndex = 0; // Reset primary image index
     } else {
+      console.log(value);
       updatedVariants[variantIndex][field] = value;
     }
     setVariants(updatedVariants);
@@ -284,16 +285,35 @@ const Add = () => {
       if (primaryImageIndex !== null) {
         formdata.append("primaryImageIndex", primaryImageIndex.toString());
       }
-      console.log(variants);
+
       variants.forEach((variant, variantIndex) => {
-        variant.forEach((attribute: any, attributeIndex: number) => {
+        formdata.append(
+          `variants[${variantIndex}][originalprice]`,
+          variant.originalprice
+        );
+        formdata.append(
+          `variants[${variantIndex}][discountprice]`,
+          variant.discountprice
+        );
+        formdata.append(`variants[${variantIndex}][stock]`, variant.stock);
+
+        variant.images.forEach((image: any, imageIndex: any) => {
+          formdata.append(`variants[${variantIndex}][images]`, image);
+        });
+
+        formdata.append(
+          `variants[${variantIndex}][primaryImageIndex]`,
+          variant.primaryImageIndex.toString()
+        );
+
+        variant.attributes.forEach((attribute: any, attributeIndex: number) => {
           if (attribute.attributeValueId !== "") {
             formdata.append(
-              `variants[${variantIndex}][${attributeIndex}][attributeId]`,
+              `variants[${variantIndex}][attributes][${attributeIndex}][attributeId]`,
               attribute.attributeId
             );
             formdata.append(
-              `variants[${variantIndex}][${attributeIndex}][attributeValueId]`,
+              `variants[${variantIndex}][attributes][${attributeIndex}][attributeValueId]`,
               attribute.attributeValueId
             );
           }
@@ -550,13 +570,13 @@ const Add = () => {
                       {imgcompressloading ? (
                         <p>Loading...</p>
                       ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
                           {variant.images.map((image: File, index: number) => {
                             return (
                               <div key={index}>
                                 <img
-                                  className={`h-auto max-w-full rounded-lg ${
-                                    primaryImageIndex == index
+                                  className={`varient_image-preview rounded-lg ${
+                                    variant?.primaryImageIndex == index
                                       ? "primary_image"
                                       : ""
                                   }`}

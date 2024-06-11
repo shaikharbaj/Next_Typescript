@@ -179,6 +179,8 @@ a {
 }
 .varient_image-preview{
     width: 60px;
+    height: 60px;
+    object-fit: contain;
 }
 
 @media (min-width: 778px) {
