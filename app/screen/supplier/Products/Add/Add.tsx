@@ -100,7 +100,7 @@ const Add = () => {
           setSubCategory(res.data);
           dispatch(getattributeby_categoryid({ categoty_id: Number(category) }))
             .unwrap()
-            .then((res) => {})
+            .then((res) => { })
             .catch((error) => {
               console.log(error);
             });
@@ -115,7 +115,7 @@ const Add = () => {
               console.log(error.message);
             });
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   }, [category]);
 
@@ -420,7 +420,7 @@ const Add = () => {
               )}
             </div>
 
-            <p className="mb-1">Add Varient</p>
+            {/* <p className="mb-1">Add Varient</p>
             <div className="mb-2 varient">
               <div className="">
                 {variants.map((variant, variantIndex) => (
@@ -641,7 +641,7 @@ const Add = () => {
               <button onClick={handleAddVariant} type="button">
                 Add Variant
               </button>
-            </div>
+            </div> */}
             <div className="mb-2">
               <label htmlFor="" className="mb-1">
                 OriginalPrice
@@ -703,9 +703,8 @@ const Add = () => {
                   return (
                     <div key={index}>
                       <img
-                        className={`h-auto max-w-full rounded-lg ${
-                          primaryImageIndex == index ? "primary_image" : ""
-                        }`}
+                        className={`h-auto max-w-full rounded-lg ${primaryImageIndex == index ? "primary_image" : ""
+                          }`}
                         src={i}
                         alt=""
                         onClick={() => setPrimaryImageIndex(index)}
