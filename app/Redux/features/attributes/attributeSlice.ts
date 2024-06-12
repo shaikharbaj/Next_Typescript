@@ -15,7 +15,7 @@ interface IInitialState {
   attributes: any;
   activeAttributes: any;
   activeAttributeUnit: any;
-  activeAttributeValue:any;
+  activeAttributeValue: any;
   meta: metaType;
 }
 const initialState: IInitialState = {
@@ -24,7 +24,7 @@ const initialState: IInitialState = {
   attributes: [],
   activeAttributes: [],
   activeAttributeUnit: [],
-  activeAttributeValue:[],
+  activeAttributeValue: [],
   meta: {
     total: 0,
     lastPage: 0,
@@ -473,6 +473,24 @@ export const getattributevalueby_attributeid = createAsyncThunk(
   }
 );
 
+interface Iget_variation_options {
+  category_id: number
+}
+export const get_variation_optionsAsync = createAsyncThunk(
+  "attribute/getvariationoption",
+  async (payload: Iget_variation_options, thunkAPI) => {
+    try {
+      const response = await privateRequest.get(
+        `http://localhost:8000/category/getvariationoption/${payload.category_id}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return thunkAPI.rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
 const attributeSlice = createSlice({
   name: "attribute",
   initialState,
@@ -646,7 +664,16 @@ const attributeSlice = createSlice({
       .addCase(getattributevalueby_attributeid.rejected, (state, action) => {
         state.loading = false;
       })
+      .addCase(get_variation_optionsAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(get_variation_optionsAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(get_variation_optionsAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
   },
 });
 export default attributeSlice.reducer;
-export const {} = attributeSlice.actions;
+export const { } = attributeSlice.actions;
