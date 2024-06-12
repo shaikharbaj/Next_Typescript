@@ -144,6 +144,26 @@ export const editproductAsync = createAsyncThunk(
   }
 );
 
+//varients....................
+interface IAddProductVarient {
+  product_id: number;
+  variants: any;
+}
+export const addproductVarientAsync = createAsyncThunk(
+  "product/addproductvarient",
+  async (payload: IAddProductVarient, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        "http://localhost:8000/product/add-varient",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,

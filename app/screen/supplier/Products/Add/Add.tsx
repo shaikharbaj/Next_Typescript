@@ -100,7 +100,7 @@ const Add = () => {
           setSubCategory(res.data);
           dispatch(getattributeby_categoryid({ categoty_id: Number(category) }))
             .unwrap()
-            .then((res) => { })
+            .then((res) => {})
             .catch((error) => {
               console.log(error);
             });
@@ -115,7 +115,7 @@ const Add = () => {
               console.log(error.message);
             });
         })
-        .catch((err) => { });
+        .catch((err) => {});
     }
   }, [category]);
 
@@ -286,45 +286,47 @@ const Add = () => {
         formdata.append("primaryImageIndex", primaryImageIndex.toString());
       }
 
-      variants.forEach((variant, variantIndex) => {
-        formdata.append(
-          `variants[${variantIndex}][originalprice]`,
-          variant.originalprice
-        );
-        formdata.append(
-          `variants[${variantIndex}][discountprice]`,
-          variant.discountprice
-        );
-        formdata.append(`variants[${variantIndex}][stock]`, variant.stock);
+      // variants.forEach((variant, variantIndex) => {
+      //   formdata.append(
+      //     `variants[${variantIndex}][originalprice]`,
+      //     variant.originalprice
+      //   );
+      //   formdata.append(
+      //     `variants[${variantIndex}][discountprice]`,
+      //     variant.discountprice
+      //   );
+      //   formdata.append(`variants[${variantIndex}][stock]`, variant.stock);
 
-        variant.images.forEach((image: any, imageIndex: any) => {
-          formdata.append(`variants[${variantIndex}][images]`, image);
-        });
+      //   variant.images.forEach((image: any, imageIndex: any) => {
+      //     formdata.append(`variants[${variantIndex}][images]`, image);
+      //   });
 
-        formdata.append(
-          `variants[${variantIndex}][primaryImageIndex]`,
-          variant.primaryImageIndex.toString()
-        );
+      //   formdata.append(
+      //     `variants[${variantIndex}][primaryImageIndex]`,
+      //     variant.primaryImageIndex.toString()
+      //   );
 
-        variant.attributes.forEach((attribute: any, attributeIndex: number) => {
-          if (attribute.attributeValueId !== "") {
-            formdata.append(
-              `variants[${variantIndex}][attributes][${attributeIndex}][attributeId]`,
-              attribute.attributeId
-            );
-            formdata.append(
-              `variants[${variantIndex}][attributes][${attributeIndex}][attributeValueId]`,
-              attribute.attributeValueId
-            );
-          }
-        });
-      });
+      //   variant.attributes.forEach((attribute: any, attributeIndex: number) => {
+      //     if (attribute.attributeValueId !== "") {
+      //       formdata.append(
+      //         `variants[${variantIndex}][attributes][${attributeIndex}][attributeId]`,
+      //         attribute.attributeId
+      //       );
+      //       formdata.append(
+      //         `variants[${variantIndex}][attributes][${attributeIndex}][attributeValueId]`,
+      //         attribute.attributeValueId
+      //       );
+      //     }
+      //   });
+      // });
 
       dispatch(addproductAsync(formdata))
         .unwrap()
         .then((res) => {
           successtoast(res.message);
-          router.replace("/supplier/dashboard/product");
+          router.replace(
+            `/supplier/dashboard/product/${res?.data?.id}/variations/add`
+          );
           console.log(res);
         })
         .catch((err) => {
@@ -703,8 +705,9 @@ const Add = () => {
                   return (
                     <div key={index}>
                       <img
-                        className={`h-auto max-w-full rounded-lg ${primaryImageIndex == index ? "primary_image" : ""
-                          }`}
+                        className={`h-auto max-w-full rounded-lg ${
+                          primaryImageIndex == index ? "primary_image" : ""
+                        }`}
                         src={i}
                         alt=""
                         onClick={() => setPrimaryImageIndex(index)}

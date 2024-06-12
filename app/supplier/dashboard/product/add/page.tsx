@@ -6,5 +6,4 @@ const AddProductPage = () => {
         <><Add /></>
     )
 }
-
 export default AddProductPage;

@@ -76,3 +76,29 @@
         width: 20rem;
     }
 }
+
+.product-detail {
+    padding: 20px;
+}
+.product-name {
+    font-size: 24px;
+    font-weight: bold;
+}
+.status-active {
+    color: green;
+    font-weight: bold;
+}
+.inventory {
+    background-color: orange;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+.inventory span {
+    font-weight: bold;
+}
+.images img {
+    max-width: 100px;
+    margin-right: 10px;
+}
