@@ -8,6 +8,7 @@ import { get_variation_optionsAsync } from "@/app/Redux/features/attributes/attr
 import { loadAllActiveCategoriesAsync } from "@/app/Redux/features/category/categorySlice";
 import Loading from "@/app/components/Loading/Loading";
 import { slugify } from "@/app/utils/slug/slug_generator";
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Select, { MultiValue, ActionMeta } from "react-select";
@@ -64,9 +65,10 @@ const AddVarient = () => {
       .unwrap()
       .then((res) => {
         setProduct(res?.data);
-      })
-      .catch((error) => {});
-    dispatch(get_variation_optionsAsync({ category_id: 17 }))
+        console.log(
+          );
+        dispatch(get_variation_optionsAsync({ category_id: Number(res?.data?.
+          category?.id) }))
       .unwrap()
       .then((res) => {
         setVariationOption(res?.data);
@@ -74,6 +76,9 @@ const AddVarient = () => {
       .catch((error) => {
         console.log(error);
       });
+      })
+      .catch((error) => {});
+    
   }, []);
 
   const handleChange =
@@ -166,7 +171,53 @@ const AddVarient = () => {
     return <Loading />;
   }
   return (
-    <div>
+
+    <>
+      <div className="vendor_dashboard">
+             <div className="row">
+                 <div className="col-lg-12">
+                     <div className="card">
+                          <div className="card-body">
+                               <div className="d-flex justify-content-between align-items-center">
+                                  <h4 className="title">{product?.name}</h4>
+                                  <Link href={"/"}>Back</Link>
+                               </div>
+                          </div>
+                     </div>
+                     {/* <div className="mt-2">
+                         <div className="MuiBox-root css-mmst5v">
+                          <div className="MuiBox-root css-0">
+                            <div className="MuiTabs-scroller MuiTabs-fixed css-1anid1y" style={{overflow:"hidden",marginBottom:"0px"}}>
+                                <div className="MuiTabs-flexContainer MuiTabs-centered css-1l4w6pd" role="tablist">
+                                    
+                                </div>
+                            </div>
+                          </div>
+
+                         </div>
+                     </div> */}
+
+                     {/* <div className="onboarding-section"> */}
+                         <form autoComplete="off">
+                             <div className="row">
+                                 <div className="col-lg-12">
+                                     <div className="card card_v1">
+                                         <div className="card-body">
+                                             <h5>Choose Variation Type:</h5>
+                                             <div className="d-flex flex-wrap prod_variation_check my-1">
+                                                 <span>Sorry! No variations found for this category</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </form>
+                     {/* </div> */}
+                 </div>
+             </div>
+      </div>
+
+      <div>
       <div>
         <p>Choose Variation Type:</p>
         <div className="d-flex gap-3">
@@ -278,6 +329,8 @@ const AddVarient = () => {
         </div>
       </div>
     </div>
+    </>
+    
   );
 };
 

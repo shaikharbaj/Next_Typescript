@@ -7,6 +7,7 @@ import Navbar from "@/app/components/Navbar/Navbar";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import "./style.css";
+import Link from "next/link";
 const ProductDescription = () => {
   const { slug } = useParams();
   const router = useRouter();
@@ -44,11 +45,13 @@ const ProductDescription = () => {
   return (
     <>
       <div className="container product-detail">
-        <div className="d-flex justify-content-between align-items-center">
-          <h1 className="product-name">{product?.name}</h1>
-          <span className="status-active">Active</span>
+        <div className="save_button d-flex align-items-center justify-content-between sticky-header is-sticky">
+          <h4 className="product-name">{product?.name} <small className="badge rounded-pill bg-success" style={{ fontSize: "12px" }}>Active</small></h4>
+          <Link href={"/supplier/dashboard/product"}>
+            Back
+          </Link>
         </div>
-        <div className="row mt-4">
+        {/* <div className="row mt-4">
           <div className="col-md-6">
             <p>
               <strong>Category:</strong> {product?.category?.name}
@@ -60,7 +63,7 @@ const ProductDescription = () => {
               <strong>Description:</strong> {product?.description}
             </p>
             <p>
-              <strong>SKU:</strong> {product?.slug}
+              // <strong>SKU:</strong> {product?.slug}
             </p>
             <p>
               <strong>Original Price:</strong> {`₹ ${product?.originalprice}`}
@@ -69,12 +72,6 @@ const ProductDescription = () => {
               <strong>Discount Price:</strong>
               {`₹ ${product?.discountprice}`}
             </p>
-            {/* <p>
-              <strong>Cost Per Item:</strong> ₹ 300
-            </p>
-            <p>
-              <strong>Purchase Min qty:</strong> 11
-            </p> */}
           </div>
           <div className="col-md-6">
             <p>
@@ -89,46 +86,108 @@ const ProductDescription = () => {
               })}
             </div>
           </div>
-        </div>
-        <div className="container mt-5">
-          <div className="row">
-            <div className="col-12">
-              <h4 className="mb-4" style={{ color: "#FF7B01" }}>
-                Variant Listing:
-              </h4>
-              <table className="table table-bordered variant-listing">
-                <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>SKUs</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {product?.variants?.map((variation: any) => {
-                    return (
-                      <tr
-                        onClick={() =>
-                          router.push(
-                            `/supplier/dashboard/product/${product?.id}/variations/${variation?.id}`
-                          )
-                        }
-                        key={variation?.id}
-                      >
-                        <td>
-                          <img
-                            src={variation?.variantImages[0]?.url}
-                            alt="Variant 1"
-                          />
-                        </td>
-                        <td className="variant-title">{product?.name}</td>
-                        <td>{variation?.sku}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+        </div> */}
+
+        <div className="login_form_container">
+          <section className="section about-section view_product_block gray-bg">
+            <div className="container">
+              <div className="row align-items-center flex-row-reverse">
+                <div className="col-lg-12">
+                  <div className="about-text go-to">
+                    <div className="row about-list">
+                      <div className="col-md-6">
+                        <label>Category: </label>
+                        <p>{product?.category?.name}</p>
+                      </div>
+                      <div className="col-md-6">
+                        <label htmlFor="">Product Name: </label>
+                        <p>{product?.name}</p>
+                      </div>
+                    </div>
+                    <div className="row about-list">
+                      <div className="col-md-12">
+                        <label>Description: </label>
+                        <p>{product?.description}</p>
+                      </div>
+
+                    </div>
+                    <div className="row about-list">
+                      <div className="col-md-6">
+                        <label>SKU</label>
+                        <p>{product?.slug}</p>
+                      </div>
+                      <div className="col-md-6">
+                        <label htmlFor="">Originaprice: </label>
+                        <p>{`₹ ${product?.originalprice}`}</p>
+                      </div>
+                    </div>
+                    <div className="row about-list">
+                      <div className="col-md-6">
+                        <label>Selling Price: </label>
+                        <p>{`₹ ${product?.discountprice}`}</p>
+                      </div>
+                      {/* <div className="col-md-6">
+                                          <label htmlFor="">Stock</label>
+                                          <p>{`₹ ${product?.originalprice}`}</p>
+                                        </div> */}
+                    </div>
+                    <div className="row about-list">
+                      <div className="col-md-12" >
+                        <label>Images: </label>
+                        <span style={{ margin: "10px", display: "flex" }}>
+                          {product?.productImages?.map((img: any) => {
+                            return <img src={img?.url} className="img-responsive" alt="Image 1" key={img?.id} style={{ width: "90px", maxWidth: "450px;", height: "100px", objectFit: "contain" }} />;
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </section>
+        </div>
+        <div className="row about-list">
+          <div className="col-md-12">
+            <label>Varient Listing :</label>
+            <p>
+              <div className="table-responsive">
+                <table className="table table-hover table-bordered table-wrapper">
+                  <thead>
+                    <tr>
+                      <th scope="col" className="col">Image</th>
+                      <th scope="col" className="col">Title</th>
+                      <th scope="col" className="col">SKUs</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {product?.variants?.map((variation: any) => {
+                      return (
+                        <tr className="variant align-items-center"
+                          onClick={() =>
+                            router.push(
+                              `/supplier/dashboard/product/${product?.id}/variations/${variation?.id}`
+                            )
+                          }
+                          key={variation?.id}
+                        >
+                          <td className="align-items-center">
+                            <img
+                              src={variation?.variantImages[0]?.url}
+                              alt="Variant 1"
+                              style={{ width: "60px", height: "70px", objectFit: "contain" }}
+                            />
+                          </td>
+                          <td className="variant-title">{product?.name}</td>
+                          <td>{variation?.sku}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </p>
           </div>
         </div>
       </div>

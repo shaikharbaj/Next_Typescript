@@ -1,6 +1,23 @@
+.uploaded_card img {
+  height: 156px;
+  margin: auto;
+}
 
-.uploaded_card img{
-    height: 156px;
+.multiupload_card.uploaded_card .upload_file img {
+  max-width: 130px;
+  object-fit: contain !important;
+}
+
+.multiupload_card .upload_file.upload_block {
+  background-color: #efefef;
+  border: 2px dashed #c1c1c1;
+  border-radius: 4px;
+  color: #222;
+  text-align: center;
+}
+
+.multiupload_card .upload_file.upload_block {
+  min-height: 156px;
 }
 .upload_file.upload_block {
   background-color: #efefef;
@@ -10,10 +27,12 @@
   text-align: center;
   min-height: 156px;
 }
+
 .upload_file {
   overflow: hidden;
   position: relative;
 }
+
 .product_upload_btn {
   align-items: center;
   background-color: #201d1d5e;
@@ -27,4 +46,38 @@
 
 .upload_block {
   min-height: 156px;
+}
+
+.sticky-header {
+  padding: 24px;
+  text-align: center;
+  z-index: 10000;
+}
+
+.is-sticky {
+  position: sticky;
+  top: 0;
+  -webkit-animation: fadeInDown .5s ease-in-out 0s 1 normal none running;
+  animation: fadeInDown .5s ease-in-out 0s 1 normal none running;
+  background-color: #fff !important;
+  box-shadow: 0 2px 11px 0 rgba(0, 0, 0, .15);
+  left: 0;
+}
+
+.title {
+  color: #212121;
+  font-size: 16px;
+  font-weight: 400;
+}
+.bg-black{
+    background-color: black !important;
+    color: white !important;
+}
+.theme-btn-one {
+  border-radius: 0;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }

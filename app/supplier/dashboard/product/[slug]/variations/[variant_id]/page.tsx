@@ -10,6 +10,8 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import { error } from "console";
+import { TbH4 } from "react-icons/tb";
+import Link from "next/link";
 const page = () => {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state: RootState) => state.products);
@@ -114,15 +116,17 @@ const page = () => {
   return (
     <>
       <div className="container mt-5">
-        <div className="product-header">
-          <h5>
+        <div className="save_button d-flex align-items-center justify-content-between sticky-header is-sticky mb-5">
+          <h4 className="title mb-0">
             {varient?.product?.name}{" "}
-            <span style={{ fontSize: "16px" }}>({varient?.attributes})</span>
-          </h5>
-          <div>
-            <button className="btn btn-dark me-2">&larr; BACK</button>
-            <button className="btn btn-save" onClick={submitHandler}>
-              SAVE &rarr;
+            <span style={{ fontSize: "14px" }}>({varient?.attributes})</span>
+          </h4>
+          <div className="d-flex justify-content-between">
+            <Link href={"/supplier/dashboard/product"}>
+              <button className="btn btn-sm bg-black theme-btn-one me-2">BACK</button>
+            </Link>
+            <button className="btn btn-sm btn-primary theme-btn-one" onClick={submitHandler}>
+              SAVE
             </button>
           </div>
         </div>
@@ -179,9 +183,9 @@ const page = () => {
 
         <div>
           <div className="container mt-5">
-            <h2>Images:</h2>
-            <p>Your Image Recommendations</p>
-            <p>Upload your recommendations for product images</p>
+            <h2 style={{ fontSize: "15px" }}>Images:</h2>
+            <p style={{ fontSize: "15px" }} className="mb-0">Your Image Recommendations</p>
+            <p style={{ fontSize: "15px" }}>Upload your recommendations for product images</p>
             {/* <div className="image-upload-container">
               <div className="image-upload-box">
                 <img src="image1.jpg" alt="Product Image" />
@@ -278,7 +282,7 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                        e.target.files.length > 0
+                                          e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setmain(selectedFile);
@@ -355,22 +359,6 @@ const page = () => {
                         </>
                       ) : (
                         <>
-                          {/* <label htmlFor="one">
-                            <i className="bx bxs-camera"></i>
-                          </label>
-                          <input
-                            type="file"
-                            className="d-none"
-                            id="one"
-                            onChange={(e) => {
-                              const selectedFile =
-                                e.target.files && e.target.files.length > 0
-                                  ? e.target.files[0]
-                                  : null;
-                              setfile1(selectedFile);
-                            }}
-                          />
-                          <p>Upload</p> */}
 
                           <>
                             {varient_imges[1]?.url ? (
@@ -388,7 +376,7 @@ const page = () => {
                                       onChange={(e) => {
                                         const selectedFile =
                                           e.target.files &&
-                                          e.target.files.length > 0
+                                            e.target.files.length > 0
                                             ? e.target.files[0]
                                             : null;
                                         setfile1(selectedFile);
@@ -415,7 +403,7 @@ const page = () => {
                                   onChange={(e) => {
                                     const selectedFile =
                                       e.target.files &&
-                                      e.target.files.length > 0
+                                        e.target.files.length > 0
                                         ? e.target.files[0]
                                         : null;
                                     setfile1(selectedFile);
@@ -482,7 +470,7 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                        e.target.files.length > 0
+                                          e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile2(selectedFile);
@@ -574,7 +562,7 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                        e.target.files.length > 0
+                                          e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile3(selectedFile);
@@ -666,7 +654,7 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                        e.target.files.length > 0
+                                          e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile4(selectedFile);
@@ -743,22 +731,56 @@ const page = () => {
                         </>
                       ) : (
                         <>
-                          <label htmlFor="five">
-                            <i className="bx bxs-camera"></i>
-                          </label>
-                          <input
-                            type="file"
-                            className="d-none"
-                            id="five"
-                            onChange={(e) => {
-                              const selectedFile =
-                                e.target.files && e.target.files.length > 0
-                                  ? e.target.files[0]
-                                  : null;
-                              setfile5(selectedFile);
-                            }}
-                          />
-                          <p>Upload</p>
+                          {varient_imges[5]?.url ? (
+                            <>
+                              <img src={varient_imges[5]?.url} alt="" />
+                              <div className="row">
+                                <div className="col-6 form-group">
+                                  <label htmlFor="five">
+                                    <i className="bx bx-plus-medical"></i>
+                                  </label>
+                                  <input
+                                    type="file"
+                                    className="d-none"
+                                    id="five"
+                                    onChange={(e) => {
+                                      const selectedFile =
+                                        e.target.files &&
+                                          e.target.files.length > 0
+                                          ? e.target.files[0]
+                                          : null;
+                                      setfile5(selectedFile);
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-6">
+                                  <i
+                                    className="bx bxs-trash"
+                                    onClick={() => changeImageHandler(5)}
+                                  ></i>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <label htmlFor="five">
+                                <i className="bx bxs-camera"></i>
+                              </label>
+                              <input
+                                type="file"
+                                className="d-none"
+                                id="five"
+                                onChange={(e) => {
+                                  const selectedFile =
+                                    e.target.files && e.target.files.length > 0
+                                      ? e.target.files[0]
+                                      : null;
+                                  setfile5(selectedFile);
+                                }}
+                              />
+                              <p>Upload</p>
+                            </>
+                          )}
                         </>
                       )}
                     </div>
