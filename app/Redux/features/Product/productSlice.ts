@@ -164,6 +164,40 @@ export const addproductVarientAsync = createAsyncThunk(
   }
 );
 
+interface IGetProductVarient {
+  product_id: number;
+  varient_id: number;
+}
+export const get_product_varient_details = createAsyncThunk(
+  "product/product-varient-detail",
+  async (payload: IGetProductVarient, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        "http://localhost:8000/product/get-product-variant-detail",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const uploadproductvarient_images = createAsyncThunk(
+  "product/uploadvarientimage",
+  async (payload: FormData, thunkAPI) => {
+    try {
+      const response = await privateRequest.post(
+        "http://localhost:8000/product/add-product-varient-image",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -216,6 +250,24 @@ const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(editproductAsync.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(get_product_varient_details.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(get_product_varient_details.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(get_product_varient_details.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(uploadproductvarient_images.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(uploadproductvarient_images.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(uploadproductvarient_images.rejected, (state, action) => {
         state.loading = false;
       });
   },

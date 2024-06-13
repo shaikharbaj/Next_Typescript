@@ -1,0 +1,30 @@
+
+.uploaded_card img{
+    height: 156px;
+}
+.upload_file.upload_block {
+  background-color: #efefef;
+  border: 2px dashed #c1c1c1;
+  border-radius: 4px;
+  color: #222;
+  text-align: center;
+  min-height: 156px;
+}
+.upload_file {
+  overflow: hidden;
+  position: relative;
+}
+.product_upload_btn {
+  align-items: center;
+  background-color: #201d1d5e;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  position: absolute;
+  width: 100%;
+}
+
+.upload_block {
+  min-height: 156px;
+}

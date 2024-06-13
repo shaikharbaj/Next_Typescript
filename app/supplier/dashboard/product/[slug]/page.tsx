@@ -110,7 +110,7 @@ const ProductDescription = () => {
                       <tr
                         onClick={() =>
                           router.push(
-                            `/supplier/dashboard/product/${slug}/variations/variation?.id`
+                            `/supplier/dashboard/product/${product?.id}/variations/${variation?.id}`
                           )
                         }
                         key={variation?.id}
