@@ -18,7 +18,7 @@ const page = () => {
   const { slug, variant_id } = useParams();
   const [originalprice, setOriginalPrice] = useState("");
   const [discountprice, setDiscountPrice] = useState("");
-  const [stock, setStock] = useState(0);
+  const [stock, setStock] = useState("");
   const [main, setmain] = useState<File | null>();
   const [file1, setfile1] = useState<File | null>();
   const [varient_imges, setVarientImages] = useState<any>([]);
@@ -27,7 +27,15 @@ const page = () => {
   const [file4, setfile4] = useState<File | null>();
   const [file5, setfile5] = useState<File | null>();
   const [varient, setVarient] = useState<any>({});
-  console.log(varient);
+  // const [remove_imgorder, setRemoveImageOrder] = useState([]);
+  const [remove_imgorder, setRemoveImageOrder] = useState({
+    main: "",
+    file1: "",
+    file2: "",
+    file3: "",
+    file4: "",
+    file5: "",
+  });
   useEffect(() => {
     dispatch(
       get_product_varient_details({
@@ -53,14 +61,6 @@ const page = () => {
   }, []);
 
   const submitHandler = () => {
-    const payload = {
-      discountprice,
-      originalprice,
-      stock,
-    };
-  };
-
-  const uploadVarientImageHandler = () => {
     const formdata = new FormData();
     if (main) {
       formdata.append("main", main);
@@ -87,6 +87,11 @@ const page = () => {
       formdata.append("varient_id", String(variant_id));
     }
 
+    formdata.append("remove_imgorder", JSON.stringify(remove_imgorder));
+    formdata.append("originalprice", originalprice);
+    formdata.append("discountprice", discountprice);
+    formdata.append("stock", String(stock));
+
     dispatch(uploadproductvarient_images(formdata))
       .unwrap()
       .then((res) => {
@@ -96,7 +101,6 @@ const page = () => {
         console.log(error?.message);
       });
   };
-
   const changeImageHandler = (index: number) => {
     const newArr = varient_imges?.map((vi: any, i: number) => {
       if (index == i) {
@@ -108,11 +112,9 @@ const page = () => {
     setVarientImages(newArr);
   };
 
-  console.log(varient_imges[0]);
-
-  //   if (loading) {
-  //     return <Loading />;
-  //   }
+    if (loading) {
+      return <Loading />;
+    }
   return (
     <>
       <div className="container mt-5">
@@ -122,10 +124,17 @@ const page = () => {
             <span style={{ fontSize: "14px" }}>({varient?.attributes})</span>
           </h4>
           <div className="d-flex justify-content-between">
-            <Link href={"/supplier/dashboard/product"}>
-              <button className="btn btn-sm bg-black theme-btn-one me-2">BACK</button>
+            <Link
+              href={`/supplier/dashboard/product/${varient?.product?.slug}`}
+            >
+              <button className="btn btn-sm bg-black theme-btn-one me-2">
+                BACK
+              </button>
             </Link>
-            <button className="btn btn-sm btn-primary theme-btn-one" onClick={submitHandler}>
+            <button
+              className="btn btn-sm btn-primary theme-btn-one"
+              onClick={submitHandler}
+            >
               SAVE
             </button>
           </div>
@@ -142,7 +151,7 @@ const page = () => {
                 type="number"
                 className="form-control"
                 id="originalPrice"
-                value={`${originalprice}.00`}
+                value={originalprice}
                 onChange={(e) => setOriginalPrice(e.target.value)}
               />
             </div>
@@ -157,7 +166,7 @@ const page = () => {
                 type="number"
                 className="form-control"
                 id="mrp"
-                value={`${originalprice}.00`}
+                value={discountprice}
                 onChange={(e) => setDiscountPrice(e.target.value)}
               />
             </div>
@@ -174,7 +183,7 @@ const page = () => {
                 type="number"
                 className="form-control"
                 id="stock"
-                onChange={(e) => setStock(Number(e.target.value))}
+                onChange={(e) => setStock((e.target.value))}
                 value={stock}
               />
             </div>
@@ -184,52 +193,12 @@ const page = () => {
         <div>
           <div className="container mt-5">
             <h2 style={{ fontSize: "15px" }}>Images:</h2>
-            <p style={{ fontSize: "15px" }} className="mb-0">Your Image Recommendations</p>
-            <p style={{ fontSize: "15px" }}>Upload your recommendations for product images</p>
-            {/* <div className="image-upload-container">
-              <div className="image-upload-box">
-                <img src="image1.jpg" alt="Product Image" />
-                <div className="actions">
-                  <button className="btn btn-light">+</button>
-                  <button className="btn btn-light">🗑️</button>
-                </div>
-              </div>
-              <div className="image-upload-box">
-                <img src="image2.jpg" alt="Product Image" />
-                <div className="actions">
-                  <button className="btn btn-light">+</button>
-                  <button className="btn btn-light">🗑️</button>
-                </div>
-              </div>
-              <div className="image-upload-box">
-                <img src="image3.jpg" alt="Product Image" />
-                <div className="actions">
-                  <button className="btn btn-light">+</button>
-                  <button className="btn btn-light">🗑️</button>
-                </div>
-              </div>
-              <div className="image-upload-box">
-                <img src="image4.jpg" alt="Product Image" />
-                <div className="actions">
-                  <button className="btn btn-light">+</button>
-                  <button className="btn btn-light">🗑️</button>
-                </div>
-              </div>
-              <div className="image-upload-box">
-                <img src="image5.jpg" alt="Product Image" />
-                <div className="actions">
-                  <button className="btn btn-light">+</button>
-                  <button className="btn btn-light">🗑️</button>
-                </div>
-              </div>
-              <div className="image-upload-box">
-                <img src="image6.jpg" alt="Product Image" />
-                <div className="actions">
-                  <button className="btn btn-light">+</button>
-                  <button className="btn btn-light">🗑️</button>
-                </div>
-              </div>
-            </div> */}
+            <p style={{ fontSize: "15px" }} className="mb-0">
+              Your Image Recommendations
+            </p>
+            <p style={{ fontSize: "15px" }}>
+              Upload your recommendations for product images
+            </p>
             <div className="col-12">
               <div className="row mt-3">
                 <div className="col-lg-3 col-md-6">
@@ -260,7 +229,10 @@ const page = () => {
                             <div className="col-6">
                               <i
                                 className="bx bxs-trash"
-                                onClick={() => setmain(null)}
+                                onClick={() => {
+                                  setmain(null);
+                                  changeImageHandler(0);
+                                }}
                               ></i>
                             </div>
                           </div>
@@ -282,17 +254,26 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                          e.target.files.length > 0
+                                        e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setmain(selectedFile);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, main: "1" };
+                                      });
+                                      changeImageHandler(0);
                                     }}
                                   />
                                 </div>
                                 <div className="col-6">
                                   <i
                                     className="bx bxs-trash"
-                                    onClick={() => changeImageHandler(0)}
+                                    onClick={() => {
+                                      changeImageHandler(0);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, main: "1" };
+                                      });
+                                    }}
                                   ></i>
                                 </div>
                               </div>
@@ -359,7 +340,6 @@ const page = () => {
                         </>
                       ) : (
                         <>
-
                           <>
                             {varient_imges[1]?.url ? (
                               <>
@@ -376,17 +356,26 @@ const page = () => {
                                       onChange={(e) => {
                                         const selectedFile =
                                           e.target.files &&
-                                            e.target.files.length > 0
+                                          e.target.files.length > 0
                                             ? e.target.files[0]
                                             : null;
                                         setfile1(selectedFile);
+                                        setRemoveImageOrder((prev) => {
+                                          return { ...prev, file1: "2" };
+                                        });
+                                        changeImageHandler(1);
                                       }}
                                     />
                                   </div>
                                   <div className="col-6">
                                     <i
                                       className="bx bxs-trash"
-                                      onClick={() => changeImageHandler(1)}
+                                      onClick={() => {
+                                        changeImageHandler(1);
+                                        setRemoveImageOrder((prev) => {
+                                          return { ...prev, file1: "2" };
+                                        });
+                                      }}
                                     ></i>
                                   </div>
                                 </div>
@@ -403,7 +392,7 @@ const page = () => {
                                   onChange={(e) => {
                                     const selectedFile =
                                       e.target.files &&
-                                        e.target.files.length > 0
+                                      e.target.files.length > 0
                                         ? e.target.files[0]
                                         : null;
                                     setfile1(selectedFile);
@@ -448,7 +437,10 @@ const page = () => {
                             <div className="col-6">
                               <i
                                 className="bx bxs-trash"
-                                onClick={() => setfile2(null)}
+                                onClick={() => {
+                                  setfile2(null);
+                                  changeImageHandler(2);
+                                }}
                               ></i>
                             </div>
                           </div>
@@ -470,17 +462,26 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                          e.target.files.length > 0
+                                        e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile2(selectedFile);
+                                      changeImageHandler(2);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file2: "3" };
+                                      });
                                     }}
                                   />
                                 </div>
                                 <div className="col-6">
                                   <i
                                     className="bx bxs-trash"
-                                    onClick={() => changeImageHandler(2)}
+                                    onClick={() => {
+                                      changeImageHandler(2);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file2: "3" };
+                                      });
+                                    }}
                                   ></i>
                                 </div>
                               </div>
@@ -540,7 +541,10 @@ const page = () => {
                             <div className="col-6">
                               <i
                                 className="bx bxs-trash"
-                                onClick={() => setfile3(null)}
+                                onClick={() => {
+                                  setfile3(null);
+                                  changeImageHandler(3);
+                                }}
                               ></i>
                             </div>
                           </div>
@@ -562,17 +566,26 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                          e.target.files.length > 0
+                                        e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile3(selectedFile);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file3: "4" };
+                                      });
+                                      changeImageHandler(3);
                                     }}
                                   />
                                 </div>
                                 <div className="col-6">
                                   <i
                                     className="bx bxs-trash"
-                                    onClick={() => changeImageHandler(3)}
+                                    onClick={() => {
+                                      changeImageHandler(3),
+                                        setRemoveImageOrder((prev) => {
+                                          return { ...prev, file3: "4" };
+                                        });
+                                    }}
                                   ></i>
                                 </div>
                               </div>
@@ -626,6 +639,7 @@ const page = () => {
                                       ? e.target.files[0]
                                       : null;
                                   setfile4(selectedFile);
+                                  changeImageHandler(4);
                                 }}
                               />
                             </div>
@@ -654,17 +668,26 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                          e.target.files.length > 0
+                                        e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile4(selectedFile);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file4: "5" };
+                                      });
+                                      changeImageHandler(4);
                                     }}
                                   />
                                 </div>
                                 <div className="col-6">
                                   <i
                                     className="bx bxs-trash"
-                                    onClick={() => changeImageHandler(4)}
+                                    onClick={() => {
+                                      changeImageHandler(4);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file4: "5" };
+                                      });
+                                    }}
                                   ></i>
                                 </div>
                               </div>
@@ -718,6 +741,7 @@ const page = () => {
                                       ? e.target.files[0]
                                       : null;
                                   setfile5(selectedFile);
+                                  changeImageHandler(2);
                                 }}
                               />
                             </div>
@@ -746,17 +770,26 @@ const page = () => {
                                     onChange={(e) => {
                                       const selectedFile =
                                         e.target.files &&
-                                          e.target.files.length > 0
+                                        e.target.files.length > 0
                                           ? e.target.files[0]
                                           : null;
                                       setfile5(selectedFile);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file5: "6" };
+                                      });
+                                      changeImageHandler(5);
                                     }}
                                   />
                                 </div>
                                 <div className="col-6">
                                   <i
                                     className="bx bxs-trash"
-                                    onClick={() => changeImageHandler(5)}
+                                    onClick={() => {
+                                      changeImageHandler(5);
+                                      setRemoveImageOrder((prev) => {
+                                        return { ...prev, file5: "6" };
+                                      });
+                                    }}
                                   ></i>
                                 </div>
                               </div>
@@ -790,7 +823,7 @@ const page = () => {
                 <div className="mb-2">
                   <button
                     className="button"
-                    onClick={uploadVarientImageHandler}
+                    onClick={submitHandler}
                   >
                     Save
                   </button>

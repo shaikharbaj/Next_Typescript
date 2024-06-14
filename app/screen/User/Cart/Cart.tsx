@@ -81,9 +81,9 @@ const Cart = () => {
                             <div className="cart_menu" key={item?.id}>
                               <img
                                 src={
-                                  item?.product?.productImages[
+                                  item?.product?.productImages?.[
                                     item?.product?.productImages?.findIndex(
-                                      (ele: any) => ele.isThumbnail == true
+                                      (ele: any) => ele?.isThumbnail == true
                                     )
                                   ]?.url
                                 }

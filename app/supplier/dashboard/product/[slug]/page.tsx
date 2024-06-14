@@ -174,7 +174,7 @@ const ProductDescription = () => {
                         >
                           <td className="align-items-center">
                             <img
-                              src={variation?.variantImages[0]?.url}
+                              src={variation?.variantImages[variation?.variantImages?.findIndex((ele:any)=>ele?.isThumbnail)]?.url}
                               alt="Variant 1"
                               style={{ width: "60px", height: "70px", objectFit: "contain" }}
                             />
