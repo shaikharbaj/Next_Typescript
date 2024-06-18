@@ -163,3 +163,44 @@
     color: #666;
 }
 
+
+
+
+
+
+
+
+ {/* <div className="onboarding-section"> */}
+            {/* <form autoComplete="off">
+                             <div className="row">
+                                 <div className="col-lg-12">
+                                     <div className="card card_v1">
+                                         <div className="card-body">
+                                             <h5>Choose Variation Type:</h5>
+                                             <div className="d-flex flex-wrap prod_variation_check my-1">
+                                                 <span>Sorry! No variations found for this category</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </form> */}
+            {/* </div> */}
+
+
+
+
+
+
+            {/* <div className="mt-2">
+                         <div className="MuiBox-root css-mmst5v">
+                          <div className="MuiBox-root css-0">
+                            <div className="MuiTabs-scroller MuiTabs-fixed css-1anid1y" style={{overflow:"hidden",marginBottom:"0px"}}>
+                                <div className="MuiTabs-flexContainer MuiTabs-centered css-1l4w6pd" role="tablist">
+                                    
+                                </div>
+                            </div>
+                          </div>
+
+                         </div>
+                     </div> */}

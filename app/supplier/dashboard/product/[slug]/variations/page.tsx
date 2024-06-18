@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
-import styles from "./add.module.css";
+import styles from "./add/add.module.css";
 import {
   addproductVarientAsync,
   loadsingleproductByID,
@@ -45,7 +45,7 @@ type VariationOptions = {
   subcategory_status: boolean | null;
   attributes: Attribute[];
 };
-const AddVarient = () => {
+const EditVarient = () => {
   const { slug } = useParams();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.attribute);
@@ -433,4 +433,4 @@ const AddVarient = () => {
   );
 };
 
-export default AddVarient;
+export default EditVarient;

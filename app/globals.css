@@ -200,3 +200,25 @@ body {
   padding: 0.1rem 0.4rem;
   min-width: 100px;
 }
+
+.fs-6 {
+  font-size: 1rem !important;
+}
+.desc {
+  font-size: 14px;
+}
+.table-wrapper {
+  height: 80%;
+  overflow: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+.table-responsive {
+  position: relative;
+  z-index: 1;
+}
+/* .btn-primary {
+  background-color: #ee6a0c !important;
+  border-color: #ee6a0c !important;
+  color: #fff;
+} */

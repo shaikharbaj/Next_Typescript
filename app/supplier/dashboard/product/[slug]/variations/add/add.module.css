@@ -1,0 +1,40 @@
+.card {
+  border: 1px solid #f3f3f3;
+  border-radius: 9px;
+  box-shadow: 0 2px 6px #1a181e08;
+}
+.generate_varient_btn {
+  font-size: 15px;
+  border-radius: none !important;
+  border: 1px solid green;
+  padding: 0.1rem 0.4rem;
+  color: white;
+  background-color: green;
+}
+.table_wrapper {
+  height: 80%;
+  overflow: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+.table-wrapper td, .table-wrapper th {
+    border: 1px solid #d3c2c2;
+    font-size: 14px;
+    text-align: center;
+    vertical-align: middle;
+}
+.table_responsive {
+  position: relative;
+  z-index: 1;
+}
+.trash{
+       font-size: 22px;
+}
+.remove_wrapper{
+       position: relative;
+}
+.remove_wrapper button{
+       position: absolute;
+       top: 25%;
+       left: 30%;
+}
