@@ -13,7 +13,7 @@ const AllProduct = () => {
   const { loading, products, meta } = useAppSelector(
     (state: RootState) => state.products
   );
-  const [searchTerm, setSerchText] = useState('');
+  const [searchTerm, setSerchText] = useState("");
   const debauncedValue = useDebounce(searchTerm, 600);
   const [currentpage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -22,7 +22,7 @@ const AllProduct = () => {
 
   const handlesearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSerchText(e.target.value);
-  }
+  };
 
   useEffect(() => {
     dispatch(loadallproductAsync({ currentpage, searchTerm }));
@@ -41,7 +41,12 @@ const AllProduct = () => {
       <div className={`${styles.section} mt-3`}>
         <div className="d-flex justify-content-center">
           <div className={`mt-3 mb-3 ${styles.inputbox}`}>
-            <input type="text" onChange={handlesearch} value={searchTerm} placeholder='search something here.....' />
+            <input
+              type="text"
+              onChange={handlesearch}
+              value={searchTerm}
+              placeholder="search something here....."
+            />
           </div>
         </div>
         {/* <div className={`${styles.product_container}`}> */}
@@ -55,7 +60,12 @@ const AllProduct = () => {
           <h1 className={`${styles.product_not_found}`}>No products Found!</h1>
         ) : null}
       </div>
-      <Pagination currentpage={currentpage} setCurrentPage={setCurrentPage} total={meta?.total} perpage={perPage} />
+      <Pagination
+        currentpage={currentpage}
+        setCurrentPage={setCurrentPage}
+        total={meta?.total}
+        perpage={perPage}
+      />
     </>
   );
 };

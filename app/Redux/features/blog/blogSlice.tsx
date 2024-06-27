@@ -22,7 +22,7 @@ export const deleteblogAsync = createAsyncThunk("blog/delete", async (id: number
 })
 export const getAllblogAsync = createAsyncThunk('blog/allblog', async (payload, thunkAPI) => {
     try {
-        const response = await privateRequest.get('http://localhost:8000/blog/all');
+        const response = await axios.get('http://localhost:8000/blog/all');
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

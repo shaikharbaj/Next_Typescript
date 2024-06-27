@@ -358,7 +358,7 @@ export const loadcategoryforFilter = createAsyncThunk(
   "category/loadcategoryforFilter",
   async (payload, thunkAPI) => {
     try {
-      const response = await privateRequest.get(
+      const response = await axios.get(
         "http://localhost:8000/category/category-for-filter"
       );
       return response.data;

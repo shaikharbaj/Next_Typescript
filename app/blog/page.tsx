@@ -86,8 +86,6 @@ const page = () => {
         }
     };
 
-
-
     const deselectChildCategories = (parentId: any, updatedCategories: any) => {
         const parentCategory: any = categoryData.find((category: any) => category.id === parentId);
         if (parentCategory && parentCategory.Category) {

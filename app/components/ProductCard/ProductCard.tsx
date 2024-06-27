@@ -24,13 +24,13 @@ interface Product {
 }
 
 interface IProductProps {
-  data: Product;
+  data: any;
 }
 
 const ProductCard: React.FC<IProductProps> = ({ data }) => {
   const dispatch = useAppDispatch();
   const { cartItem } = useAppSelector((state: RootState) => state.cart);
-
+  console.log(data)
   const AddToCartHandler = (id: number) => {
     dispatch(addproducttocartAsync({ product_id: id }))
       .unwrap()
@@ -69,12 +69,12 @@ const ProductCard: React.FC<IProductProps> = ({ data }) => {
     -1;
   return (
     <div className={styles.product_card}>
-      <Link href={`/product/${slugify(data.name)}`}>
+      <Link href={`/product/${slugify(data?.slug)}`}>
         <img
           className={styles.image}
           src={
-            data?.productImages[
-              data?.productImages?.findIndex((i: any) => i?.isThumbnail)
+            data?.variantImages[
+              data?.variantImages?.findIndex((i: any) => i?.isThumbnail)
             ]?.url
           }
           alt="product image"

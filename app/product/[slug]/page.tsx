@@ -86,12 +86,12 @@ const ProductDescription = () => {
   return (
     <>
       <Navbar />
-      <div className="overflow-x-hidden lg:overflow-hidden">
-        {/* <!-- Contents --> */}
+      {/* <div className="overflow-x-hidden lg:overflow-hidden">
+       
         <div className="container mx-auto font-kumbh text-base">
-          {/* <!-- Main Content --> */}
+         
           <main className="w-full flex flex-col lg:flex-row">
-            {/* <!-- Gallery --> */}
+            
             <section className="h-fit flex-col gap-8 mt-16 sm:flex sm:flex-row sm:gap-4 sm:h-full sm:mt-24 sm:mx-2 md:gap-8 md:mx-4 lg:flex-col lg:mx-0 lg:mt-36">
               <picture className="relative flex items-center bg-orange sm:bg-transparent">
                 <button
@@ -160,10 +160,10 @@ const ProductDescription = () => {
               </div>
             </section>
 
-            {/* <!-- Text --> */}
+           
             <section className="w-full p-6 lg:mt-36 lg:pr-20 lg:py-10 2xl:pr-40 2xl:mt-40">
               <h4 className="font-bold text-orange mb-2 uppercase text-xs tracking-widest">
-                {/* Sneaker Company */}
+              
                 {`${product?.category?.name}/${product?.subcategory?.name}`}
               </h4>
               <h1 className="text-very-dark mb-4 font-bold text-3xl lg:text-4xl">
@@ -178,9 +178,7 @@ const ProductDescription = () => {
                   <h3 className="text-very-dark font-bold text-3xl inline-block">
                     {`₹ ${product?.discountprice}`}
                   </h3>
-                  {/* <span className="inline-block h-fit py-0.5 px-2 font-bold bg-pale-orange text-orange rounded-lg text-sm">
-                    50%
-                  </span> */}
+                  
                 </div>
                 <p className="origialprice">{`₹ ${product?.originalprice}`}</p>
               </div>
@@ -244,7 +242,13 @@ const ProductDescription = () => {
             </section>
           </main>
         </div>
-      </div>
+      </div> */}
+
+      <section id="product_single_three" className="pt-5">
+           <div className="container">
+                 div.area
+           </div>
+      </section>
     </>
   );
 };

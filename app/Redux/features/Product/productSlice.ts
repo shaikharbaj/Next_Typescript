@@ -42,8 +42,9 @@ export const loadallproductAsync = createAsyncThunk(
     try {
       const { currentpage, searchTerm } = payload;
       const response = await axios.get(
-        `http://localhost:8000/product/all?page=${currentpage}&searchTerm=${searchTerm}`
+        `http://localhost:8000/product/allproduct?page=${currentpage}&searchTerm=${searchTerm}`
       );
+      console.log(response.data);
       const data = await response.data;
       return data;
     } catch (error) {
@@ -210,8 +211,9 @@ const productSlice = createSlice({
       .addCase(loadallproductAsync.fulfilled, (state, action) => {
         state.success = true;
         state.loading = false;
-        state.products = action.payload.data.data;
-        state.meta = action.payload.data.meta;
+        // state.products = action.payload.data.data;
+        state.products = action.payload.data;
+        // state.meta = action.payload.data.meta;
       })
       .addCase(loadallproductAsync.rejected, (state, action) => {
         state.loading = false;
