@@ -13,6 +13,8 @@ const AllProduct = () => {
   const { loading, products, meta } = useAppSelector(
     (state: RootState) => state.products
   );
+
+  console.log(products);
   const [searchTerm, setSerchText] = useState("");
   const debauncedValue = useDebounce(searchTerm, 600);
   const [currentpage, setCurrentPage] = useState(1);

@@ -1,12 +1,18 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/Hook/hooks";
-import { getsingleproductAsync } from "@/app/Redux/features/Product/productSlice";
+import {
+  getproductdetails,
+  getsingleproductAsync,
+} from "@/app/Redux/features/Product/productSlice";
 import { RootState } from "@/app/Redux/store";
 import Loading from "@/app/components/Loading/Loading";
+import { Col, Container, Row } from "react-bootstrap";
+import { FaShoppingCart } from "react-icons/fa";
 import Navbar from "@/app/components/Navbar/Navbar";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import SliderImage from "react-zoom-slider";
 import "./style.css";
 import {
   addproducttocartAsync,
@@ -14,6 +20,7 @@ import {
   incrementQuantityAsync,
 } from "@/app/Redux/features/cart/cartSlice";
 import { successtoast } from "@/app/utils/alerts/alerts";
+import MyReactImageMagnify from "@/app/components/ImageMagnify/MyImageMagnify";
 const ProductDescription = () => {
   const { slug } = useParams();
   const { loading } = useAppSelector((state: RootState) => state.products);
@@ -23,19 +30,71 @@ const ProductDescription = () => {
   );
   const [product, setProduct] = useState<any>({});
   const dispatch = useAppDispatch();
+  const [count, setCount] = useState(0);
+  const data = [
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/209800/oppo-reno2-f-xanh-1-org.jpg",
+      text: "img1",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/209800/oppo-reno2-f-xanh-4-org.jpg",
+      text: "img2",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/209800/oppo-reno2-f-xanh-10-org.jpg",
+      text: "img3",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/210653/iphone-11-pro-max-256gb-mau-bac-1-org.jpg",
+      text: "img4",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/210653/iphone-11-pro-max-256gb-mau-bac-6-org.jpg",
+      text: "img5",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/221926/huawei-y6p-xanh-1-org.jpg",
+      text: "img6",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/221926/huawei-y6p-xanh-10-org.jpg",
+      text: "img7",
+    },
+    {
+      image:
+        "https://cdn.tgdd.vn/Products/Images/42/221926/huawei-y6p-xanh-12-org.jpg",
+      text: "img8",
+    },
+  ];
 
+  const largeImage = {
+    src: "https://trexopro.s3.amazonaws.com/uploaded_images/products/5/2/2-mainfile-6.jpeg",
+    width: 1000,
+    height: 480,
+  };
+
+  const handleChange = () => {
+    // setCount(e.target.value);
+  };
   useEffect(() => {
     if (slug) {
       const payload: any = {
         slug,
       };
-      dispatch(getsingleproductAsync(payload))
+      dispatch(getproductdetails(payload))
         .unwrap()
         .then((res) => {
           setProduct(res.data);
-          setSelectedImage(
-            res?.data?.productImages?.findIndex((i: any) => i?.isThumbnail)
-          );
+          // setSelectedImage(
+          //   res?.data?.productImages?.findIndex((i: any) => i?.isThumbnail)
+          // );
         })
         .catch((err) => {
           console.log(err);
@@ -245,9 +304,105 @@ const ProductDescription = () => {
       </div> */}
 
       <section id="product_single_three" className="pt-5">
-           <div className="container">
-                 div.area
-           </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4">
+              <SliderImage
+                data={data}
+                // width="500px"
+                // showDescription={true}
+                direction="right"
+              />
+              <div className="product_details_cat">
+                <ul>
+                  <li>Category : </li>
+                  <li>Mobiles</li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-lg-8">
+              <div className="product_details_right_one">
+                <div className="modal_product_content_one">
+                  <h4>
+                    Redmi Note 8 Pro
+                    <small style={{ fontSize: "13px" }}>
+                      (Color: White, RAM: 6 GB, Internal Storage: 128 GB)
+                    </small>
+                  </h4>
+                  <h4 className="single_protx">
+                    <span className="price-symbol">₹</span>
+                    <span>180,000.00</span>
+                  </h4>
+                  <hr className="hr_stone" />
+                  <div className="variable-single-item">
+                    <div>
+                      <p className="text-theme">Ram :</p>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} checked />
+                        <span className="btn btn-radiocheck">6GB</span>
+                      </label>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} />
+                        <span className="btn btn-radiocheck">8GB</span>
+                      </label>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} />
+                        <span className="btn btn-radiocheck">12GB</span>
+                      </label>
+                    </div>
+                    <div>
+                      <p className="text-theme">Ram :</p>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} checked />
+                        <span className="btn btn-radiocheck">6GB</span>
+                      </label>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} />
+                        <span className="btn btn-radiocheck">8GB</span>
+                      </label>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} />
+                        <span className="btn btn-radiocheck">12GB</span>
+                      </label>
+                    </div>
+                    <div>
+                      <p className="text-theme">Ram :</p>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} checked />
+                        <span className="btn btn-radiocheck">6GB</span>
+                      </label>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} />
+                        <span className="btn btn-radiocheck">8GB</span>
+                      </label>
+                      <label htmlFor="" className="checkbox-btn">
+                        <input type="radio" name="ram" value={"6GB"} />
+                        <span className="btn btn-radiocheck">12GB</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="product_details_tabs">
+                <ul className="nav nav-tabs">
+                  <li>Description</li>
+                </ul>
+                <div id="description">
+                  <div className="product_description">
+                    Redmi Note 8 Pro Halo White, 6GB RAM, 128GB Storage with
+                    Helio G90T · Features Rated by Customers. Fingerprint
+                    reader. 4.4. Value for money. 4.3. Screen quality.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </>
   );

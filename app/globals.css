@@ -227,3 +227,6 @@ body {
   border-color: #ee6a0c !important;
   color: #fff;
 } */
+.react-slider__description{
+     display: none !important;
+}

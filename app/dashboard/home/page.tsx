@@ -9,6 +9,9 @@ import Loading from "@/app/components/Loading/Loading";
 import Pagination from "@/app/components/Pagination/Pagination";
 import { loadAllBanners } from "@/app/Redux/features/Banner/bannerSlice";
 import Link from "next/link";
+import { loadallproductAsync } from "@/app/Redux/features/Product/productSlice";
+import { RootState } from "@/app/Redux/store";
+import Helper from "@/app/utils/helper";
 
 type Payload = {
   currentpage: number;
@@ -24,27 +27,54 @@ type ProductType = {
   category: string;
 };
 const HomePage = () => {
-  const { products, loading } = useAppSelector((state) => state.products);
-  const { allbanners } = useAppSelector((state) => state.banner);
-  const [searchText, setSerchText] = useState("");
-  const debauncedValue = useDebounce(searchText, 600);
+  // const { products, loading } = useAppSelector((state) => state.products);
+  // const { allbanners } = useAppSelector((state) => state.banner);
+  // const [searchText, setSerchText] = useState("");
+  // const debauncedValue = useDebounce(searchText, 600);
+  // const [currentpage, setCurrentPage] = useState(1);
+  // const [perPage, setPerPage] = useState(5);
+
+  // const dispatch = useAppDispatch();
+  // const router = useRouter();
+
+  // useEffect(() => {
+  //   const payload: Payload = { currentpage, perPage, searchText };
+  //   // dispatch(loadproductAsync(payload));
+  //   dispatch(loadAllBanners());
+  // }, [debauncedValue, currentpage, perPage]);
+
+  // const handlesearch = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setCurrentPage(1);
+  //   setSerchText(e.target.value);
+  // };
+  const { loading, products, meta } = useAppSelector(
+    (state: RootState) => state.products
+  );
+
+  console.log(products);
+  const [searchTerm, setSerchText] = useState("");
+  const debauncedValue = useDebounce(searchTerm, 600);
   const [currentpage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [perPage, setPerPage] = useState(10);
 
   const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  useEffect(() => {
-    const payload: Payload = { currentpage, perPage, searchText };
-    // dispatch(loadproductAsync(payload));
-    dispatch(loadAllBanners());
-  }, [debauncedValue, currentpage, perPage]);
 
   const handlesearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentPage(1);
     setSerchText(e.target.value);
   };
 
+  useEffect(() => {
+    dispatch(loadallproductAsync({ currentpage, searchTerm }));
+  }, [debauncedValue, currentpage]);
+
+  // useEffect(() => {
+  //   dispatch(loadallproductAsync());
+  // }, []);
+
+  console.log(products);
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <>
       {loading && <Loading />}
@@ -163,148 +193,59 @@ const HomePage = () => {
                     <div className="row d-flex justify-content-center">
                       <h2 className="mt-5 text-center">Products</h2>
                       <div className="row">
-    
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-12">
-                          <div className={styles.product_wrappers_one}>
-                            <div className={styles.thumb}>
-                              <Link
-                                href={"/"}
-                                className={`${styles.image} text-center`}
+                        {products?.length > 0 ? (
+                          products?.map((p: any) => {
+                            return (
+                              <div
+                                className="col-lg-3 col-md-4 col-sm-6 col-12"
+                                key={p?.id}
                               >
-                                <img
-                                  id={styles.card_img}
-                                  src="https://trexopro.s3.amazonaws.com/uploaded_images/products/5/2/2-mainfile-7.jpeg"
-                                  alt="product"
-                                  style={{ height: "15rem", width: "15rem" }}
-                                />
-                              </Link>
-                              <div className="actions"></div>
-                            </div>
-                            <div className={styles.content}>
-                              <h5 className={`${styles.title} mb-0`}>
-                                <Link href={"/"}>Redmi Note 8 Pro</Link>
-                              </h5>
-                              <span className={styles.price}>
-                                <span className={styles.new}>
-                                  ₹ <span>180,000.00</span>
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-12">
-                          <div className={styles.product_wrappers_one}>
-                            <div className={styles.thumb}>
-                              <Link
-                                href={"/"}
-                                className={`${styles.image} text-center`}
-                              >
-                                <img
-                                  id={styles.card_img}
-                                  src="https://trexopro.s3.amazonaws.com/uploaded_images/products/5/2/2-mainfile-7.jpeg"
-                                  alt="product"
-                                  style={{ height: "15rem", width: "15rem" }}
-                                />
-                              </Link>
-                              <div className="actions"></div>
-                            </div>
-                            <div className={styles.content}>
-                              <h5 className={`${styles.title} mb-0`}>
-                                <Link href={"/"}>Redmi Note 8 Pro</Link>
-                              </h5>
-                              <span className={styles.price}>
-                                <span className={styles.new}>
-                                  ₹ <span>180,000.00</span>
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-12">
-                          <div className={styles.product_wrappers_one}>
-                            <div className={styles.thumb}>
-                              <Link
-                                href={"/"}
-                                className={`${styles.image} text-center`}
-                              >
-                                <img
-                                  id={styles.card_img}
-                                  src="https://trexopro.s3.amazonaws.com/uploaded_images/products/5/2/2-mainfile-7.jpeg"
-                                  alt="product"
-                                  style={{ height: "15rem", width: "15rem" }}
-                                />
-                              </Link>
-                              <div className="actions"></div>
-                            </div>
-                            <div className={styles.content}>
-                              <h5 className={`${styles.title} mb-0`}>
-                                <Link href={"/"}>Redmi Note 8 Pro</Link>
-                              </h5>
-                              <span className={styles.price}>
-                                <span className={styles.new}>
-                                  ₹ <span>180,000.00</span>
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-12">
-                          <div className={styles.product_wrappers_one}>
-                            <div className={styles.thumb}>
-                              <Link
-                                href={"/"}
-                                className={`${styles.image} text-center`}
-                              >
-                                <img
-                                  id={styles.card_img}
-                                  src="https://trexopro.s3.amazonaws.com/uploaded_images/products/5/2/2-mainfile-7.jpeg"
-                                  alt="product"
-                                  style={{ height: "15rem", width: "15rem" }}
-                                />
-                              </Link>
-                              <div className="actions"></div>
-                            </div>
-                            <div className={styles.content}>
-                              <h5 className={`${styles.title} mb-0`}>
-                                <Link href={"/"}>Redmi Note 8 Pro</Link>
-                              </h5>
-                              <span className={styles.price}>
-                                <span className={styles.new}>
-                                  ₹ <span>180,000.00</span>
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-12">
-                          <div className={styles.product_wrappers_one}>
-                            <div className={styles.thumb}>
-                              <Link
-                                href={"/"}
-                                className={`${styles.image} text-center`}
-                              >
-                                <img
-                                  id={styles.card_img}
-                                  src="https://trexopro.s3.amazonaws.com/uploaded_images/products/5/2/2-mainfile-7.jpeg"
-                                  alt="product"
-                                  style={{ height: "15rem", width: "15rem" }}
-                                />
-                              </Link>
-                              <div className="actions"></div>
-                            </div>
-                            <div className={styles.content}>
-                              <h5 className={`${styles.title} mb-0`}>
-                                <Link href={"/"}>Redmi Note 8 Pro</Link>
-                              </h5>
-                              <span className={styles.price}>
-                                <span className={styles.new}>
-                                  ₹ <span>180,000.00</span>
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                       
+                                <div className={styles.product_wrappers_one}>
+                                  <div className={styles.thumb}>
+                                    <Link
+                                      href={`/product/${p?.slug}`}
+                                      className={`${styles.image} text-center`}
+                                    >
+                                      <img
+                                        id={styles.card_img}
+                                        src={
+                                          p?.variantImages[
+                                            p?.variantImages?.findIndex(
+                                              (i: any) => i.isThumbnail == true
+                                            )
+                                          ]?.url
+                                        }
+                                        alt="product"
+                                        style={{
+                                          height: "15rem",
+                                          width: "15rem",
+                                        }}
+                                      />
+                                    </Link>
+                                    <div className="actions"></div>
+                                  </div>
+                                  <div className={styles.content}>
+                                    <h5 className={`${styles.title} mb-0`}>
+                                      <Link href={"/"}>
+                                        {p?.product?.name +
+                                          `(${Helper.generate_attribute_list(
+                                            p
+                                          )})`}
+                                      </Link>
+                                    </h5>
+                                    <span className={styles.price}>
+                                      <span className={styles.new}>
+                                        ₹ <span>{p?.discountprice}</span>
+                                      </span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     </div>
                   </div>

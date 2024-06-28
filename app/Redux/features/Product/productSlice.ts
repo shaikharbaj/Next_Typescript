@@ -199,6 +199,23 @@ export const uploadproductvarient_images = createAsyncThunk(
   }
 );
 
+interface IGetproductDetails {
+  slug: string;
+}
+export const getproductdetails = createAsyncThunk(
+  "product/getproductdetails",
+  async (payload: IGetproductDetails, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/product/productdetails/${payload.slug}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
