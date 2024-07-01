@@ -216,6 +216,22 @@ export const getproductdetails = createAsyncThunk(
   }
 );
 
+interface IGetproductDetailsByID {
+  id: number;
+  options:any
+}
+
+export const getProductDetailsById = createAsyncThunk("product/getproductdetailsbyID",async (payload: IGetproductDetailsByID, thunkAPI) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/product/productdetails/${payload.id}`,payload.options
+    );
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+})
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -287,6 +303,15 @@ const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(uploadproductvarient_images.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getproductdetails.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getproductdetails.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getproductdetails.rejected, (state, action) => {
         state.loading = false;
       });
   },

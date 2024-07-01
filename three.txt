@@ -204,3 +204,220 @@
 
                          </div>
                      </div> */}
+
+
+
+
+"product": {
+            "id": 14,
+            "name": "Motorola Edge 50 Pro 5G with 68W Charger",
+            "slug": "motorola-edge-50-pro-5g-with-68w-charger",
+            "description": "Motorola Edge 50 Pro has an amalgamation of great designs and amazing features. It embodies a silicone vegan leather finish with a metal frame for a premium feel. Its 17.22 cm (6.7) curved display is Pantone validated for true colours. This 1.5K super HD display, supports HDR10+ and has a refresh rate of 144 Hz to give clear visual effects all the time. Capture beautiful photos with this 50 MP AI-powered camera with OIS that comes with Pantone-validated colours and a f/1.4 wide aperture making it good in low-light conditions. For shake-free videos, AI video stabilization comes in handy, while the AI phone enhancement engine improves image quality. There is also 13 MP ultrawide + macro camera, 10 MP telephoto camers with 30X hybrid zoom and OIS. Selfie camera is 50 MP Auto focus. With IP68 waterproofing, 125 W TurboPower charging, and Hello UI based on Android 14 it is a versatile powerful device. The Style Sync AI generative theming allows you to customize your experience.",
+            "originalprice": 36999,
+            "discountprice": 31999,
+            "stock": 24,
+            "image": null,
+            "category_id": 17,
+            "subcategory_id": 19,
+            "supplier_id": 3,
+            "category": {
+                "id": 17,
+                "name": "Electronics",
+                "createdAt": "2024-06-06T12:42:59.815Z",
+                "updatedAt": "2024-06-06T12:42:59.815Z",
+                "parent_id": null,
+                "category_status": true,
+                "subcategory_status": null,
+                "attributes": [
+                    {
+                        "id": 5,
+                        "name": "MODEL",
+                        "status": true,
+                        "required": true,
+                        "createdAt": "2024-06-06T12:49:28.001Z",
+                        "updatedAt": "2024-06-06T12:49:28.001Z",
+                        "category_id": 17,
+                        "attributevalues": [
+                            {
+                                "id": 8,
+                                "name": "iPhone 13",
+                                "status": true,
+                                "attributes_id": 5,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T12:57:13.503Z",
+                                "updatedAt": "2024-06-06T12:57:13.503Z"
+                            },
+                            {
+                                "id": 7,
+                                "name": "Galaxy S21",
+                                "status": true,
+                                "attributes_id": 5,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T12:56:53.112Z",
+                                "updatedAt": "2024-06-06T13:00:31.045Z"
+                            },
+                            {
+                                "id": 19,
+                                "name": "Pixel 5",
+                                "status": false,
+                                "attributes_id": 5,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:01:18.029Z",
+                                "updatedAt": "2024-06-06T13:01:18.029Z"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 6,
+                        "name": "COLOR",
+                        "status": true,
+                        "required": true,
+                        "createdAt": "2024-06-06T12:49:38.807Z",
+                        "updatedAt": "2024-06-06T12:49:38.807Z",
+                        "category_id": 17,
+                        "attributevalues": [
+                            {
+                                "id": 20,
+                                "name": "BLACK",
+                                "status": true,
+                                "attributes_id": 6,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:01:59.550Z",
+                                "updatedAt": "2024-06-06T13:01:59.550Z"
+                            },
+                            {
+                                "id": 21,
+                                "name": "WHITE",
+                                "status": true,
+                                "attributes_id": 6,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:02:03.925Z",
+                                "updatedAt": "2024-06-12T05:42:34.237Z"
+                            },
+                            {
+                                "id": 22,
+                                "name": "BLUE",
+                                "status": true,
+                                "attributes_id": 6,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:02:09.044Z",
+                                "updatedAt": "2024-06-12T05:42:34.915Z"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 7,
+                        "name": "STORAGE",
+                        "status": true,
+                        "required": true,
+                        "createdAt": "2024-06-06T12:50:01.094Z",
+                        "updatedAt": "2024-06-06T12:50:01.094Z",
+                        "category_id": 17,
+                        "attributevalues": [
+                            {
+                                "id": 23,
+                                "name": "64",
+                                "status": true,
+                                "attributes_id": 7,
+                                "attributeunit_id": 7,
+                                "createdAt": "2024-06-06T13:02:44.654Z",
+                                "updatedAt": "2024-06-06T13:02:44.654Z"
+                            },
+                            {
+                                "id": 24,
+                                "name": "128",
+                                "status": true,
+                                "attributes_id": 7,
+                                "attributeunit_id": 7,
+                                "createdAt": "2024-06-06T13:02:57.213Z",
+                                "updatedAt": "2024-06-06T13:02:57.213Z"
+                            },
+                            {
+                                "id": 25,
+                                "name": "256",
+                                "status": true,
+                                "attributes_id": 7,
+                                "attributeunit_id": 7,
+                                "createdAt": "2024-06-06T13:03:25.331Z",
+                                "updatedAt": "2024-06-06T13:03:25.331Z"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 8,
+                        "name": "RAM",
+                        "status": true,
+                        "required": true,
+                        "createdAt": "2024-06-06T12:50:19.926Z",
+                        "updatedAt": "2024-06-06T12:50:19.926Z",
+                        "category_id": 17,
+                        "attributevalues": [
+                            {
+                                "id": 26,
+                                "name": "4",
+                                "status": true,
+                                "attributes_id": 8,
+                                "attributeunit_id": 7,
+                                "createdAt": "2024-06-06T13:03:56.168Z",
+                                "updatedAt": "2024-06-06T13:03:56.168Z"
+                            },
+                            {
+                                "id": 27,
+                                "name": "6",
+                                "status": true,
+                                "attributes_id": 8,
+                                "attributeunit_id": 7,
+                                "createdAt": "2024-06-06T13:04:05.415Z",
+                                "updatedAt": "2024-06-06T13:04:05.415Z"
+                            },
+                            {
+                                "id": 28,
+                                "name": "8",
+                                "status": true,
+                                "attributes_id": 8,
+                                "attributeunit_id": 7,
+                                "createdAt": "2024-06-06T13:04:09.542Z",
+                                "updatedAt": "2024-06-06T13:04:09.542Z"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 9,
+                        "name": "PROCESSOR",
+                        "status": true,
+                        "required": false,
+                        "createdAt": "2024-06-06T12:52:07.127Z",
+                        "updatedAt": "2024-06-06T12:52:07.127Z",
+                        "category_id": 17,
+                        "attributevalues": [
+                            {
+                                "id": 29,
+                                "name": "Intel i5",
+                                "status": true,
+                                "attributes_id": 9,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:04:49.533Z",
+                                "updatedAt": "2024-06-06T13:04:49.533Z"
+                            },
+                            {
+                                "id": 30,
+                                "name": "Intel i7",
+                                "status": true,
+                                "attributes_id": 9,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:04:59.149Z",
+                                "updatedAt": "2024-06-06T13:04:59.149Z"
+                            },
+                            {
+                                "id": 31,
+                                "name": "M1",
+                                "status": true,
+                                "attributes_id": 9,
+                                "attributeunit_id": null,
+                                "createdAt": "2024-06-06T13:05:08.205Z",
+                                "updatedAt": "2024-06-06T13:05:08.205Z"
+                            }
+                        ]
+                    }
+                ]
+            }

@@ -140,6 +140,17 @@
 #description .product_description {
   padding-top: 20px;
 }
+.react-slider__picture img {
+  height: 500px !important;
+  object-fit: contain;
+}
+.react-slider__ul li img {
+  height: 100px;
+  object-fit: contain;
+}
+.react-slider__imgZoom {
+  object-fit: contain !important;
+}
 
 @media (min-width: 640px) {
   .count_wrapper {
