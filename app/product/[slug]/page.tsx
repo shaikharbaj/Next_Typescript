@@ -77,10 +77,21 @@ const ProductDescription = () => {
   }, [slug]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const prev = { ...option };
+   
+    setOption((prev:any)=>{
+         return {...prev,[e.target.name]:e.target.value}
+    })
+    const prev = { ...option,[e.target.name]:e.target.value };
+    console.log(e.target.name);
+    console.log(e.target.value);
     dispatch(
-      getProductDetailsById({ options: option, id: Number(product?.productId) })
-    );
+      getProductDetailsById({ options: prev, id: Number(product?.productId) })
+    ).unwrap().then((res)=>{
+            setProduct(res.data);
+            console.log(res.data);
+    }).catch((err)=>{
+          console.log(err);
+    });
   };
 
   const AddToCartHandler = (id: number) => {

@@ -175,7 +175,7 @@ const AllProduct = () => {
                                 Edit
                               </button>
                               <button className="btn btn-danger me-2" onClick={() => deleteProduct(p?.id)}>Delete</button>
-                              <button className="btn btn-primary" onClick={() => navigatetoviewPage(p?.name)}>View</button>
+                              <button className="btn btn-primary" onClick={() => navigatetoviewPage(p?.slug)}>View</button>
                             </div>
                           </td>
                         </tr>
